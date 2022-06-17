@@ -7,10 +7,7 @@ import (
 )
 
 func SetupRoutes(r chi.Router) http.Handler {
-	r.Get("/reports", handlers.GetReport)
-
-	r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("pong"))
-	})
+	r.Get("/reports/{report_id}", handlers.GetReport)
+	r.Post("/reports", handlers.CreateReport)
 	return r
 }
