@@ -13,7 +13,7 @@ type ReportTemplate struct {
 	Markup    string            `json:"markup,omitempty"`
 }
 
-type GetReportResponse struct {
+type Report struct {
 	Id        string         `json:"id,omitempty"`
 	CreatorId string         `json:"creator_id,omitempty"`
 	CreatedAt int            `json:"created_at,omitempty"`
@@ -24,6 +24,14 @@ type GetReportResponse struct {
 	BreakTime int            `json:"break_time,omitempty"`
 	WorkTime  int            `json:"work_time,omitempty"`
 	Template  ReportTemplate `json:"template,omitempty"`
+}
+
+type GetReportResponse struct {
+	Report Report `json:"report,omitempty"`
+}
+
+type GetReportsResponse struct {
+	Reports []Report `json:"reports,omitempty"`
 }
 
 type CreateReportRequest struct {
@@ -55,6 +63,25 @@ func GetReport(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func GetReports(w http.ResponseWriter, r *http.Request) {
+
+	var reports GetReportsResponse
+
+	for _, val := range store.Reports {
+		reports.Reports = append(reports.Reports, val.Report)
+	}
+
+	if len(reports.Reports) > 0 {
+		response, _ := json.Marshal(reports)
+		w.Write(response)
+	} else {
+		response, _ := json.Marshal(GetReportsResponse{
+			Reports: []Report{},
+		})
+		w.Write(response)
+	}
+}
+
 func CreateReport(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var message CreateReportRequest
@@ -67,20 +94,23 @@ func CreateReport(w http.ResponseWriter, r *http.Request) {
 	id := uuid.New().String()
 
 	store.Reports[id] = GetReportResponse{
-		Id:        id,
-		CreatorId: "0",
-		CreatedAt: int(time.Now().Unix()),
-		StartTime: message.StartTime,
-		EndTime:   message.EndTime,
-		BreakTime: message.BreakTime,
-		WorkTime:  message.WorkTime,
-		Template: ReportTemplate{
-			Variables: message.Template.Variables,
-			Markup:    message.Template.Markup,
+		Report: Report{
+			Id:        id,
+			CreatorId: "11111111-1111-1111-1111-111111111111",
+			CreatedAt: int(time.Now().Unix()),
+			StartTime: message.StartTime,
+			EndTime:   message.EndTime,
+			BreakTime: message.BreakTime,
+			WorkTime:  message.WorkTime,
+			Template: ReportTemplate{
+				Variables: message.Template.Variables,
+				Markup:    message.Template.Markup,
+			},
 		},
 	}
-
-	response, _ := json.Marshal(store.Reports[id])
+	result := make(map[string]string)
+	result["id"] = id
+	response, _ := json.Marshal(result)
 
 	w.Write(response)
 }
