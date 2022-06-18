@@ -12,9 +12,9 @@ type ErrorResponseDetails struct {
 }
 
 type ErrorResponseError struct {
-	Code        int                     `json:"code,omitempty"`
-	Description string                  `json:"description,omitempty"`
-	Details     []*ErrorResponseDetails `json:"details"`
+	Code        int                    `json:"code,omitempty"`
+	Description string                 `json:"description,omitempty"`
+	Details     []ErrorResponseDetails `json:"details"`
 }
 
 type ErrorResponse struct {
@@ -27,12 +27,16 @@ func (r *ErrorResponse) Add(reason, description, position string) {
 		Description: description,
 		Position:    position,
 	}
-	r.Error.Details = append(r.Error.Details, &details)
+	r.Error.Details = append(r.Error.Details, details)
 }
 
 func (r *ErrorResponse) Done(w *http.ResponseWriter, code int, description string) {
 	r.Error.Code = code
 	r.Error.Description = description
+	if len(r.Error.Details) == 0 {
+		r.Error.Details = []ErrorResponseDetails{}
+	}
+
 	response, _ := json.Marshal(r)
 
 	http.Error(*w, string(response), code)

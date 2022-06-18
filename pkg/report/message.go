@@ -5,7 +5,7 @@ type GetReportResponse struct {
 }
 
 type GetReportsResponse struct {
-	Reports []Report `json:"reports,omitempty"`
+	Reports []Report `json:"reports"`
 }
 
 type CreatedReportResponse struct {

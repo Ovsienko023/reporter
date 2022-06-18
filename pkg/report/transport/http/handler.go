@@ -49,7 +49,7 @@ func (h *Handler) GetReports(w http.ResponseWriter, r *http.Request) {
 
 	result, _ := h.core.GetReports(ctx, &message) // todo add httperror
 	reportsMSG := report.GetReportsResponse{
-		Reports: []report.Report{},
+		Reports: []report.Report{}, //Reports: make([]report.Report, 0),
 	}
 	for _, obj := range result.Reports {
 		reportsMSG.Reports = append(reportsMSG.Reports, obj)
