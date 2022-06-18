@@ -7,7 +7,10 @@ import (
 )
 
 func SetupRoutes(r chi.Router) http.Handler {
-	r.Get("/api/v1/reports", handlers.GetReports)
+	//r.Get("/api/v1/reports", handlers.GetReports)
+	//r.Get("/api/v1/reports/{report_id}", handlers.GetReport)
+	//r.Post("/api/v1/reports", handlers.CreateReport)
+	//r.Get("/api/v1/reports", .GetReports)
 	r.Get("/api/v1/reports/{report_id}", handlers.GetReport)
 	r.Post("/api/v1/reports", handlers.CreateReport)
 	return r

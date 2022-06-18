@@ -1,12 +1,16 @@
 package main
 
 import (
-	"github.com/Ovsienko023/reporter/app"
-	"net/http"
+	"github.com/Ovsienko023/reporter/server"
+	"log"
 )
 
 func main() {
-	application := app.InitApp()
+	//application := app.InitApp()
 
-	http.ListenAndServe(":8888", application)
+	//http.ListenAndServe(":8888", application)
+	app := server.NewApp()
+	if err := app.Run("8888"); err != nil { // todo add config
+		log.Fatalf("%s", err.Error())
+	}
 }

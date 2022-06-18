@@ -1,0 +1,39 @@
+package httperror
+
+import (
+	"encoding/json"
+	"net/http"
+)
+
+type ErrorResponseDetails struct {
+	Reason      string `json:"reason,omitempty"`
+	Description string `json:"description,omitempty"`
+	Position    string `json:"position,omitempty"`
+}
+
+type ErrorResponseError struct {
+	Code        int                     `json:"code,omitempty"`
+	Description string                  `json:"description,omitempty"`
+	Details     []*ErrorResponseDetails `json:"details"`
+}
+
+type ErrorResponse struct {
+	Error ErrorResponseError `json:"error,omitempty"`
+}
+
+func (r *ErrorResponse) Add(reason, description, position string) {
+	details := ErrorResponseDetails{
+		Reason:      reason,
+		Description: description,
+		Position:    position,
+	}
+	r.Error.Details = append(r.Error.Details, &details)
+}
+
+func (r *ErrorResponse) Done(w *http.ResponseWriter, code int, description string) {
+	r.Error.Code = code
+	r.Error.Description = description
+	response, _ := json.Marshal(r)
+
+	http.Error(*w, string(response), code)
+}
