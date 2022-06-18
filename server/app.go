@@ -2,16 +2,18 @@ package server
 
 import (
 	"context"
-	"github.com/Ovsienko023/reporter/pkg/report"
-	"github.com/Ovsienko023/reporter/pkg/report/repository/localstore"
-	reporthttp "github.com/Ovsienko023/reporter/pkg/report/transport/http"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/Ovsienko023/reporter/internal/config"
+	"github.com/Ovsienko023/reporter/pkg/report"
+	"github.com/Ovsienko023/reporter/pkg/report/repository/localstore"
+	reporthttp "github.com/Ovsienko023/reporter/pkg/report/transport/http"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 type App struct {
@@ -30,7 +32,7 @@ func NewApp() *App {
 	}
 }
 
-func (a *App) Run(port string) error {
+func (a *App) Run(apiConfig *config.Api) error {
 	// Init gin handler
 	//router := gin.Default()
 	//router.Use(
@@ -57,7 +59,7 @@ func (a *App) Run(port string) error {
 	//r := app.SetupRoutes(router)
 	// HTTP Server
 	a.httpServer = &http.Server{
-		Addr:           ":" + port,
+		Addr:           apiConfig.Host + ":" + apiConfig.Port,
 		Handler:        r,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
