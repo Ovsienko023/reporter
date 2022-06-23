@@ -3,7 +3,7 @@ package localstore
 import (
 	"context"
 	"errors"
-	"github.com/Ovsienko023/reporter/pkg/report"
+	"github.com/Ovsienko023/reporter/internal/report"
 	"github.com/google/uuid"
 	"sync"
 	"time"

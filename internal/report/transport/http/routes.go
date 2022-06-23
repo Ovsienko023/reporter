@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/Ovsienko023/reporter/pkg/report"
+	"github.com/Ovsienko023/reporter/internal/report"
 	"github.com/go-chi/chi/v5"
 	"net/http"
 )

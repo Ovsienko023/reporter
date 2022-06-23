@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/Ovsienko023/reporter/pkg/config"
 	"log"
 
-	"github.com/Ovsienko023/reporter/internal/config"
 	"github.com/Ovsienko023/reporter/server"
 )
 

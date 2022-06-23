@@ -2,16 +2,16 @@ package server
 
 import (
 	"context"
+	"github.com/Ovsienko023/reporter/pkg/config"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
-	"github.com/Ovsienko023/reporter/internal/config"
-	"github.com/Ovsienko023/reporter/pkg/report"
-	"github.com/Ovsienko023/reporter/pkg/report/repository/localstore"
-	reporthttp "github.com/Ovsienko023/reporter/pkg/report/transport/http"
+	"github.com/Ovsienko023/reporter/internal/report"
+	"github.com/Ovsienko023/reporter/internal/report/repository/localstore"
+	reporthttp "github.com/Ovsienko023/reporter/internal/report/transport/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
