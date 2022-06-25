@@ -23,6 +23,7 @@ type GetReportsRequest struct {
 
 type CreateReportRequest struct {
 	InvokerId string         `json:"invoker_id,omitempty"`
+	Title     string         `json:"title,omitempty"`
 	StartTime int            `json:"start_time,omitempty"`
 	EndTime   int            `json:"end_time,omitempty"`
 	BreakTime int            `json:"break_time,omitempty"`
@@ -37,6 +38,7 @@ type ReportTemplate struct {
 
 type Report struct {
 	Id        string         `json:"id,omitempty"`
+	Title     string         `json:"title,omitempty"`
 	CreatorId string         `json:"creator_id,omitempty"`
 	CreatedAt int            `json:"created_at,omitempty"`
 	UpdatedAt *int           `json:"updated_at,omitempty"`
