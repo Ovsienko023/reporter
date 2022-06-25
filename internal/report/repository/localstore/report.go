@@ -21,7 +21,7 @@ func NewReportLocalStorage() *ReportLocalStorage {
 	}
 }
 
-func (s *ReportLocalStorage) GetReport(ctx context.Context, msg *report.GetReportRequest) (*report.Report, error) {
+func (s *ReportLocalStorage) GetReport(ctx context.Context, msg *report.GetReport) (*report.Report, error) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
@@ -34,7 +34,7 @@ func (s *ReportLocalStorage) GetReport(ctx context.Context, msg *report.GetRepor
 	return nil, errors.New("report not found")
 }
 
-func (s *ReportLocalStorage) GetReports(ctx context.Context, msg *report.GetReportsRequest) (*report.Reports, error) {
+func (s *ReportLocalStorage) GetReports(ctx context.Context, msg *report.GetReports) (*report.Reports, error) {
 	var reports report.Reports
 
 	s.mutex.Lock()
@@ -48,7 +48,7 @@ func (s *ReportLocalStorage) GetReports(ctx context.Context, msg *report.GetRepo
 	return &reports, nil
 }
 
-func (s *ReportLocalStorage) CreateReport(ctx context.Context, msg *report.CreateReportRequest) (*report.CreatedReport, error) {
+func (s *ReportLocalStorage) CreateReport(ctx context.Context, msg *report.CreateReport) (*report.CreatedReport, error) {
 	s.mutex.Lock()
 
 	id := uuid.New().String()
