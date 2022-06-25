@@ -2,6 +2,8 @@ package server
 
 import (
 	"context"
+	"github.com/Ovsienko023/reporter/internal/report"
+	"github.com/Ovsienko023/reporter/internal/report/core"
 	"github.com/Ovsienko023/reporter/pkg/config"
 	"log"
 	"net/http"
@@ -9,7 +11,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/Ovsienko023/reporter/internal/report"
 	"github.com/Ovsienko023/reporter/internal/report/repository/localstore"
 	reporthttp "github.com/Ovsienko023/reporter/internal/report/transport/http"
 	"github.com/go-chi/chi/v5"
@@ -25,10 +26,11 @@ type App struct {
 func NewApp() *App {
 	//db := initDB()
 	recordRepo := localstore.NewReportLocalStorage()
+	recordCore := core.NewCore(recordRepo)
 	//bookmarkRepo := bmmongo.NewBookmarkRepository(db, viper.GetString("mongo.bookmark_collection"))
 
 	return &App{
-		recordCore: recordRepo,
+		recordCore: recordCore,
 	}
 }
 
