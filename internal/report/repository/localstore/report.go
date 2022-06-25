@@ -54,6 +54,7 @@ func (s *ReportLocalStorage) CreateReport(ctx context.Context, msg *report.Creat
 	id := uuid.New().String()
 	s.reports[id] = &report.Report{
 		Id:        id,
+		Title:     msg.Title,
 		CreatorId: msg.InvokerId,
 		CreatedAt: int(time.Now().Unix()),
 		StartTime: msg.StartTime,
