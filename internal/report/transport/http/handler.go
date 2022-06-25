@@ -29,7 +29,7 @@ func (h *Handler) GetReport(w http.ResponseWriter, r *http.Request) {
 
 	result, err := h.core.GetReport(ctx, &message) // todo add httperror
 	if err != nil {
-		errorContainer.Done(&w, http.StatusNotFound, "user not found")
+		errorContainer.Done(&w, http.StatusNotFound, "report not found")
 		return
 	}
 
@@ -40,17 +40,8 @@ func (h *Handler) GetReport(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetReports(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	message := report.GetReportsRequest{
-		//InvokerId: "11111111-1111-1111-1111-111111111111", // todo
-	}
-
+	message := report.GetReportsRequest{}
 	result, _ := h.core.GetReports(ctx, &message) // todo add httperror
-	//reportsMSG := report.GetReportsResponse{
-	//	Reports: []report.Report{}, //Reports: make([]report.Report, 0),
-	//}
-	//for _, obj := range result.Reports {
-	//	reportsMSG.Reports = append(reportsMSG.Reports, obj)
-	//}
 
 	response, _ := json.Marshal(result)
 	w.Write(response)
@@ -67,13 +58,31 @@ func (h *Handler) CreateReport(w http.ResponseWriter, r *http.Request) {
 		panic(err) //todo new httperror
 	}
 
-	//message.InvokerId = "11111111-1111-1111-1111-111111111111" // todo
 	result, _ := h.core.CreateReport(ctx, &message)
-	//createdMSG := report.CreatedReportResponse{
-	//	Id: result.Id,
-	//}
 
 	response, _ := json.Marshal(result)
-
 	w.Write(response)
+}
+
+func (h *Handler) UpdateReport(w http.ResponseWriter, r *http.Request) {
+	errorContainer := httperror.ErrorResponse{}
+
+	ctx := r.Context()
+
+	decoder := json.NewDecoder(r.Body)
+	var message report.UpdateReportRequest
+
+	err := decoder.Decode(&message)
+	if err != nil {
+		panic(err) //todo new httperror
+	}
+
+	message.ReportId = chi.URLParam(r, "report_id")
+
+	err = h.core.UpdateReport(ctx, &message) // todo add httperror
+	if err != nil {
+		errorContainer.Done(&w, http.StatusNotFound, "report not found")
+		return
+	}
+
 }

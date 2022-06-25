@@ -13,7 +13,6 @@ type CreatedReportResponse struct {
 }
 
 type GetReportRequest struct {
-	//InvokerId string `json:"invoker_id,omitempty"`
 	ReportId string `json:"report_id,omitempty"`
 }
 
@@ -23,7 +22,6 @@ type GetReport struct {
 }
 
 type GetReportsRequest struct {
-	//InvokerId string `json:"invoker_id,omitempty"`
 }
 
 type GetReports struct {
@@ -31,7 +29,6 @@ type GetReports struct {
 }
 
 type CreateReportRequest struct {
-	//InvokerId string         `json:"invoker_id,omitempty"`
 	Title     string         `json:"title,omitempty"`
 	StartTime int            `json:"start_time,omitempty"`
 	EndTime   int            `json:"end_time,omitempty"`
@@ -75,4 +72,25 @@ type Reports struct {
 
 type CreatedReport struct {
 	Id string `json:"id,omitempty"`
+}
+
+type UpdateReportRequest struct {
+	ReportId  string         `json:"id,omitempty"`
+	Title     string         `json:"title,omitempty"`
+	StartTime int            `json:"start_time,omitempty"`
+	EndTime   int            `json:"end_time,omitempty"`
+	BreakTime int            `json:"break_time,omitempty"`
+	WorkTime  int            `json:"work_time,omitempty"`
+	Template  ReportTemplate `json:"template,omitempty"`
+}
+
+type UpdateReport struct {
+	InvokerId string         `json:"invoker_id,omitempty"`
+	ReportId  string         `json:"id,omitempty"`
+	Title     string         `json:"title,omitempty"`
+	StartTime int            `json:"start_time,omitempty"`
+	EndTime   int            `json:"end_time,omitempty"`
+	BreakTime int            `json:"break_time,omitempty"`
+	WorkTime  int            `json:"work_time,omitempty"`
+	Template  ReportTemplate `json:"template,omitempty"`
 }

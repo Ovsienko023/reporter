@@ -74,3 +74,23 @@ func (c *Core) CreateReport(ctx context.Context, msg *report.CreateReportRequest
 
 	return &resp, nil
 }
+
+func (c *Core) UpdateReport(ctx context.Context, msg *report.UpdateReportRequest) error {
+	message := report.UpdateReport{
+		InvokerId: "11111111-1111-1111-1111-111111111111", // todo
+		ReportId:  msg.ReportId,
+		Title:     msg.Title,
+		StartTime: msg.StartTime,
+		EndTime:   msg.EndTime,
+		BreakTime: msg.BreakTime,
+		WorkTime:  msg.WorkTime,
+		Template:  msg.Template,
+	}
+
+	err := c.repo.UpdateReport(ctx, &message)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
