@@ -29,22 +29,22 @@ type GetReports struct {
 }
 
 type CreateReportRequest struct {
-	Title     string         `json:"title,omitempty"`
-	StartTime int            `json:"start_time,omitempty"`
-	EndTime   int            `json:"end_time,omitempty"`
-	BreakTime int            `json:"break_time,omitempty"`
-	WorkTime  int            `json:"work_time,omitempty"`
-	Template  ReportTemplate `json:"template,omitempty"`
+	Title     string `json:"title,omitempty"`
+	StartTime int    `json:"start_time,omitempty"`
+	EndTime   int    `json:"end_time,omitempty"`
+	BreakTime int    `json:"break_time,omitempty"`
+	WorkTime  int    `json:"work_time,omitempty"`
+	Body      string `json:"body,omitempty"`
 }
 
 type CreateReport struct {
-	InvokerId string         `json:"invoker_id,omitempty"`
-	Title     string         `json:"title,omitempty"`
-	StartTime int            `json:"start_time,omitempty"`
-	EndTime   int            `json:"end_time,omitempty"`
-	BreakTime int            `json:"break_time,omitempty"`
-	WorkTime  int            `json:"work_time,omitempty"`
-	Template  ReportTemplate `json:"template,omitempty"`
+	InvokerId string `json:"invoker_id,omitempty"`
+	Title     string `json:"title,omitempty"`
+	StartTime int    `json:"start_time,omitempty"`
+	EndTime   int    `json:"end_time,omitempty"`
+	BreakTime int    `json:"break_time,omitempty"`
+	WorkTime  int    `json:"work_time,omitempty"`
+	Body      string `json:"body,omitempty"`
 }
 
 type ReportTemplate struct {
@@ -53,17 +53,17 @@ type ReportTemplate struct {
 }
 
 type Report struct {
-	Id        string         `json:"id,omitempty"`
-	Title     string         `json:"title,omitempty"`
-	CreatorId string         `json:"creator_id,omitempty"`
-	CreatedAt int            `json:"created_at,omitempty"`
-	UpdatedAt *int           `json:"updated_at,omitempty"`
-	DeletedAt *int           `json:"deleted_at,omitempty"`
-	StartTime int            `json:"start_time,omitempty"`
-	EndTime   int            `json:"end_time,omitempty"`
-	BreakTime int            `json:"break_time,omitempty"`
-	WorkTime  int            `json:"work_time,omitempty"`
-	Template  ReportTemplate `json:"template,omitempty"`
+	Id        string `json:"id,omitempty"`
+	Title     string `json:"title,omitempty"`
+	CreatorId string `json:"creator_id,omitempty"`
+	CreatedAt int    `json:"created_at,omitempty"`
+	UpdatedAt *int   `json:"updated_at,omitempty"`
+	DeletedAt *int   `json:"deleted_at,omitempty"`
+	StartTime int    `json:"start_time,omitempty"`
+	EndTime   int    `json:"end_time,omitempty"`
+	BreakTime int    `json:"break_time,omitempty"`
+	WorkTime  int    `json:"work_time,omitempty"`
+	Body      string `json:"body,omitempty"`
 }
 
 type Reports struct {
@@ -75,22 +75,22 @@ type CreatedReport struct {
 }
 
 type UpdateReportRequest struct {
-	ReportId  string         `json:"id,omitempty"`
-	Title     string         `json:"title,omitempty"`
-	StartTime int            `json:"start_time,omitempty"`
-	EndTime   int            `json:"end_time,omitempty"`
-	BreakTime int            `json:"break_time,omitempty"`
-	WorkTime  int            `json:"work_time,omitempty"`
-	Template  ReportTemplate `json:"template,omitempty"`
+	ReportId  string `json:"id,omitempty"`
+	Title     string `json:"title,omitempty"`
+	StartTime int    `json:"start_time,omitempty"`
+	EndTime   int    `json:"end_time,omitempty"`
+	BreakTime int    `json:"break_time,omitempty"`
+	WorkTime  int    `json:"work_time,omitempty"`
+	Body      string `json:"body,omitempty"`
 }
 
 type UpdateReport struct {
-	InvokerId string         `json:"invoker_id,omitempty"`
-	ReportId  string         `json:"id,omitempty"`
-	Title     string         `json:"title,omitempty"`
-	StartTime int            `json:"start_time,omitempty"`
-	EndTime   int            `json:"end_time,omitempty"`
-	BreakTime int            `json:"break_time,omitempty"`
-	WorkTime  int            `json:"work_time,omitempty"`
-	Template  ReportTemplate `json:"template,omitempty"`
+	InvokerId string `json:"invoker_id,omitempty"`
+	ReportId  string `json:"id,omitempty"`
+	Title     string `json:"title,omitempty"`
+	StartTime int    `json:"start_time,omitempty"`
+	EndTime   int    `json:"end_time,omitempty"`
+	BreakTime int    `json:"break_time,omitempty"`
+	WorkTime  int    `json:"work_time,omitempty"`
+	Body      string `json:"body,omitempty"`
 }

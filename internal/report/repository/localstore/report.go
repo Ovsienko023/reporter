@@ -61,10 +61,7 @@ func (s *ReportLocalStorage) CreateReport(ctx context.Context, msg *report.Creat
 		EndTime:   msg.EndTime,
 		BreakTime: msg.BreakTime,
 		WorkTime:  msg.WorkTime,
-		Template: report.ReportTemplate{
-			Variables: msg.Template.Variables,
-			Markup:    msg.Template.Markup,
-		},
+		Body:      msg.Body,
 	}
 	s.mutex.Unlock()
 
@@ -88,10 +85,7 @@ func (s *ReportLocalStorage) UpdateReport(ctx context.Context, msg *report.Updat
 			EndTime:   msg.EndTime,
 			BreakTime: msg.BreakTime,
 			WorkTime:  msg.WorkTime,
-			Template: report.ReportTemplate{
-				Variables: msg.Template.Variables,
-				Markup:    msg.Template.Markup,
-			},
+			Body:      msg.Body,
 		}
 	} else {
 		return errors.New("report not found") // todo
