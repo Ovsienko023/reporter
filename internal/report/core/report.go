@@ -61,7 +61,7 @@ func (c *Core) CreateReport(ctx context.Context, msg *report.CreateReportRequest
 		EndTime:   msg.EndTime,
 		BreakTime: msg.BreakTime,
 		WorkTime:  msg.WorkTime,
-		Template:  msg.Template,
+		Body:      msg.Body,
 	}
 	result, err := c.repo.CreateReport(ctx, &message)
 	if err != nil {
@@ -84,7 +84,7 @@ func (c *Core) UpdateReport(ctx context.Context, msg *report.UpdateReportRequest
 		EndTime:   msg.EndTime,
 		BreakTime: msg.BreakTime,
 		WorkTime:  msg.WorkTime,
-		Template:  msg.Template,
+		Body:      msg.Body,
 	}
 
 	err := c.repo.UpdateReport(ctx, &message)
