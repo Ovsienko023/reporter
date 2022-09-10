@@ -94,3 +94,17 @@ func (c *Core) UpdateReport(ctx context.Context, msg *report.UpdateReportRequest
 
 	return nil
 }
+
+func (c *Core) DeleteReport(ctx context.Context, msg *report.DeleteReportRequest) error {
+	message := report.DeleteReport{
+		InvokerId: "11111111-1111-1111-1111-111111111111", // todo
+		ReportId:  msg.ReportId,
+	}
+
+	err := c.repo.DeleteReport(ctx, &message)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

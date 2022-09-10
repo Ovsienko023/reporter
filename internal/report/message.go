@@ -94,3 +94,12 @@ type UpdateReport struct {
 	WorkTime  int    `json:"work_time,omitempty"`
 	Body      string `json:"body,omitempty"`
 }
+
+type DeleteReportRequest struct {
+	ReportId string `json:"report_id,omitempty"`
+}
+
+type DeleteReport struct {
+	InvokerId string `json:"invoker_id,omitempty"`
+	ReportId  string `json:"id,omitempty"`
+}

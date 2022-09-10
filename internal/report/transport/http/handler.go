@@ -29,7 +29,7 @@ func (h *Handler) GetReport(w http.ResponseWriter, r *http.Request) {
 
 	result, err := h.core.GetReport(ctx, &message) // todo add httperror
 	if err != nil {
-		errorContainer.Done(&w, http.StatusNotFound, "report not found")
+		errorContainer.Done(w, http.StatusNotFound, "report not found")
 		return
 	}
 
@@ -89,7 +89,28 @@ func (h *Handler) UpdateReport(w http.ResponseWriter, r *http.Request) {
 
 	err = h.core.UpdateReport(ctx, &message) // todo add httperror
 	if err != nil {
-		errorContainer.Done(&w, http.StatusNotFound, "report not found")
+		errorContainer.Done(w, http.StatusNotFound, "report not found")
+		return
+	}
+
+}
+
+func (h *Handler) DeleteReport(w http.ResponseWriter, r *http.Request) {
+	errorContainer := httperror.ErrorResponse{}
+
+	ctx := r.Context()
+
+	message := report.DeleteReportRequest{
+		ReportId: chi.URLParam(r, "report_id"),
+	}
+
+	message.ReportId = chi.URLParam(r, "report_id")
+
+	w.Header().Add("Content-Type", "application/json")
+
+	err := h.core.DeleteReport(ctx, &message) // todo add httperror
+	if err != nil {
+		errorContainer.Done(w, http.StatusNotFound, "report not found")
 		return
 	}
 

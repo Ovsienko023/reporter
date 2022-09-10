@@ -7,4 +7,5 @@ type Core interface {
 	GetReports(ctx context.Context, msg *GetReportsRequest) (*GetReportsResponse, error)
 	CreateReport(ctx context.Context, msg *CreateReportRequest) (*CreatedReportResponse, error)
 	UpdateReport(ctx context.Context, msg *UpdateReportRequest) error
+	DeleteReport(ctx context.Context, msg *DeleteReportRequest) error
 }

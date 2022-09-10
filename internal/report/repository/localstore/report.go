@@ -94,3 +94,16 @@ func (s *ReportLocalStorage) UpdateReport(ctx context.Context, msg *report.Updat
 	s.mutex.Unlock()
 	return nil
 }
+
+func (s *ReportLocalStorage) DeleteReport(ctx context.Context, msg *report.DeleteReport) error {
+	s.mutex.Lock()
+
+	if _, ok := s.reports[msg.ReportId]; ok {
+		delete(s.reports, msg.ReportId)
+	} else {
+		return errors.New("report not found") // todo
+	}
+
+	s.mutex.Unlock()
+	return nil
+}

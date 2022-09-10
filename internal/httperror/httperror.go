@@ -30,7 +30,7 @@ func (r *ErrorResponse) Add(reason, description, position string) {
 	r.Error.Details = append(r.Error.Details, details)
 }
 
-func (r *ErrorResponse) Done(w *http.ResponseWriter, code int, description string) {
+func (r *ErrorResponse) Done(w http.ResponseWriter, code int, description string) {
 	r.Error.Code = code
 	r.Error.Description = description
 	if len(r.Error.Details) == 0 {
@@ -39,5 +39,8 @@ func (r *ErrorResponse) Done(w *http.ResponseWriter, code int, description strin
 
 	response, _ := json.Marshal(r)
 
-	http.Error(*w, string(response), code)
+	w.WriteHeader(code)
+	w.Header().Add("Content-Type", "application/json")
+	w.Write([]byte(response))
+
 }
