@@ -18,7 +18,7 @@ func main() {
 		log.Fatalf("Could not read config file with error: %+v", err)
 	}
 
-	fmt.Println(*cfg)
+	fmt.Printf("Running on: %s:%s \n", cfg.Api.Host, cfg.Api.Port)
 
 	app := server.NewApp()
 	if err := app.Run(&cfg.Api); err != nil { // todo add config

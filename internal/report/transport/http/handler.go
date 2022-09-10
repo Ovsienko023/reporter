@@ -33,6 +33,8 @@ func (h *Handler) GetReport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Add("Content-Type", "application/json")
+
 	response, _ := json.Marshal(result)
 	w.Write(response)
 }
@@ -42,6 +44,8 @@ func (h *Handler) GetReports(w http.ResponseWriter, r *http.Request) {
 
 	message := report.GetReportsRequest{}
 	result, _ := h.core.GetReports(ctx, &message) // todo add httperror
+
+	w.Header().Add("Content-Type", "application/json")
 
 	response, _ := json.Marshal(result)
 	w.Write(response)
@@ -59,6 +63,8 @@ func (h *Handler) CreateReport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result, _ := h.core.CreateReport(ctx, &message)
+
+	w.Header().Add("Content-Type", "application/json")
 
 	response, _ := json.Marshal(result)
 	w.Write(response)
@@ -78,6 +84,8 @@ func (h *Handler) UpdateReport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	message.ReportId = chi.URLParam(r, "report_id")
+
+	w.Header().Add("Content-Type", "application/json")
 
 	err = h.core.UpdateReport(ctx, &message) // todo add httperror
 	if err != nil {

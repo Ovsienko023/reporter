@@ -20,7 +20,7 @@ type Config struct {
 
 const (
 	DefaultConfigPath = ""
-	DefaultHost       = ""
+	DefaultHost       = "0.0.0.0"
 	DefaultPort       = "8888"
 	DefaultConnStr    = ""
 )

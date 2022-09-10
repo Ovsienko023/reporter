@@ -35,12 +35,6 @@ func NewApp() *App {
 }
 
 func (a *App) Run(apiConfig *config.Api) error {
-	// Init gin handler
-	//router := gin.Default()
-	//router.Use(
-	//	gin.Recovery(),
-	//	gin.Logger(),
-	//)
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
