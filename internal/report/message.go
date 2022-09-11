@@ -47,11 +47,6 @@ type CreateReport struct {
 	Body      string `json:"body,omitempty"`
 }
 
-type ReportTemplate struct {
-	Variables map[string]string `json:"variables,omitempty"`
-	Markup    string            `json:"markup,omitempty"`
-}
-
 type Report struct {
 	Id        string `json:"id,omitempty"`
 	Title     string `json:"title,omitempty"`
@@ -102,4 +97,9 @@ type DeleteReportRequest struct {
 type DeleteReport struct {
 	InvokerId string `json:"invoker_id,omitempty"`
 	ReportId  string `json:"id,omitempty"`
+}
+
+type SystemUser struct {
+	UserId      *string `json:"user_id,omitempty"`
+	DisplayName *string `json:"display_name,omitempty"`
 }

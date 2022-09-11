@@ -21,7 +21,7 @@ func main() {
 	fmt.Printf("Running on: %s:%s \n", cfg.Api.Host, cfg.Api.Port)
 
 	app := server.NewApp()
-	if err := app.Run(&cfg.Api); err != nil { // todo add config
+	if err := app.Run(&cfg.Api); err != nil {
 		log.Fatalf("%s", err.Error())
 	}
 }

@@ -43,17 +43,6 @@ func (a *App) Run(apiConfig *config.Api) error {
 
 	r := reporthttp.RegisterHTTPEndpoints(router, a.recordCore)
 
-	// Set up http handlers
-	// SignUp/SignIn endpoints
-	//authhttp.RegisterHTTPEndpoints(router, a.authUC)
-
-	// API endpoints
-	//authMiddleware := authhttp.NewAuthMiddleware(a.authUC)
-	//api := router.Group("/api", authMiddleware)
-
-	//bmhttp.RegisterHTTPEndpoints(api, a.bookmarkUC)
-	//r := app.SetupRoutes(router)
-	// HTTP Server
 	a.httpServer = &http.Server{
 		Addr:           apiConfig.Host + ":" + apiConfig.Port,
 		Handler:        r,
