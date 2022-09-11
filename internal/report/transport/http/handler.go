@@ -2,8 +2,10 @@ package http
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/Ovsienko023/reporter/internal/httperror"
 	"github.com/Ovsienko023/reporter/internal/report"
+	"github.com/Ovsienko023/reporter/internal/report/core"
 	"github.com/go-chi/chi/v5"
 	"net/http"
 )
@@ -27,28 +29,34 @@ func (h *Handler) GetReport(w http.ResponseWriter, r *http.Request) {
 		ReportId: chi.URLParam(r, "report_id"),
 	}
 
-	result, err := h.core.GetReport(ctx, &message) // todo add httperror
-	if err != nil {
-		errorContainer.Done(w, http.StatusNotFound, "report not found")
-		return
-	}
+	result, err := h.core.GetReport(ctx, &message)
 
 	w.Header().Add("Content-Type", "application/json")
 
+	if err != nil {
+		switch {
+		case errors.Is(err, core.ErrReportIdNotFound):
+			errorContainer.Done(w, http.StatusNotFound, "report id not found")
+			return
+		}
+		errorContainer.Done(w, http.StatusInternalServerError, "internal error")
+		return
+	}
+
 	response, _ := json.Marshal(result)
-	w.Write(response)
+	_, _ = w.Write(response)
 }
 
 func (h *Handler) GetReports(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	message := report.GetReportsRequest{}
-	result, _ := h.core.GetReports(ctx, &message) // todo add httperror
+	result, _ := h.core.GetReports(ctx, &message)
 
 	w.Header().Add("Content-Type", "application/json")
 
 	response, _ := json.Marshal(result)
-	w.Write(response)
+	_, _ = w.Write(response)
 }
 
 func (h *Handler) CreateReport(w http.ResponseWriter, r *http.Request) {
@@ -62,12 +70,12 @@ func (h *Handler) CreateReport(w http.ResponseWriter, r *http.Request) {
 		panic(err) //todo new httperror
 	}
 
-	result, _ := h.core.CreateReport(ctx, &message)
-
 	w.Header().Add("Content-Type", "application/json")
 
+	result, _ := h.core.CreateReport(ctx, &message)
+
 	response, _ := json.Marshal(result)
-	w.Write(response)
+	_, _ = w.Write(response)
 }
 
 func (h *Handler) UpdateReport(w http.ResponseWriter, r *http.Request) {
@@ -87,9 +95,14 @@ func (h *Handler) UpdateReport(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json")
 
-	err = h.core.UpdateReport(ctx, &message) // todo add httperror
+	err = h.core.UpdateReport(ctx, &message)
 	if err != nil {
-		errorContainer.Done(w, http.StatusNotFound, "report not found")
+		switch {
+		case errors.Is(err, core.ErrReportIdNotFound):
+			errorContainer.Done(w, http.StatusNotFound, "report id not found")
+			return
+		}
+		errorContainer.Done(w, http.StatusInternalServerError, "internal error")
 		return
 	}
 
@@ -108,10 +121,14 @@ func (h *Handler) DeleteReport(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json")
 
-	err := h.core.DeleteReport(ctx, &message) // todo add httperror
+	err := h.core.DeleteReport(ctx, &message)
 	if err != nil {
-		errorContainer.Done(w, http.StatusNotFound, "report not found")
+		switch {
+		case errors.Is(err, core.ErrReportIdNotFound):
+			errorContainer.Done(w, http.StatusNotFound, "report id not found")
+			return
+		}
+		errorContainer.Done(w, http.StatusInternalServerError, "internal error")
 		return
 	}
-
 }

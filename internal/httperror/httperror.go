@@ -41,6 +41,6 @@ func (r *ErrorResponse) Done(w http.ResponseWriter, code int, description string
 
 	w.WriteHeader(code)
 	w.Header().Add("Content-Type", "application/json")
-	w.Write([]byte(response))
+	_, _ = w.Write([]byte(response))
 
 }

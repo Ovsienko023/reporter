@@ -2,7 +2,9 @@ package core
 
 import (
 	"context"
+	"errors"
 	"github.com/Ovsienko023/reporter/internal/report"
+	"github.com/Ovsienko023/reporter/internal/report/repository"
 )
 
 type Core struct {
@@ -25,6 +27,10 @@ func (c *Core) GetReport(ctx context.Context, msg *report.GetReportRequest) (*re
 
 	result, err := c.repo.GetReport(ctx, &message)
 	if err != nil {
+		switch {
+		case errors.Is(err, repository.ErrReportIdNotFound):
+			return nil, ErrReportIdNotFound
+		}
 		return nil, err
 	}
 
@@ -97,6 +103,10 @@ func (c *Core) UpdateReport(ctx context.Context, msg *report.UpdateReportRequest
 
 	err := c.repo.UpdateReport(ctx, &message)
 	if err != nil {
+		switch {
+		case errors.Is(err, repository.ErrReportIdNotFound):
+			return ErrReportIdNotFound
+		}
 		return err
 	}
 
@@ -113,6 +123,10 @@ func (c *Core) DeleteReport(ctx context.Context, msg *report.DeleteReportRequest
 
 	err := c.repo.DeleteReport(ctx, &message)
 	if err != nil {
+		switch {
+		case errors.Is(err, repository.ErrReportIdNotFound):
+			return ErrReportIdNotFound
+		}
 		return err
 	}
 

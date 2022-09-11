@@ -2,8 +2,8 @@ package localstore
 
 import (
 	"context"
-	"errors"
 	"github.com/Ovsienko023/reporter/internal/report"
+	"github.com/Ovsienko023/reporter/internal/report/repository"
 	"github.com/google/uuid"
 	"sync"
 	"time"
@@ -31,7 +31,7 @@ func (s *ReportLocalStorage) GetReport(ctx context.Context, msg *report.GetRepor
 		}
 	}
 
-	return nil, errors.New("report not found") // todo
+	return nil, repository.ErrReportIdNotFound
 }
 
 func (s *ReportLocalStorage) GetReports(ctx context.Context, msg *report.GetReports) (*report.Reports, error) {
@@ -88,7 +88,7 @@ func (s *ReportLocalStorage) UpdateReport(ctx context.Context, msg *report.Updat
 			Body:      msg.Body,
 		}
 	} else {
-		return errors.New("report not found") // todo
+		return repository.ErrReportIdNotFound
 	}
 
 	s.mutex.Unlock()
@@ -101,7 +101,7 @@ func (s *ReportLocalStorage) DeleteReport(ctx context.Context, msg *report.Delet
 	if _, ok := s.reports[msg.ReportId]; ok {
 		delete(s.reports, msg.ReportId)
 	} else {
-		return errors.New("report not found") // todo
+		return repository.ErrReportIdNotFound
 	}
 
 	s.mutex.Unlock()
