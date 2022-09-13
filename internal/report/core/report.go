@@ -53,16 +53,17 @@ func (c *Core) GetReports(ctx context.Context, msg *report.GetReportsRequest) (*
 		return nil, err
 	}
 
-	resp := report.GetReportsResponse{
-		Reports: []report.Report{},
-	}
+	reports := make([]report.Report, 0, len(result.Reports))
 
 	for _, obj := range result.Reports {
-		resp.Reports = append(resp.Reports, obj)
+		reports = append(reports, obj)
 	}
 
-	return &resp, nil
+	return &report.GetReportsResponse{
+		Reports: reports,
+	}, nil
 }
+
 func (c *Core) CreateReport(ctx context.Context, msg *report.CreateReportRequest) (*report.CreatedReportResponse, error) {
 	systemUser := c.repo.GetSystemUser()
 
