@@ -1,4 +1,4 @@
-package config
+package configuration
 
 import (
 	"github.com/ilyakaznacheev/cleanenv"

@@ -1,13 +1,12 @@
 package http
 
 import (
-	"github.com/Ovsienko023/reporter/internal/report"
-
+	"github.com/Ovsienko023/reporter/app/core"
 	"github.com/go-chi/chi/v5"
 	"net/http"
 )
 
-func RegisterHTTPEndpoints(router chi.Router, c report.Core) http.Handler {
+func RegisterHTTPEndpoints(router chi.Router, c core.Core) http.Handler {
 	h := NewHandler(c)
 
 	router.Get("/api/v1/reports", h.GetReports)
