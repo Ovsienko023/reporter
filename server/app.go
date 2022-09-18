@@ -2,17 +2,16 @@ package server
 
 import (
 	"context"
-	"github.com/Ovsienko023/reporter/internal/report"
-	"github.com/Ovsienko023/reporter/internal/report/core"
-	"github.com/Ovsienko023/reporter/pkg/config"
+	"github.com/Ovsienko023/reporter/app/core"
+	reporthttp "github.com/Ovsienko023/reporter/app/transport/http"
+	"github.com/Ovsienko023/reporter/infrastructure/configuration"
+	"github.com/Ovsienko023/reporter/infrastructure/database"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
-	"github.com/Ovsienko023/reporter/internal/report/repository/localstore"
-	reporthttp "github.com/Ovsienko023/reporter/internal/report/transport/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -20,28 +19,27 @@ import (
 type App struct {
 	httpServer *http.Server
 
-	recordCore report.Core
+	recordCore *core.Core
 }
 
-func NewApp() *App {
-	//db := initDB()
-	recordRepo := localstore.NewReportLocalStorage()
+func NewApp(cnf *configuration.Config) *App {
+	_, _ = database.NewClient(&cnf.Db.ConnStr)
+	recordRepo := database.NewReportLocalStorage()
 	recordCore := core.NewCore(recordRepo)
-	//bookmarkRepo := bmmongo.NewBookmarkRepository(db, viper.GetString("mongo.bookmark_collection"))
 
 	return &App{
 		recordCore: recordCore,
 	}
 }
 
-func (a *App) Run(apiConfig *config.Api) error {
+func (a *App) Run(apiConfig *configuration.Api) error {
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 
-	r := reporthttp.RegisterHTTPEndpoints(router, a.recordCore)
+	r := reporthttp.RegisterHTTPEndpoints(router, *a.recordCore)
 
 	a.httpServer = &http.Server{
 		Addr:           apiConfig.Host + ":" + apiConfig.Port,
