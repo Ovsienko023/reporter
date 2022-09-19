@@ -23,7 +23,7 @@ type App struct {
 }
 
 func NewApp(cnf *configuration.Config) *App {
-	_, _ = database.NewClient(&cnf.Db.ConnStr)
+	_, _ = database.New(&cnf.Db)
 	recordRepo := database.NewReportLocalStorage()
 	recordCore := core.NewCore(recordRepo)
 
