@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+func (c *Client) CreateReport(ctx context.Context, msg *CreateReport) (*CreatedReport, error) {
+	return nil, nil
+}
+
 func (s *ReportLocalStorage) CreateReport(ctx context.Context, msg *CreateReport) (*CreatedReport, error) {
 	s.mutex.Lock()
 
