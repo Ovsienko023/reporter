@@ -18,6 +18,7 @@ func (s *ReportLocalStorage) CreateReport(ctx context.Context, msg *CreateReport
 	s.reports[id] = &Report{
 		Id:        &id,
 		Title:     &msg.Title,
+		Date:      &msg.Date,
 		CreatorId: &msg.InvokerId,
 		CreatedAt: &createdAt,
 		StartTime: &msg.StartTime,
@@ -37,6 +38,7 @@ func (s *ReportLocalStorage) CreateReport(ctx context.Context, msg *CreateReport
 
 type CreateReport struct {
 	InvokerId string `json:"invoker_id,omitempty"`
+	Date      int    `json:"date,omitempty"`
 	Title     string `json:"title,omitempty"`
 	StartTime int    `json:"start_time,omitempty"`
 	EndTime   int    `json:"end_time,omitempty"`

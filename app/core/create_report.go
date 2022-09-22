@@ -12,6 +12,7 @@ func (c *Core) CreateReport(ctx context.Context, msg *domain.CreateReportRequest
 	message := database.CreateReport{
 		InvokerId: *systemUser.UserId,
 		Title:     msg.Title,
+		Date:      msg.Date,
 		StartTime: msg.StartTime,
 		EndTime:   msg.EndTime,
 		BreakTime: msg.BreakTime,

@@ -28,6 +28,7 @@ func (c *Core) GetReport(ctx context.Context, msg *domain.GetReportRequest) (*do
 		Report: &domain.Report{
 			Id:        result.Id,
 			Title:     result.Title,
+			Date:      result.Date,
 			CreatorId: result.CreatorId,
 			CreatedAt: result.CreatedAt,
 			UpdatedAt: result.UpdatedAt,

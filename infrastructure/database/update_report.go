@@ -13,6 +13,7 @@ func (s *ReportLocalStorage) UpdateReport(ctx context.Context, msg *UpdateReport
 		s.reports[msg.ReportId] = &Report{
 			Id:        &msg.ReportId,
 			Title:     msg.Title,
+			Date:      msg.Date,
 			CreatorId: &msg.InvokerId,
 			CreatedAt: &createdAt,
 			StartTime: msg.StartTime,
@@ -33,6 +34,7 @@ type UpdateReport struct {
 	InvokerId string  `json:"invoker_id,omitempty"`
 	ReportId  string  `json:"id,omitempty"`
 	Title     *string `json:"title,omitempty"`
+	Date      *int    `json:"date,omitempty"`
 	StartTime *int    `json:"start_time,omitempty"`
 	EndTime   *int    `json:"end_time,omitempty"`
 	BreakTime *int    `json:"break_time,omitempty"`

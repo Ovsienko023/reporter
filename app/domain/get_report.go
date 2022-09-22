@@ -7,6 +7,7 @@ type GetReportResponse struct {
 type Report struct {
 	Id        *string `json:"id,omitempty"`
 	Title     *string `json:"title,omitempty"`
+	Date      *int    `json:"date,omitempty"`
 	CreatorId *string `json:"creator_id,omitempty"`
 	CreatedAt *int    `json:"created_at,omitempty"`
 	UpdatedAt *int    `json:"updated_at,omitempty"`

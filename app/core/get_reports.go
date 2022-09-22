@@ -2,11 +2,11 @@ package core
 
 import (
 	"context"
-	domain2 "github.com/Ovsienko023/reporter/app/domain"
+	"github.com/Ovsienko023/reporter/app/domain"
 	"github.com/Ovsienko023/reporter/infrastructure/database"
 )
 
-func (c *Core) GetReports(ctx context.Context, msg *domain2.GetReportsRequest) (*domain2.GetReportsResponse, error) {
+func (c *Core) GetReports(ctx context.Context, msg *domain.GetReportsRequest) (*domain.GetReportsResponse, error) {
 	systemUser := c.repo.GetSystemUser()
 
 	message := database.GetReports{
@@ -18,12 +18,13 @@ func (c *Core) GetReports(ctx context.Context, msg *domain2.GetReportsRequest) (
 		return nil, err
 	}
 
-	reports := make([]domain2.Report, 0, len(result.Reports))
+	reports := make([]domain.Report, 0, len(result.Reports))
 
 	for _, obj := range result.Reports {
-		item := domain2.Report{
+		item := domain.Report{
 			Id:        obj.Id,
 			Title:     obj.Title,
+			Date:      obj.Date,
 			CreatorId: obj.CreatorId,
 			CreatedAt: obj.CreatedAt,
 			UpdatedAt: obj.UpdatedAt,
@@ -37,7 +38,7 @@ func (c *Core) GetReports(ctx context.Context, msg *domain2.GetReportsRequest) (
 		reports = append(reports, item)
 	}
 
-	return &domain2.GetReportsResponse{
+	return &domain.GetReportsResponse{
 		Count:   cnt,
 		Reports: reports,
 	}, nil
