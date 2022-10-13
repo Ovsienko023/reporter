@@ -2,42 +2,66 @@ package database
 
 import (
 	"context"
+	"errors"
 	"time"
 )
 
-func (s *ReportLocalStorage) UpdateReport(ctx context.Context, msg *UpdateReport) error {
-	s.mutex.Lock()
+const sqlUpdateReport = `
+	update main.reports
+    set title = $2, 
+        date = $3, 
+        start_time = $4, 
+        end_time = $5, 
+        break_time = $6, 
+        work_time = $7, 
+        body = $8, 
+        updated_at = now()
+    where id = $1
+    returning 1;`
 
-	if _, ok := s.reports[msg.ReportId]; ok {
-		createdAt := int(time.Now().Unix())
-		s.reports[msg.ReportId] = &Report{
-			Id:        &msg.ReportId,
-			Title:     msg.Title,
-			Date:      msg.Date,
-			CreatorId: &msg.InvokerId,
-			CreatedAt: &createdAt,
-			StartTime: msg.StartTime,
-			EndTime:   msg.EndTime,
-			BreakTime: msg.BreakTime,
-			WorkTime:  msg.WorkTime,
-			Body:      msg.Body,
-		}
-	} else {
+func (c *Client) UpdateReport(ctx context.Context, msg *UpdateReport) error {
+	_, err := c.GetReport(ctx, &GetReport{ReportId: msg.ReportId})
+	if errors.Is(err, ErrReportIdNotFound) {
 		return ErrReportIdNotFound
 	}
 
-	s.mutex.Unlock()
+	row, err := c.driver.Query(ctx, sqlUpdateReport,
+		msg.ReportId,
+		msg.Title,
+		msg.Date,
+		msg.StartTime,
+		msg.EndTime,
+		msg.BreakTime,
+		msg.WorkTime,
+		msg.Body,
+	)
+	if err != nil {
+		return NewInternalError(err)
+	}
+
+	var updated *int
+
+	row.Next()
+	err = row.Scan(&updated)
+	if err != nil {
+		return NewInternalError(err)
+	}
+
+	if updated == nil {
+		return ErrReportUpdated
+	}
+
 	return nil
 }
 
 type UpdateReport struct {
-	InvokerId string  `json:"invoker_id,omitempty"`
-	ReportId  string  `json:"id,omitempty"`
-	Title     *string `json:"title,omitempty"`
-	Date      *int    `json:"date,omitempty"`
-	StartTime *int    `json:"start_time,omitempty"`
-	EndTime   *int    `json:"end_time,omitempty"`
-	BreakTime *int    `json:"break_time,omitempty"`
-	WorkTime  *int    `json:"work_time,omitempty"`
-	Body      *string `json:"body,omitempty"`
+	InvokerId string    `json:"invoker_id,omitempty"`
+	ReportId  string    `json:"id,omitempty"`
+	Title     string    `json:"title,omitempty"`
+	Date      time.Time `json:"date,omitempty"`
+	StartTime time.Time `json:"start_time,omitempty"`
+	EndTime   time.Time `json:"end_time,omitempty"`
+	BreakTime time.Time `json:"break_time,omitempty"`
+	WorkTime  time.Time `json:"work_time,omitempty"`
+	Body      string    `json:"body,omitempty"`
 }

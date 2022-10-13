@@ -3,40 +3,48 @@ package core
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/Ovsienko023/reporter/app/domain"
-	database2 "github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/infrastructure/utils/ptr"
 )
 
 func (c *Core) GetReport(ctx context.Context, msg *domain.GetReportRequest) (*domain.GetReportResponse, error) {
-	systemUser := c.repo.GetSystemUser()
+	systemUser := c.db.GetSystemUser()
 
-	message := database2.GetReport{
+	message := database.GetReport{
 		InvokerId: *systemUser.UserId,
 		ReportId:  msg.ReportId,
 	} // domain.GetReportRequest to database.GetReport
 
-	result, err := c.repo.GetReport(ctx, &message)
+	result, err := c.db.GetReport(ctx, &message)
 	if err != nil {
 		switch {
-		case errors.Is(err, database2.ErrReportIdNotFound):
+		case errors.Is(err, database.ErrReportIdNotFound):
 			return nil, ErrReportIdNotFound
 		}
-		return nil, err
+		fmt.Println("LOG: ", err) // todo add logger
+		return nil, ErrInternal
+	}
+
+	var deletedAt *int64
+	if result.DeletedAt != nil {
+		deletedAt = ptr.Int64(result.DeletedAt.Unix())
 	}
 
 	resp := domain.GetReportResponse{
 		Report: &domain.Report{
 			Id:        result.Id,
 			Title:     result.Title,
-			Date:      result.Date,
+			Date:      ptr.Int64(result.Date.Unix()),
 			CreatorId: result.CreatorId,
-			CreatedAt: result.CreatedAt,
-			UpdatedAt: result.UpdatedAt,
-			DeletedAt: result.DeletedAt,
-			StartTime: result.StartTime,
-			EndTime:   result.EndTime,
-			BreakTime: result.BreakTime,
-			WorkTime:  result.WorkTime,
+			CreatedAt: ptr.Int64(result.CreatedAt.Unix()),
+			UpdatedAt: ptr.Int64(result.UpdatedAt.Unix()),
+			DeletedAt: deletedAt,
+			StartTime: ptr.Int64(result.StartTime.Unix()),
+			EndTime:   ptr.Int64(result.EndTime.Unix()),
+			BreakTime: ptr.Int64(result.BreakTime.Unix()),
+			WorkTime:  ptr.Int64(result.WorkTime.Unix()),
 			Body:      result.Body,
 		},
 	}

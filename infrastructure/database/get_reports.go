@@ -2,28 +2,73 @@ package database
 
 import (
 	"context"
+	"github.com/Ovsienko023/reporter/infrastructure/utils/ptr"
+	"time"
 )
 
-func (s *ReportLocalStorage) GetReports(ctx context.Context, msg *GetReports) (*Reports, *int, error) {
-	var reports Reports
+const sqlGetReports = `
+	select id,
+	       title,
+		   date,
+		   start_time,
+		   end_time,
+		   break_time,
+		   work_time,
+		   body,
+		   creator_id,
+		   created_at,
+		   updated_at,
+		   deleted_at
+    from main.reports`
 
-	s.mutex.Lock()
-	for _, val := range s.reports {
-		if msg.InvokerId == *val.CreatorId {
-			reports.Reports = append(reports.Reports, *val)
-		}
+func (c *Client) GetReports(ctx context.Context, msg *GetReports) ([]ReportItem, *int, error) {
+	row, err := c.driver.Query(ctx, sqlGetReports)
+	if err != nil {
+		return nil, nil, NewInternalError(err)
 	}
-	s.mutex.Unlock()
 
-	count := len(reports.Reports)
+	reports := make([]ReportItem, 0, 0)
 
-	return &reports, &count, nil
+	for row.Next() {
+		report := ReportItem{}
+		err := row.Scan(
+			&report.Id,
+			&report.Title,
+			&report.Date,
+			&report.StartTime,
+			&report.EndTime,
+			&report.BreakTime,
+			&report.WorkTime,
+			&report.Body,
+			&report.CreatorId,
+			&report.CreatedAt,
+			&report.UpdatedAt,
+			&report.DeletedAt,
+		)
+		if err != nil {
+			return nil, nil, NewInternalError(err)
+		}
+		reports = append(reports, report)
+	}
+
+	return reports, ptr.Int(len(reports)), nil
 }
 
 type GetReports struct {
 	InvokerId string `json:"invoker_id,omitempty"`
 }
 
-type Reports struct {
-	Reports []Report `json:"reports,omitempty"`
+type ReportItem struct {
+	Id        *string    `json:"id,omitempty"`
+	Title     *string    `json:"title,omitempty"`
+	Date      *time.Time `json:"date,omitempty"`
+	StartTime *time.Time `json:"start_time,omitempty"`
+	EndTime   *time.Time `json:"end_time,omitempty"`
+	BreakTime *time.Time `json:"break_time,omitempty"`
+	WorkTime  *time.Time `json:"work_time,omitempty"`
+	Body      *string    `json:"body,omitempty"`
+	CreatorId *string    `json:"creator_id,omitempty"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 }
