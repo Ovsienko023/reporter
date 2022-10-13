@@ -5,11 +5,11 @@ import (
 )
 
 type Core struct {
-	repo database.InterfaceDatabase
+	db database.InterfaceDatabase
 }
 
 func NewCore(db database.InterfaceDatabase) *Core {
 	return &Core{
-		repo: db,
+		db: db,
 	}
 }

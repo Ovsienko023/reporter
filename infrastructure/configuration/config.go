@@ -22,7 +22,7 @@ const (
 	DefaultConfigPath = ""
 	DefaultHost       = "0.0.0.0"
 	DefaultPort       = "8888"
-	DefaultConnStr    = ""
+	DefaultConnStr    = "postgresql://postgres:1234@localhost:5432/postgres"
 )
 
 func NewConfig() (*Config, error) {

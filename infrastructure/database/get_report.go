@@ -2,19 +2,58 @@ package database
 
 import (
 	"context"
+	"time"
 )
 
-func (s *ReportLocalStorage) GetReport(ctx context.Context, msg *GetReport) (*Report, error) {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
+const sqlGetReport = `
+	select id,
+	       title,
+		   date,
+		   start_time,
+		   end_time,
+		   break_time,
+		   work_time,
+		   body,
+		   creator_id,
+		   created_at,
+		   updated_at,
+		   deleted_at 
+    from main.reports
+    where id = $1` // todo del deleted_at
 
-	if record, ok := s.reports[msg.ReportId]; ok {
-		if msg.InvokerId == *record.CreatorId {
-			return record, nil
+func (c *Client) GetReport(ctx context.Context, msg *GetReport) (*Report, error) {
+	row, err := c.driver.Query(ctx, sqlGetReport, msg.ReportId)
+	if err != nil {
+		return nil, NewInternalError(err)
+	}
+
+	report := &Report{}
+
+	for row.Next() {
+		err := row.Scan(
+			&report.Id,
+			&report.Title,
+			&report.Date,
+			&report.StartTime,
+			&report.EndTime,
+			&report.BreakTime,
+			&report.WorkTime,
+			&report.Body,
+			&report.CreatorId,
+			&report.CreatedAt,
+			&report.UpdatedAt,
+			&report.DeletedAt,
+		)
+		if err != nil {
+			return nil, NewInternalError(err)
 		}
 	}
 
-	return nil, ErrReportIdNotFound
+	if report.Id == nil {
+		return nil, ErrReportIdNotFound
+	}
+
+	return report, nil
 }
 
 type GetReport struct {
@@ -23,16 +62,16 @@ type GetReport struct {
 }
 
 type Report struct {
-	Id        *string `json:"id,omitempty"`
-	Title     *string `json:"title,omitempty"`
-	Date      *int    `json:"date,omitempty"`
-	CreatorId *string `json:"creator_id,omitempty"`
-	CreatedAt *int    `json:"created_at,omitempty"`
-	UpdatedAt *int    `json:"updated_at,omitempty"`
-	DeletedAt *int    `json:"deleted_at,omitempty"`
-	StartTime *int    `json:"start_time,omitempty"`
-	EndTime   *int    `json:"end_time,omitempty"`
-	BreakTime *int    `json:"break_time,omitempty"`
-	WorkTime  *int    `json:"work_time,omitempty"`
-	Body      *string `json:"body,omitempty"`
+	Id        *string    `json:"id,omitempty"`
+	Title     *string    `json:"title,omitempty"`
+	Date      *time.Time `json:"date,omitempty"`
+	StartTime *time.Time `json:"start_time,omitempty"`
+	EndTime   *time.Time `json:"end_time,omitempty"`
+	BreakTime *time.Time `json:"break_time,omitempty"`
+	WorkTime  *time.Time `json:"work_time,omitempty"`
+	Body      *string    `json:"body,omitempty"`
+	CreatorId *string    `json:"creator_id,omitempty"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 }

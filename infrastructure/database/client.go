@@ -13,6 +13,7 @@ type Client struct {
 
 type Driver interface {
 	Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error)
+	Begin(ctx context.Context) (pgx.Tx, error)
 	Close()
 }
 

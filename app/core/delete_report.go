@@ -8,14 +8,14 @@ import (
 )
 
 func (c *Core) DeleteReport(ctx context.Context, msg *domain.DeleteReportRequest) error {
-	systemUser := c.repo.GetSystemUser()
+	systemUser := c.db.GetSystemUser()
 
 	message := database2.DeleteReport{
 		InvokerId: *systemUser.UserId,
 		ReportId:  msg.ReportId,
 	}
 
-	err := c.repo.DeleteReport(ctx, &message)
+	err := c.db.DeleteReport(ctx, &message)
 	if err != nil {
 		switch {
 		case errors.Is(err, database2.ErrReportIdNotFound):

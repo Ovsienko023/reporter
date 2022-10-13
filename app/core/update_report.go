@@ -4,27 +4,29 @@ import (
 	"context"
 	"errors"
 	"github.com/Ovsienko023/reporter/app/domain"
-	database2 "github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"time"
 )
 
 func (c *Core) UpdateReport(ctx context.Context, msg *domain.UpdateReportRequest) error {
-	systemUser := c.repo.GetSystemUser()
+	systemUser := c.db.GetSystemUser()
 
-	message := database2.UpdateReport{
+	message := database.UpdateReport{
 		InvokerId: *systemUser.UserId,
 		ReportId:  msg.ReportId,
 		Title:     msg.Title,
-		StartTime: msg.StartTime,
-		EndTime:   msg.EndTime,
-		BreakTime: msg.BreakTime,
-		WorkTime:  msg.WorkTime,
+		Date:      time.Unix(msg.Date, 0),
+		StartTime: time.Unix(msg.StartTime, 0),
+		EndTime:   time.Unix(msg.EndTime, 0),
+		BreakTime: time.Unix(msg.BreakTime, 0),
+		WorkTime:  time.Unix(msg.WorkTime, 0),
 		Body:      msg.Body,
 	}
 
-	err := c.repo.UpdateReport(ctx, &message)
+	err := c.db.UpdateReport(ctx, &message)
 	if err != nil {
 		switch {
-		case errors.Is(err, database2.ErrReportIdNotFound):
+		case errors.Is(err, database.ErrReportIdNotFound):
 			return ErrReportIdNotFound
 		}
 		return err

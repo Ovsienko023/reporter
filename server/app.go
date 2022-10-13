@@ -23,9 +23,9 @@ type App struct {
 }
 
 func NewApp(cnf *configuration.Config) *App {
-	_, _ = database.New(&cnf.Db)
-	recordRepo := database.NewReportLocalStorage()
-	recordCore := core.NewCore(recordRepo)
+	client, _ := database.New(&cnf.Db)
+	_ = database.NewReportLocalStorage()
+	recordCore := core.NewCore(client)
 
 	return &App{
 		recordCore: recordCore,

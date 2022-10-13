@@ -4,35 +4,40 @@ import (
 	"context"
 	"github.com/Ovsienko023/reporter/app/domain"
 	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/infrastructure/utils/ptr"
 )
 
 func (c *Core) GetReports(ctx context.Context, msg *domain.GetReportsRequest) (*domain.GetReportsResponse, error) {
-	systemUser := c.repo.GetSystemUser()
+	systemUser := c.db.GetSystemUser()
 
 	message := database.GetReports{
 		InvokerId: *systemUser.UserId,
 	}
 
-	result, cnt, err := c.repo.GetReports(ctx, &message)
+	result, cnt, err := c.db.GetReports(ctx, &message)
 	if err != nil {
 		return nil, err
 	}
 
-	reports := make([]domain.Report, 0, len(result.Reports))
+	reports := make([]domain.ReportItem, 0, len(result))
 
-	for _, obj := range result.Reports {
-		item := domain.Report{
+	for _, obj := range result {
+		var deletedAt *int64
+		if obj.DeletedAt != nil {
+			deletedAt = ptr.Int64(obj.DeletedAt.Unix())
+		}
+		item := domain.ReportItem{
 			Id:        obj.Id,
 			Title:     obj.Title,
-			Date:      obj.Date,
+			Date:      ptr.Int64(obj.Date.Unix()),
 			CreatorId: obj.CreatorId,
-			CreatedAt: obj.CreatedAt,
-			UpdatedAt: obj.UpdatedAt,
-			DeletedAt: obj.DeletedAt,
-			StartTime: obj.StartTime,
-			EndTime:   obj.EndTime,
-			BreakTime: obj.BreakTime,
-			WorkTime:  obj.WorkTime,
+			CreatedAt: ptr.Int64(obj.CreatedAt.Unix()),
+			UpdatedAt: ptr.Int64(obj.UpdatedAt.Unix()),
+			DeletedAt: deletedAt,
+			StartTime: ptr.Int64(obj.StartTime.Unix()),
+			EndTime:   ptr.Int64(obj.EndTime.Unix()),
+			BreakTime: ptr.Int64(obj.BreakTime.Unix()),
+			WorkTime:  ptr.Int64(obj.WorkTime.Unix()),
 			Body:      obj.Body,
 		}
 		reports = append(reports, item)
