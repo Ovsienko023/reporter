@@ -30,3 +30,9 @@ create table if not exists main.reports
     updated_at     timestamptz not null   default now(),
     deleted_at     timestamptz
 );
+
+create table if not exists main.reports_to_users
+(
+    report_id uuid not null references main.reports (id),
+    user_id   uuid not null references main.users (id)
+);

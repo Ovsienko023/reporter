@@ -59,19 +59,25 @@ func (h *Handler) GetReports(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) CreateReport(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	errorContainer := ErrorResponse{}
+	w.Header().Add("Content-Type", "application/json")
+
+	invokerId, err := authorize(r.Header.Get("Authorization"))
+	if err != nil {
+		errorContainer.Done(w, http.StatusUnauthorized, err.Error())
+		return
+	}
 
 	decoder := json.NewDecoder(r.Body)
 	var message domain.CreateReportRequest
 
-	err := decoder.Decode(&message)
+	err = decoder.Decode(&message)
 	if err != nil {
 		panic(err) //todo new httperror
 	}
 
-	w.Header().Add("Content-Type", "application/json")
-
-	result, _ := h.core.CreateReport(ctx, &message)
+	message.InvokerId = invokerId
+	result, _ := h.core.CreateReport(r.Context(), &message)
 
 	response, _ := json.Marshal(result)
 	_, _ = w.Write(response)
