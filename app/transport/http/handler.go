@@ -131,3 +131,32 @@ func (h *Handler) DeleteReport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (h *Handler) GetToken(w http.ResponseWriter, r *http.Request) {
+	errorContainer := ErrorResponse{}
+
+	ctx := r.Context()
+
+	decoder := json.NewDecoder(r.Body)
+	var message domain.GetTokenRequest
+
+	err := decoder.Decode(&message)
+	if err != nil {
+		panic(err) //todo new httperror
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+
+	result, err := h.core.GetToken(ctx, &message)
+	if err != nil {
+		switch {
+		case errors.Is(err, core.ErrCredentials):
+			errorContainer.Done(w, http.StatusForbidden, "permission denied")
+			return
+		}
+		errorContainer.Done(w, http.StatusInternalServerError, "internal error")
+		return
+	}
+	response, _ := json.Marshal(result)
+	_, _ = w.Write(response)
+}

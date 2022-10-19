@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"github.com/Ovsienko023/reporter/app/core"
-	reporthttp "github.com/Ovsienko023/reporter/app/transport/http"
+	transportHttp "github.com/Ovsienko023/reporter/app/transport/http"
 	"github.com/Ovsienko023/reporter/infrastructure/configuration"
 	"github.com/Ovsienko023/reporter/infrastructure/database"
 	"log"
@@ -35,11 +35,12 @@ func NewApp(cnf *configuration.Config) *App {
 func (a *App) Run(apiConfig *configuration.Api) error {
 	router := chi.NewRouter()
 
+	router.Use(transportHttp.Authorization)
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 
-	r := reporthttp.RegisterHTTPEndpoints(router, *a.recordCore)
+	r := transportHttp.RegisterHTTPEndpoints(router, *a.recordCore)
 
 	a.httpServer = &http.Server{
 		Addr:           apiConfig.Host + ":" + apiConfig.Port,

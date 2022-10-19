@@ -9,6 +9,8 @@ import (
 func RegisterHTTPEndpoints(router chi.Router, c core.Core) http.Handler {
 	h := NewHandler(c)
 
+	router.Post("/api/v1/login", h.GetToken)
+
 	router.Get("/api/v1/reports", h.GetReports)
 	router.Get("/api/v1/reports/{report_id}", h.GetReport)
 	router.Post("/api/v1/reports", h.CreateReport)
