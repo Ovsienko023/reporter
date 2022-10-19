@@ -12,7 +12,8 @@ create table if not exists main.users
     deleted_at     timestamptz
 );
 
-insert into main.users (display_name, login, hash) values ('Admin', 'admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918');
+insert into main.users (display_name, login, hash) values ('Babibtsev', 'babibtsev', 'dp');
+insert into main.users (display_name, login, hash) values ('Ovsienko', 'ovsienko', 'dp');
 
 create table if not exists main.reports
 (
