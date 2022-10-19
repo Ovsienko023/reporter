@@ -14,7 +14,7 @@ func Authorization(next http.Handler) http.Handler {
 
 			token := r.Header.Get("Authorization")
 			if token == "" {
-				// add todo
+				return
 			}
 
 			token = strings.Replace(token, "Bearer ", "", 1)

@@ -5,6 +5,7 @@ type CreateReportResponse struct {
 }
 
 type CreateReportRequest struct {
+	InvokerId string `json:"invoker_id,omitempty"`
 	Title     string `json:"title,omitempty"`
 	Date      int64  `json:"date,omitempty"`
 	StartTime int64  `json:"start_time,omitempty"`

@@ -8,10 +8,8 @@ import (
 )
 
 func (c *Core) CreateReport(ctx context.Context, msg *domain.CreateReportRequest) (*domain.CreateReportResponse, error) {
-	systemUser := c.db.GetSystemUser()
-
 	message := database.CreateReport{
-		InvokerId: *systemUser.UserId,
+		InvokerId: msg.InvokerId,
 		Title:     msg.Title,
 		Date:      time.Unix(msg.Date, 0).UTC(),
 		StartTime: time.Unix(msg.StartTime, 0).UTC(),
@@ -20,6 +18,7 @@ func (c *Core) CreateReport(ctx context.Context, msg *domain.CreateReportRequest
 		WorkTime:  time.Unix(msg.WorkTime, 0).UTC(),
 		Body:      msg.Body,
 	}
+
 	result, err := c.db.CreateReport(ctx, &message)
 	if err != nil {
 		return nil, err

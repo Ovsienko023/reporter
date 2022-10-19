@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"github.com/jackc/pgx/v4"
 	"time"
 )
 
@@ -13,8 +14,16 @@ const sqlCreateReport = `
     RETURNING id
 `
 
+const sqlAddReportToUser = `
+    INSERT INTO main.reports_to_users
+        (report_id, user_id)
+    VALUES
+    ($1, $2)
+`
+
 func (c *Client) CreateReport(ctx context.Context, msg *CreateReport) (*CreatedReport, error) {
-	row, err := c.driver.Query(ctx, sqlCreateReport,
+	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})
+	row, err := transaction.Query(ctx, sqlCreateReport,
 		msg.Title,
 		msg.Date,
 		msg.StartTime,
@@ -39,6 +48,22 @@ func (c *Client) CreateReport(ctx context.Context, msg *CreateReport) (*CreatedR
 		}
 	}
 
+	rowAdded, err := transaction.Query(ctx, sqlAddReportToUser,
+		report.Id,
+		msg.InvokerId,
+	)
+	if err != nil {
+		return nil, NewInternalError(err)
+	}
+
+	rowAdded.Next()
+	status := rowAdded.CommandTag()
+
+	if status != nil && !status.Insert() {
+		return nil, NewInternalError(err)
+	}
+
+	_ = transaction.Commit(ctx)
 	return report, nil
 }
 
