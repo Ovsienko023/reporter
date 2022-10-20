@@ -1,6 +1,7 @@
 package domain
 
 type UpdateReportRequest struct {
+	InvokerId string `json:"invoker_id,omitempty"`
 	ReportId  string `json:"id,omitempty"`
 	Title     string `json:"title,omitempty"`
 	Date      int64  `json:"date,omitempty"`

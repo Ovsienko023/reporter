@@ -9,10 +9,8 @@ import (
 )
 
 func (c *Core) UpdateReport(ctx context.Context, msg *domain.UpdateReportRequest) error {
-	systemUser := c.db.GetSystemUser()
-
 	message := database.UpdateReport{
-		InvokerId: *systemUser.UserId,
+		InvokerId: msg.InvokerId,
 		ReportId:  msg.ReportId,
 		Title:     msg.Title,
 		Date:      time.Unix(msg.Date, 0),

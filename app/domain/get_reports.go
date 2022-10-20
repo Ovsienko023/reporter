@@ -1,6 +1,8 @@
 package domain
 
-type GetReportsRequest struct{}
+type GetReportsRequest struct {
+	InvokerId string `json:"invoker_id,omitempty"`
+}
 
 type GetReportsResponse struct {
 	Count   *int         `json:"count,omitempty"`

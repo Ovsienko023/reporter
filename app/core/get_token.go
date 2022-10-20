@@ -11,11 +11,8 @@ import (
 )
 
 func (c *Core) GetToken(ctx context.Context, msg *domain.GetTokenRequest) (*domain.GetTokenResponse, error) {
-	systemUser := c.db.GetSystemUser()
-
 	message := database.GetAuthUser{
-		InvokerId: *systemUser.UserId,
-		Login:     msg.Login,
+		Login: msg.Login,
 	}
 
 	auth, err := c.db.GetAuthUser(ctx, &message)
@@ -34,7 +31,7 @@ func (c *Core) GetToken(ctx context.Context, msg *domain.GetTokenRequest) (*doma
 	mySigningKey := []byte("SecretKey")
 
 	claims := &jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(10 * time.Minute).Unix(), // todo check time.Now + delta
+		ExpiresAt: time.Now().Add(100 * time.Minute).Unix(),
 		Issuer:    *auth.UserId,
 	}
 

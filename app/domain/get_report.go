@@ -11,7 +11,6 @@ type Report struct {
 	CreatorId *string `json:"creator_id,omitempty"`
 	CreatedAt *int64  `json:"created_at,omitempty"`
 	UpdatedAt *int64  `json:"updated_at,omitempty"`
-	DeletedAt *int64  `json:"deleted_at,omitempty"`
 	StartTime *int64  `json:"start_time,omitempty"`
 	EndTime   *int64  `json:"end_time,omitempty"`
 	BreakTime *int64  `json:"break_time,omitempty"`
@@ -20,5 +19,6 @@ type Report struct {
 }
 
 type GetReportRequest struct {
-	ReportId string `json:"report_id,omitempty"`
+	InvokerId string `json:"invoker_id,omitempty"`
+	ReportId  string `json:"report_id,omitempty"`
 }

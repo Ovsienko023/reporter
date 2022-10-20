@@ -37,8 +37,7 @@ func (c *Client) GetAuthUser(ctx context.Context, msg *GetAuthUser) (*Auth, erro
 }
 
 type GetAuthUser struct {
-	InvokerId string `json:"invoker_id,omitempty"`
-	Login     string `json:"login,omitempty"`
+	Login string `json:"login,omitempty"`
 }
 
 type Auth struct {

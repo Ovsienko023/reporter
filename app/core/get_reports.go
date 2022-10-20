@@ -8,10 +8,8 @@ import (
 )
 
 func (c *Core) GetReports(ctx context.Context, msg *domain.GetReportsRequest) (*domain.GetReportsResponse, error) {
-	systemUser := c.db.GetSystemUser()
-
 	message := database.GetReports{
-		InvokerId: *systemUser.UserId,
+		InvokerId: msg.InvokerId,
 	}
 
 	result, cnt, err := c.db.GetReports(ctx, &message)

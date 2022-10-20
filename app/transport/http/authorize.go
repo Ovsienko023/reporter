@@ -29,8 +29,6 @@ func authorize(token string) (string, error) {
 	}
 
 	if claims, ok := data.Claims.(jwt.MapClaims); ok && data.Valid {
-		fmt.Println(claims["exp"], claims["grant_type"], claims["user_id"])
-
 		return claims["iss"].(string), nil
 	} else {
 		//errorContainer.Done(w, http.StatusUnauthorized, err.Error()) // todo check error

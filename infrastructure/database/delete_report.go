@@ -3,50 +3,62 @@ package database
 import (
 	"context"
 	"errors"
+	"github.com/jackc/pgx/v4"
 )
 
 const sqlDeleteReport = `
-	update main.reports
-    set deleted_at = now()
-    where id = $1
-    returning 1;`
+	delete from main.reports
+    where id = $1 and exists(select 1 
+							 from main.reports
+							 inner join main.reports_to_users rtu on reports.id = rtu.report_id
+							 where rtu.user_id = $2)`
+
+const sqlRemoveReportFromUser = `
+    delete from main.reports_to_users 
+    where report_id = $1 and user_id = $2`
 
 func (c *Client) DeleteReport(ctx context.Context, msg *DeleteReport) error {
-	err := c.isFindReport(ctx, msg.ReportId)
+	err := c.isFindReport(ctx, msg.InvokerId, msg.ReportId)
 	if errors.Is(err, ErrReportIdNotFound) {
 		return ErrReportIdNotFound
 	}
-	//_, err := c.GetReport(ctx, &GetReport{ReportId: msg.ReportId})
-	//if errors.Is(err, ErrReportIdNotFound) {
-	//	return ErrReportIdNotFound
-	//}
 
-	row, err := c.driver.Query(ctx, sqlDeleteReport, msg.ReportId)
+	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})
+	rowRemove, err := transaction.Query(ctx, sqlRemoveReportFromUser,
+		msg.ReportId,
+		msg.InvokerId,
+	)
 	if err != nil {
 		return NewInternalError(err)
 	}
 
-	var deleted *int
+	rowRemove.Next()
+	statusRemove := rowRemove.CommandTag()
+
+	if statusRemove != nil && !statusRemove.Delete() {
+		return NewInternalError(err)
+	}
+
+	row, err := transaction.Query(ctx, sqlDeleteReport,
+		msg.ReportId,
+		msg.InvokerId,
+	)
+	if err != nil {
+		return NewInternalError(err)
+	}
 
 	row.Next()
-	err = row.Scan(&deleted)
+	status := row.CommandTag()
+	if status != nil && !status.Delete() {
+		return NewInternalError(err)
+	}
+
 	if err != nil {
 		return NewInternalError(err)
 	}
 
-	return nil
-}
+	_ = transaction.Commit(ctx)
 
-func (s *ReportLocalStorage) DeleteReport(ctx context.Context, msg *DeleteReport) error {
-	s.mutex.Lock()
-
-	if _, ok := s.reports[msg.ReportId]; ok {
-		delete(s.reports, msg.ReportId)
-	} else {
-		return ErrReportIdNotFound
-	}
-
-	s.mutex.Unlock()
 	return nil
 }
 

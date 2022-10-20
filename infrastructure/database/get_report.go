@@ -16,13 +16,13 @@ const sqlGetReport = `
 		   body,
 		   creator_id,
 		   created_at,
-		   updated_at,
-		   deleted_at 
+		   updated_at
     from main.reports
-    where id = $1` // todo del deleted_at
+    inner join main.reports_to_users rtu on reports.id = rtu.report_id
+    where id = $1 and rtu.user_id = $2`
 
 func (c *Client) GetReport(ctx context.Context, msg *GetReport) (*Report, error) {
-	row, err := c.driver.Query(ctx, sqlGetReport, msg.ReportId)
+	row, err := c.driver.Query(ctx, sqlGetReport, msg.ReportId, msg.InvokerId)
 	if err != nil {
 		return nil, NewInternalError(err)
 	}
@@ -42,7 +42,6 @@ func (c *Client) GetReport(ctx context.Context, msg *GetReport) (*Report, error)
 			&report.CreatorId,
 			&report.CreatedAt,
 			&report.UpdatedAt,
-			&report.DeletedAt,
 		)
 		if err != nil {
 			return nil, NewInternalError(err)
@@ -73,5 +72,4 @@ type Report struct {
 	CreatorId *string    `json:"creator_id,omitempty"`
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 }
