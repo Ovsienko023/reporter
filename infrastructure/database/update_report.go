@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"errors"
+	"github.com/jackc/pgx/v4"
 	"time"
 )
 
@@ -16,16 +17,20 @@ const sqlUpdateReport = `
         work_time = $7, 
         body = $8, 
         updated_at = now()
-    where id = $1
-    returning 1;`
+    where id = $1 and exists(select 1 
+							 from main.reports
+							 inner join main.reports_to_users rtu on reports.id = rtu.report_id
+							 where rtu.user_id = $9)`
 
 func (c *Client) UpdateReport(ctx context.Context, msg *UpdateReport) error {
-	_, err := c.GetReport(ctx, &GetReport{ReportId: msg.ReportId})
+	err := c.isFindReport(ctx, msg.InvokerId, msg.ReportId)
 	if errors.Is(err, ErrReportIdNotFound) {
 		return ErrReportIdNotFound
 	}
 
-	row, err := c.driver.Query(ctx, sqlUpdateReport,
+	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})
+
+	row, err := transaction.Query(ctx, sqlUpdateReport,
 		msg.ReportId,
 		msg.Title,
 		msg.Date,
@@ -34,22 +39,23 @@ func (c *Client) UpdateReport(ctx context.Context, msg *UpdateReport) error {
 		msg.BreakTime,
 		msg.WorkTime,
 		msg.Body,
+		msg.InvokerId,
 	)
 	if err != nil {
 		return NewInternalError(err)
 	}
 
-	var updated *int
-
 	row.Next()
-	err = row.Scan(&updated)
+	status := row.CommandTag()
+	if status != nil && !status.Update() {
+		return NewInternalError(err)
+	}
+
 	if err != nil {
 		return NewInternalError(err)
 	}
 
-	if updated == nil {
-		return ErrReportUpdated
-	}
+	_ = transaction.Commit(ctx)
 
 	return nil
 }

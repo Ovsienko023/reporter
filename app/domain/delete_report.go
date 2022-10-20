@@ -1,5 +1,6 @@
 package domain
 
 type DeleteReportRequest struct {
-	ReportId string `json:"report_id,omitempty"`
+	InvokerId string `json:"invoker_id,omitempty"`
+	ReportId  string `json:"report_id,omitempty"`
 }

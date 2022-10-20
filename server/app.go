@@ -24,7 +24,6 @@ type App struct {
 
 func NewApp(cnf *configuration.Config) *App {
 	client, _ := database.New(&cnf.Db)
-	_ = database.NewReportLocalStorage()
 	recordCore := core.NewCore(client)
 
 	return &App{
