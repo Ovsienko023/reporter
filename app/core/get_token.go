@@ -37,19 +37,6 @@ func (c *Core) GetToken(ctx context.Context, msg *domain.GetTokenRequest) (*doma
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	ss, err := token.SignedString(mySigningKey)
-	//
-	//token := jwt.NewWithClaims(jwt.SigningMethodHS256,
-	//	jwt.MapClaims{
-	//		"exp":        time.Now().Add(43_800 * time.Minute),
-	//		"grant_type": "password",
-	//		"user_id":    auth.UserId,
-	//	},
-	//)
-	//
-	//tokenString, err := token.SignedString([]byte("SecretKey"))
-	//if err != nil {
-	//	return nil, err // todo
-	//}
 
 	response := &domain.GetTokenResponse{
 		Token: &ss,
@@ -57,12 +44,3 @@ func (c *Core) GetToken(ctx context.Context, msg *domain.GetTokenRequest) (*doma
 
 	return response, nil
 }
-
-//func generateJWT() (string, error) {
-//	token := jwt.New(jwt.SigningMethodRS256)
-//
-//	claims := token.Claims.(jwt.MapClaims)
-//	claims["exp"] = time.Now().Add(43_800 * time.Minute)
-//	claims["grant_type"] = "password"
-//	claims["user_id"] =
-//}
