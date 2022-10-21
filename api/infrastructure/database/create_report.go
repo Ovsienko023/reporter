@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"github.com/jackc/pgx/v4"
 	"time"
 )
@@ -23,6 +24,10 @@ const sqlAddReportToUser = `
 
 func (c *Client) CreateReport(ctx context.Context, msg *CreateReport) (*CreatedReport, error) {
 	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("%w: %v", ErrInternal, err)
+	}
+
 	row, err := transaction.Query(ctx, sqlCreateReport,
 		msg.Title,
 		msg.Date,

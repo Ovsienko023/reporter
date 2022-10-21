@@ -3,8 +3,8 @@ package database
 import "errors"
 
 var (
+	ErrInternal         = errors.New("internal error")
 	ErrReportIdNotFound = errors.New("report id not found")
-	ErrReportUpdated    = errors.New("error while updating report")
 	ErrCredentials      = errors.New("error credentials")
 )
 

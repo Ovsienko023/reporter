@@ -18,10 +18,11 @@ func (c *Client) isFindReport(ctx context.Context, invokerId, reportId string) e
 
 	var report *int
 
-	row.Next()
-	err = row.Scan(&report)
-	if err != nil {
-		return NewInternalError(err)
+	for row.Next() {
+		err = row.Scan(&report)
+		if err != nil {
+			return NewInternalError(err)
+		}
 	}
 
 	if report == nil {

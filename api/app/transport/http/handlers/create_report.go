@@ -28,7 +28,11 @@ func CreateReport(c *core.Core, w http.ResponseWriter, r *http.Request) {
 	}
 
 	message.InvokerId = invokerId
-	result, _ := c.CreateReport(r.Context(), &message)
+	result, err := c.CreateReport(r.Context(), &message)
+	if err != nil {
+		errorContainer.Done(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	response, _ := json.Marshal(result)
 	_, _ = w.Write(response)
