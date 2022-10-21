@@ -22,8 +22,7 @@ const (
 	DefaultConfigPath = ""
 	DefaultHost       = "0.0.0.0"
 	DefaultPort       = "8888"
-	//DefaultConnStr    = "postgresql://postgres:1234@localhost:5442/postgres"
-	DefaultConnStr = "postgresql://postgres:1234@database:5432/postgres" // for docker
+	DefaultConnStr    = "postgresql://postgres:1234@database:5432/postgres" // for local debugging use host=localhost, for docker host=database
 )
 
 func NewConfig() (*Config, error) {
