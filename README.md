@@ -10,3 +10,4 @@ Rest api for working reports
 
 1) ```cd reporter```
 2) ```docker-compose up --build``` (Для запуска в фоне, использовать команду: ```docker-compose up -d --build```)
+3) ```docker-compose down --volumes``` (Еслинужно отчистить БД)

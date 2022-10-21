@@ -3,14 +3,14 @@ version: "3.3"
 services:
   database:
     build:
-      context: .
-      dockerfile: DockerfileDB
+      context: ./database
+      dockerfile: Dockerfile
     restart: always
     ports:
       - "5442:5432"
   server:
     build:
-      context: .
+      context: ./api
       dockerfile: Dockerfile
     restart: always
     command: go run main.go
