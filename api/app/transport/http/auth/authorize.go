@@ -1,4 +1,4 @@
-package http
+package auth
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 
 var ErrUnauthorized = errors.New("unauthorized error")
 
-func authorize(token string) (string, error) {
+func Authorize(token string) (string, error) {
 	if token == "" {
 		return "", ErrUnauthorized
 	}

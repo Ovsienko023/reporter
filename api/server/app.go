@@ -34,7 +34,6 @@ func NewApp(cnf *configuration.Config) *App {
 func (a *App) Run(apiConfig *configuration.Api) error {
 	router := chi.NewRouter()
 
-	//router.Use(transportHttp.Authorization)
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)

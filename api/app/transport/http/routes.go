@@ -7,7 +7,7 @@ import (
 )
 
 func RegisterHTTPEndpoints(router chi.Router, c core.Core) http.Handler {
-	h := NewHandler(c)
+	h := NewTransport(c)
 
 	router.Post("/api/v1/login", h.GetToken)
 
