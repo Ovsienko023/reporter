@@ -1,6 +1,7 @@
 CREATE EXTENSION pgcrypto;
 
-create schema main;
+create schema main authorization postgres;
+grant all on schema main to postgres;
 
 create table if not exists main.users
 (

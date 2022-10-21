@@ -21,8 +21,9 @@ type Config struct {
 const (
 	DefaultConfigPath = ""
 	DefaultHost       = "0.0.0.0"
-	DefaultPort       = "8889"
-	DefaultConnStr    = "postgresql://postgres:1234@localhost:5442/postgres"
+	DefaultPort       = "8888"
+	//DefaultConnStr    = "postgresql://postgres:1234@localhost:5442/postgres"
+	DefaultConnStr = "postgresql://postgres:1234@database:5432/postgres" // for docker
 )
 
 func NewConfig() (*Config, error) {
