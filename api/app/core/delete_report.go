@@ -9,7 +9,12 @@ import (
 )
 
 func (c *Core) DeleteReport(ctx context.Context, msg *domain.DeleteReportRequest) error {
-	err := c.db.DeleteReport(ctx, msg.ToDbDeleteReport())
+	invokerId, err := c.authorize(msg.Token)
+	if err != nil {
+		return err
+	}
+
+	err = c.db.DeleteReport(ctx, msg.ToDbDeleteReport(invokerId))
 
 	if err != nil {
 		switch {

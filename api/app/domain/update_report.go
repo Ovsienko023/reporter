@@ -6,7 +6,7 @@ import (
 )
 
 type UpdateReportRequest struct {
-	InvokerId string `json:"invoker_id,omitempty"`
+	Token     string `json:"token,omitempty"`
 	ReportId  string `json:"id,omitempty"`
 	Title     string `json:"title,omitempty"`
 	Date      int64  `json:"date,omitempty"`
@@ -17,9 +17,9 @@ type UpdateReportRequest struct {
 	Body      string `json:"body,omitempty"`
 }
 
-func (r *UpdateReportRequest) ToDbUpdateReport() *database.UpdateReport {
+func (r *UpdateReportRequest) ToDbUpdateReport(invokerId string) *database.UpdateReport {
 	return &database.UpdateReport{
-		InvokerId: r.InvokerId,
+		InvokerId: invokerId,
 		ReportId:  r.ReportId,
 		Title:     r.Title,
 		Date:      time.Unix(r.Date, 0),

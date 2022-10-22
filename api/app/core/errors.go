@@ -4,6 +4,7 @@ import "errors"
 
 var (
 	ErrInternal         = errors.New("internal error")
+	ErrUnauthorized     = errors.New("unauthorized error")
 	ErrReportIdNotFound = errors.New("report id not found")
-	ErrCredentials      = errors.New("")
+	ErrCredentials      = errors.New("permission denied")
 )

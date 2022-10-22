@@ -9,7 +9,12 @@ import (
 )
 
 func (c *Core) GetReport(ctx context.Context, msg *domain.GetReportRequest) (*domain.GetReportResponse, error) {
-	result, err := c.db.GetReport(ctx, msg.ToDbGetReport())
+	invokerId, err := c.authorize(msg.Token)
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := c.db.GetReport(ctx, msg.ToDbGetReport(invokerId))
 
 	if err != nil {
 		switch {

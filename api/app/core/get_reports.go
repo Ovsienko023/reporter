@@ -7,7 +7,12 @@ import (
 )
 
 func (c *Core) GetReports(ctx context.Context, msg *domain.GetReportsRequest) (*domain.GetReportsResponse, error) {
-	result, cnt, err := c.db.GetReports(ctx, msg.ToDbGetReports())
+	invokerId, err := c.authorize(msg.Token)
+	if err != nil {
+		return nil, err
+	}
+
+	result, cnt, err := c.db.GetReports(ctx, msg.ToDbGetReports(invokerId))
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", ErrInternal, err)
 	}

@@ -6,13 +6,13 @@ import (
 )
 
 type GetReportRequest struct {
-	InvokerId string `json:"invoker_id,omitempty"`
-	ReportId  string `json:"report_id,omitempty"`
+	Token    string `json:"token,omitempty"`
+	ReportId string `json:"report_id,omitempty"`
 }
 
-func (r *GetReportRequest) ToDbGetReport() *database.GetReport {
+func (r *GetReportRequest) ToDbGetReport(invokerId string) *database.GetReport {
 	return &database.GetReport{
-		InvokerId: r.InvokerId,
+		InvokerId: invokerId,
 		ReportId:  r.ReportId,
 	}
 }

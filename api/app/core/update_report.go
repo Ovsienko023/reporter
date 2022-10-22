@@ -8,8 +8,12 @@ import (
 )
 
 func (c *Core) UpdateReport(ctx context.Context, msg *domain.UpdateReportRequest) error {
-	err := c.db.UpdateReport(ctx, msg.ToDbUpdateReport())
+	invokerId, err := c.authorize(msg.Token)
+	if err != nil {
+		return err
+	}
 
+	err = c.db.UpdateReport(ctx, msg.ToDbUpdateReport(invokerId))
 	if err != nil {
 		switch {
 		case errors.Is(err, database.ErrReportIdNotFound):

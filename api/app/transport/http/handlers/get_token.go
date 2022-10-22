@@ -10,9 +10,8 @@ import (
 )
 
 func GetToken(c *core.Core, w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
 	errorContainer := httperror.ErrorResponse{}
-
-	ctx := r.Context()
 
 	decoder := json.NewDecoder(r.Body)
 	var message domain.GetTokenRequest
@@ -22,9 +21,7 @@ func GetToken(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		panic(err) //todo new httperror
 	}
 
-	w.Header().Add("Content-Type", "application/json")
-
-	result, err := c.GetToken(ctx, &message)
+	result, err := c.GetToken(r.Context(), &message)
 	if err != nil {
 		switch {
 		case errors.Is(err, core.ErrCredentials):
@@ -34,6 +31,7 @@ func GetToken(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		errorContainer.Done(w, http.StatusInternalServerError, "internal error")
 		return
 	}
+
 	response, _ := json.Marshal(result)
 	_, _ = w.Write(response)
 }

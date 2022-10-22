@@ -17,14 +17,13 @@ func (c *Core) GetToken(ctx context.Context, msg *domain.GetTokenRequest) (*doma
 		case errors.Is(err, database.ErrCredentials):
 			return nil, ErrCredentials
 		}
-		fmt.Println("LOG: ", err) // todo add logger
-		return nil, ErrInternal
+		return nil, fmt.Errorf("%w: %v", ErrInternal, err)
 	}
 
 	if msg.Password != *auth.Password {
 		return nil, ErrCredentials
 	}
-	mySigningKey := []byte("SecretKey")
+	mySigningKey := []byte("SecretKey") // todo add secret from config
 
 	claims := &jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(100 * time.Minute).Unix(),

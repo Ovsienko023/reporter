@@ -6,7 +6,7 @@ import (
 )
 
 type CreateReportRequest struct {
-	InvokerId string `json:"invoker_id,omitempty"`
+	Token     string `json:"token,omitempty"`
 	Title     string `json:"title,omitempty"`
 	Date      int64  `json:"date,omitempty"`
 	StartTime int64  `json:"start_time,omitempty"`
@@ -16,9 +16,9 @@ type CreateReportRequest struct {
 	Body      string `json:"body,omitempty"`
 }
 
-func (r *CreateReportRequest) ToDbCreateReport() *database.CreateReport {
+func (r *CreateReportRequest) ToDbCreateReport(invokerId string) *database.CreateReport {
 	return &database.CreateReport{
-		InvokerId: r.InvokerId,
+		InvokerId: invokerId,
 		Title:     r.Title,
 		Date:      time.Unix(r.Date, 0).UTC(),
 		StartTime: time.Unix(r.StartTime, 0).UTC(),
