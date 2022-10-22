@@ -6,6 +6,7 @@ import (
 )
 
 type InterfaceCore interface {
+	SignUp(ctx context.Context, msg *domain.SignUpRequest) error
 	GetToken(ctx context.Context, msg *domain.GetTokenRequest) (*domain.GetTokenResponse, error)
 
 	GetReport(ctx context.Context, msg *domain.GetReportRequest) (*domain.GetReportResponse, error)

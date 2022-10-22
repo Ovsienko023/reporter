@@ -27,7 +27,7 @@ func GetReport(c *core.Core, w http.ResponseWriter, r *http.Request) {
 			errorContainer.Done(w, http.StatusUnauthorized, err.Error())
 			return
 		case errors.Is(err, core.ErrReportIdNotFound):
-			errorContainer.Done(w, http.StatusNotFound, "report id not found")
+			errorContainer.Done(w, http.StatusNotFound, err.Error())
 			return
 		}
 		errorContainer.Done(w, http.StatusInternalServerError, "internal error")

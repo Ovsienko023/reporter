@@ -22,6 +22,10 @@ func (t *Transport) GetToken(w http.ResponseWriter, r *http.Request) {
 	handlers.GetToken(&t.core, w, r)
 }
 
+func (t *Transport) SignUp(w http.ResponseWriter, r *http.Request) {
+	handlers.SignUp(&t.core, w, r)
+}
+
 // REPORTS
 
 func (t *Transport) GetReport(w http.ResponseWriter, r *http.Request) {

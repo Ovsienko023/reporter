@@ -35,5 +35,6 @@ func (c *Core) GetToken(ctx context.Context, msg *domain.GetTokenRequest) (*doma
 
 	return &domain.GetTokenResponse{
 		Token: &signedToken,
+		// todo ... add ExpiresIn
 	}, nil
 }

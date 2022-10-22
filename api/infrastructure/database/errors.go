@@ -3,9 +3,10 @@ package database
 import "errors"
 
 var (
-	ErrInternal         = errors.New("internal error")
-	ErrReportIdNotFound = errors.New("report id not found")
-	ErrCredentials      = errors.New("error credentials")
+	ErrInternal          = errors.New("internal error")
+	ErrReportIdNotFound  = errors.New("report id not found")
+	ErrCredentials       = errors.New("error credentials")
+	ErrLoginAlreadyInUse = errors.New("login already in use")
 )
 
 func NewInternalError(err error) error {
