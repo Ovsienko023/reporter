@@ -6,7 +6,7 @@ import (
 )
 
 type GetReportsRequest struct {
-	Token string `json:"token,omitempty"`
+	Token string `json:"token,omitempty" swaggerignore:"true"`
 }
 
 func (r *GetReportsRequest) ToDbGetReports(invokerId string) *database.GetReports {

@@ -1,0 +1,412 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a report server.",
+        "title": "Reporter API",
+        "contact": {},
+        "version": "0.0.1"
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/api/v1/login": {
+            "post": {
+                "description": "Getting an authorization token",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get token",
+                "parameters": [
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetTokenResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reports": {
+            "get": {
+                "description": "get all reports",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Get all reports",
+                "parameters": [
+                    {
+                        "description": "query params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetReportsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetReportsResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create report",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Create report",
+                "parameters": [
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateReportResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reports/{report_id}": {
+            "get": {
+                "description": "get report",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Get report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "report_id",
+                        "name": "report_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetReportResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update report",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Update report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "report_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.UpdateReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete report",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Delete report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "report_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/api/v1/sign_up": {
+            "post": {
+                "description": "User registration",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Sign Up",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "domain.CreateReportRequest": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "break_time": {
+                    "type": "integer"
+                },
+                "date": {
+                    "type": "integer"
+                },
+                "end_time": {
+                    "type": "integer"
+                },
+                "start_time": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "work_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.CreateReportResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.GetReportResponse": {
+            "type": "object",
+            "properties": {
+                "report": {
+                    "$ref": "#/definitions/domain.Report"
+                }
+            }
+        },
+        "domain.GetReportsRequest": {
+            "type": "object"
+        },
+        "domain.GetReportsResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "reports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ReportItem"
+                    }
+                }
+            }
+        },
+        "domain.GetTokenRequest": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.GetTokenResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Report": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "break_time": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "integer"
+                },
+                "creator_id": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "integer"
+                },
+                "end_time": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "integer"
+                },
+                "work_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.ReportItem": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "break_time": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "integer"
+                },
+                "creator_id": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "integer"
+                },
+                "end_time": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "integer"
+                },
+                "work_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.UpdateReportRequest": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "break_time": {
+                    "type": "integer"
+                },
+                "date": {
+                    "type": "integer"
+                },
+                "end_time": {
+                    "type": "integer"
+                },
+                "start_time": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "work_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "httperror.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/httperror.ErrorResponseError"
+                }
+            }
+        },
+        "httperror.ErrorResponseDetails": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                }
+            }
+        },
+        "httperror.ErrorResponseError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/httperror.ErrorResponseDetails"
+                    }
+                }
+            }
+        }
+    }
+}

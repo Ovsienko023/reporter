@@ -38,7 +38,7 @@ func (a *App) Run(apiConfig *configuration.Api) error {
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 
-	r := transportHttp.RegisterHTTPEndpoints(router, *a.recordCore)
+	r := transportHttp.RegisterHTTPEndpoints(router, *a.recordCore, apiConfig)
 
 	a.httpServer = &http.Server{
 		Addr:           apiConfig.Host + ":" + apiConfig.Port,
@@ -63,4 +63,8 @@ func (a *App) Run(apiConfig *configuration.Api) error {
 	defer shutdown()
 
 	return a.httpServer.Shutdown(ctx)
+}
+
+func docs() {
+
 }

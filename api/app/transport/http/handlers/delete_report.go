@@ -31,4 +31,5 @@ func DeleteReport(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		errorContainer.Done(w, http.StatusInternalServerError, "internal error")
 		return
 	}
+	w.WriteHeader(http.StatusNoContent)
 }

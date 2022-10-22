@@ -1,0 +1,268 @@
+basePath: /api/v1
+definitions:
+  domain.CreateReportRequest:
+    properties:
+      body:
+        type: string
+      break_time:
+        type: integer
+      date:
+        type: integer
+      end_time:
+        type: integer
+      start_time:
+        type: integer
+      title:
+        type: string
+      work_time:
+        type: integer
+    type: object
+  domain.CreateReportResponse:
+    properties:
+      id:
+        type: string
+    type: object
+  domain.GetReportResponse:
+    properties:
+      report:
+        $ref: '#/definitions/domain.Report'
+    type: object
+  domain.GetReportsRequest:
+    type: object
+  domain.GetReportsResponse:
+    properties:
+      count:
+        type: integer
+      reports:
+        items:
+          $ref: '#/definitions/domain.ReportItem'
+        type: array
+    type: object
+  domain.GetTokenRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  domain.GetTokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  domain.Report:
+    properties:
+      body:
+        type: string
+      break_time:
+        type: integer
+      created_at:
+        type: integer
+      creator_id:
+        type: string
+      date:
+        type: integer
+      end_time:
+        type: integer
+      id:
+        type: string
+      start_time:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: integer
+      work_time:
+        type: integer
+    type: object
+  domain.ReportItem:
+    properties:
+      body:
+        type: string
+      break_time:
+        type: integer
+      created_at:
+        type: integer
+      creator_id:
+        type: string
+      date:
+        type: integer
+      end_time:
+        type: integer
+      id:
+        type: string
+      start_time:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: integer
+      work_time:
+        type: integer
+    type: object
+  domain.UpdateReportRequest:
+    properties:
+      body:
+        type: string
+      break_time:
+        type: integer
+      date:
+        type: integer
+      end_time:
+        type: integer
+      start_time:
+        type: integer
+      title:
+        type: string
+      work_time:
+        type: integer
+    type: object
+  httperror.ErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/httperror.ErrorResponseError'
+    type: object
+  httperror.ErrorResponseDetails:
+    properties:
+      description:
+        type: string
+      position:
+        type: string
+      reason:
+        type: string
+    type: object
+  httperror.ErrorResponseError:
+    properties:
+      code:
+        type: integer
+      description:
+        type: string
+      details:
+        items:
+          $ref: '#/definitions/httperror.ErrorResponseDetails'
+        type: array
+    type: object
+info:
+  contact: {}
+  description: This is a report server.
+  title: Reporter API
+  version: 0.0.1
+paths:
+  /api/v1/login:
+    post:
+      description: Getting an authorization token
+      parameters:
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.GetTokenRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetTokenResponse'
+      summary: Get token
+      tags:
+      - Auth
+  /api/v1/reports:
+    get:
+      description: get all reports
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.GetReportsRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetReportsResponse'
+      summary: Get all reports
+      tags:
+      - Reports
+    post:
+      description: Create report
+      parameters:
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateReportRequest'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.CreateReportResponse'
+      summary: Create report
+      tags:
+      - Reports
+  /api/v1/reports/{report_id}:
+    delete:
+      description: Delete report
+      parameters:
+      - description: report_id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+      summary: Delete report
+      tags:
+      - Reports
+    get:
+      description: get report
+      parameters:
+      - description: report_id
+        in: path
+        name: report_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetReportResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Get report
+      tags:
+      - Reports
+    put:
+      description: Update report
+      parameters:
+      - description: report_id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateReportRequest'
+      responses:
+        "204":
+          description: No Content
+      summary: Update report
+      tags:
+      - Reports
+  /api/v1/sign_up:
+    post:
+      description: User registration
+      responses:
+        "204":
+          description: No Content
+      summary: Sign Up
+      tags:
+      - Auth
+swagger: "2.0"

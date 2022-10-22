@@ -36,5 +36,7 @@ func CreateReport(c *core.Core, w http.ResponseWriter, r *http.Request) {
 	}
 
 	response, _ := json.Marshal(result)
+	w.WriteHeader(http.StatusCreated)
 	_, _ = w.Write(response)
+
 }

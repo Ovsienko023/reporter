@@ -6,7 +6,7 @@ import (
 )
 
 type CreateReportRequest struct {
-	Token     string `json:"token,omitempty"`
+	Token     string `json:"token,omitempty" swaggerignore:"true"`
 	Title     string `json:"title,omitempty"`
 	Date      int64  `json:"date,omitempty"`
 	StartTime int64  `json:"start_time,omitempty"`

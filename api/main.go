@@ -9,6 +9,11 @@ import (
 	"github.com/Ovsienko023/reporter/server"
 )
 
+// @title Reporter API
+// @version 0.0.1
+// @description This is a report server.
+
+// @BasePath /api/v1
 func main() {
 	flag.Parse()
 
