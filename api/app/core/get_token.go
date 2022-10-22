@@ -11,11 +11,7 @@ import (
 )
 
 func (c *Core) GetToken(ctx context.Context, msg *domain.GetTokenRequest) (*domain.GetTokenResponse, error) {
-	message := database.GetAuthUser{
-		Login: msg.Login,
-	}
-
-	auth, err := c.db.GetAuthUser(ctx, &message)
+	auth, err := c.db.GetAuthUser(ctx, msg.ToDbGetToken())
 	if err != nil {
 		switch {
 		case errors.Is(err, database.ErrCredentials):
@@ -36,11 +32,9 @@ func (c *Core) GetToken(ctx context.Context, msg *domain.GetTokenRequest) (*doma
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	ss, err := token.SignedString(mySigningKey)
+	signedToken, err := token.SignedString(mySigningKey)
 
-	response := &domain.GetTokenResponse{
-		Token: &ss,
-	}
-
-	return response, nil
+	return &domain.GetTokenResponse{
+		Token: &signedToken,
+	}, nil
 }

@@ -5,10 +5,6 @@ import (
 	"time"
 )
 
-type CreateReportResponse struct {
-	Id string `json:"id,omitempty"`
-}
-
 type CreateReportRequest struct {
 	InvokerId string `json:"invoker_id,omitempty"`
 	Title     string `json:"title,omitempty"`
@@ -20,7 +16,7 @@ type CreateReportRequest struct {
 	Body      string `json:"body,omitempty"`
 }
 
-func (r *CreateReportRequest) ToDBCreateReport() *database.CreateReport {
+func (r *CreateReportRequest) ToDbCreateReport() *database.CreateReport {
 	return &database.CreateReport{
 		InvokerId: r.InvokerId,
 		Title:     r.Title,
@@ -30,5 +26,19 @@ func (r *CreateReportRequest) ToDBCreateReport() *database.CreateReport {
 		BreakTime: time.Unix(r.BreakTime, 0).UTC(),
 		WorkTime:  time.Unix(r.WorkTime, 0).UTC(),
 		Body:      r.Body,
+	}
+}
+
+type CreateReportResponse struct {
+	Id string `json:"id,omitempty"`
+}
+
+func FromCreateReportResponse(resp *database.CreatedReport) *CreateReportResponse {
+	if resp == nil {
+		return nil
+	}
+
+	return &CreateReportResponse{
+		Id: resp.Id,
 	}
 }

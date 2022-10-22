@@ -6,14 +6,10 @@ import (
 )
 
 func (c *Core) CreateReport(ctx context.Context, msg *domain.CreateReportRequest) (*domain.CreateReportResponse, error) {
-	result, err := c.db.CreateReport(ctx, msg.ToDBCreateReport())
+	result, err := c.db.CreateReport(ctx, msg.ToDbCreateReport())
 	if err != nil {
 		return nil, err
 	}
 
-	resp := domain.CreateReportResponse{
-		Id: result.Id,
-	}
-
-	return &resp, nil
+	return domain.FromCreateReportResponse(result), nil
 }
