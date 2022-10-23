@@ -4,9 +4,15 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
+type Doc struct {
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
+}
+
 type Api struct {
 	Host string `yaml:"host"`
 	Port string `yaml:"port"`
+	Doc  Doc    `yaml:"doc"`
 }
 
 type Db struct {
@@ -20,20 +26,29 @@ type Config struct {
 
 const (
 	DefaultConfigPath = ""
-	DefaultHost       = "0.0.0.0"
-	DefaultPort       = "8888"
-	DefaultConnStr    = "postgresql://postgres:1234@database:5432/postgres"
-	// for local debugging use "postgresql://postgres:1234@localhost:5442/postgres"
+
+	DefaultApiHost = "0.0.0.0"
+	DefaultApiPort = "8888"
+
+	DefaultDocHost = "85.193.83.76"
+	DefaultDocPort = "8888"
+
+	//DefaultDbConnStr = "postgresql://postgres:1234@localhost:5442/postgres"
+	DefaultDbConnStr = "postgresql://postgres:1234@database:5432/postgres"
 )
 
 func NewConfig() (*Config, error) {
 	cfg := &Config{
 		Api{
-			Host: DefaultHost,
-			Port: DefaultPort,
+			Host: DefaultApiHost,
+			Port: DefaultApiPort,
+			Doc: Doc{
+				Host: DefaultDocHost,
+				Port: DefaultDocPort,
+			},
 		},
 		Db{
-			ConnStr: DefaultConnStr,
+			ConnStr: DefaultDbConnStr,
 		},
 	}
 

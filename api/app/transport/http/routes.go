@@ -11,7 +11,7 @@ import (
 )
 
 func RegisterHTTPEndpoints(router chi.Router, c core.Core, apiConfig *configuration.Api) http.Handler {
-	swaggerUrl := fmt.Sprintf("http://85.193.83.76:%s/docs/doc.json", apiConfig.Port)
+	swaggerUrl := fmt.Sprintf("http://%s:%s/docs/doc.json", apiConfig.Doc.Host, apiConfig.Doc.Port)
 	h := NewTransport(c)
 
 	router.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL(swaggerUrl)))
