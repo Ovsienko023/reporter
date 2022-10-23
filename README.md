@@ -22,3 +22,7 @@ Rest api for working reports
 - `https://github.com/swaggo/http-swagger`
 - `https://github.com/swaggo/swag`
 - `https://github.com/swaggo/swag#api-operation`
+
+
+Чтобы удалить все остановленные контейнеры и неиспользуемые образы (а не только образы, не связанные с контейнерами
+docker system prune -a
