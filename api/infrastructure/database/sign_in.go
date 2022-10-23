@@ -4,15 +4,15 @@ import (
 	"context"
 )
 
-const sqlGetAuthUser = `
+const sqlSignIn = `
 	select id,
 	       hash 
     from main.users
     where login = $1 
     and deleted_at is null`
 
-func (c *Client) GetAuthUser(ctx context.Context, msg *GetAuthUser) (*Auth, error) {
-	row, err := c.driver.Query(ctx, sqlGetAuthUser, msg.Login)
+func (c *Client) SignIn(ctx context.Context, msg *SignIn) (*Auth, error) {
+	row, err := c.driver.Query(ctx, sqlSignIn, msg.Login)
 	if err != nil {
 		return nil, NewInternalError(err)
 	}
@@ -36,7 +36,7 @@ func (c *Client) GetAuthUser(ctx context.Context, msg *GetAuthUser) (*Auth, erro
 	return auth, nil
 }
 
-type GetAuthUser struct {
+type SignIn struct {
 	Login string `json:"login,omitempty"`
 }
 

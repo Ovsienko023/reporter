@@ -10,8 +10,8 @@ import (
 	"time"
 )
 
-func (c *Core) GetToken(ctx context.Context, msg *domain.GetTokenRequest) (*domain.GetTokenResponse, error) {
-	auth, err := c.db.GetAuthUser(ctx, msg.ToDbGetToken())
+func (c *Core) SignIn(ctx context.Context, msg *domain.SignInRequest) (*domain.SignInResponse, error) {
+	auth, err := c.db.SignIn(ctx, msg.ToDbSignIn())
 	if err != nil {
 		switch {
 		case errors.Is(err, database.ErrCredentials):
@@ -33,7 +33,7 @@ func (c *Core) GetToken(ctx context.Context, msg *domain.GetTokenRequest) (*doma
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err := token.SignedString(mySigningKey)
 
-	return &domain.GetTokenResponse{
+	return &domain.SignInResponse{
 		Token: &signedToken,
 		// todo ... add ExpiresIn
 	}, nil

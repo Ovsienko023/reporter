@@ -18,15 +18,16 @@ func NewTransport(c core.Core) *Transport {
 
 // AUTH
 
-// GetToken ...  GetToken
-// @Summary Get token
+// SignIn ...  Sign In
+// @Summary Sign In
 // @Description Getting an authorization token
 // @Tags Auth
-//@Param request body domain.GetTokenRequest true "body params"
-// @Success 200 {object} domain.GetTokenResponse
-// @Router /api/v1/login [post]
-func (t *Transport) GetToken(w http.ResponseWriter, r *http.Request) {
-	handlers.GetToken(&t.core, w, r)
+// @Param request body domain.SignInRequest true "body params"
+// @Success 200 {object} domain.SignInResponse
+// @Success 401
+// @Router /api/v1/sign_in [post]
+func (t *Transport) SignIn(w http.ResponseWriter, r *http.Request) {
+	handlers.SignIn(&t.core, w, r)
 }
 
 // SignUp ...  SignUp

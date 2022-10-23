@@ -49,18 +49,6 @@ definitions:
           $ref: '#/definitions/domain.ReportItem'
         type: array
     type: object
-  domain.GetTokenRequest:
-    properties:
-      login:
-        type: string
-      password:
-        type: string
-    type: object
-  domain.GetTokenResponse:
-    properties:
-      token:
-        type: string
-    type: object
   domain.Report:
     properties:
       body:
@@ -110,6 +98,18 @@ definitions:
         type: integer
       work_time:
         type: integer
+    type: object
+  domain.SignInRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  domain.SignInResponse:
+    properties:
+      token:
+        type: string
     type: object
   domain.SignUpRequest:
     properties:
@@ -168,24 +168,6 @@ info:
   title: Reporter API
   version: 0.0.1
 paths:
-  /api/v1/login:
-    post:
-      description: Getting an authorization token
-      parameters:
-      - description: body params
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/domain.GetTokenRequest'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/domain.GetTokenResponse'
-      summary: Get token
-      tags:
-      - Auth
   /api/v1/profile:
     get:
       description: Getting user data
@@ -294,6 +276,26 @@ paths:
       summary: Update report
       tags:
       - Reports
+  /api/v1/sign_in:
+    post:
+      description: Getting an authorization token
+      parameters:
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SignInRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SignInResponse'
+        "401":
+          description: Unauthorized
+      summary: Sign In
+      tags:
+      - Auth
   /api/v1/sign_up:
     post:
       description: User registration

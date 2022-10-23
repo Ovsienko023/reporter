@@ -16,34 +16,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/login": {
-            "post": {
-                "description": "Getting an authorization token",
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Get token",
-                "parameters": [
-                    {
-                        "description": "body params",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.GetTokenRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.GetTokenResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/profile": {
             "get": {
                 "description": "Getting user data",
@@ -209,6 +181,37 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/sign_in": {
+            "post": {
+                "description": "Getting an authorization token",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Sign In",
+                "parameters": [
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.SignInRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.SignInResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
         "/api/v1/sign_up": {
             "post": {
                 "description": "User registration",
@@ -312,25 +315,6 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.GetTokenRequest": {
-            "type": "object",
-            "properties": {
-                "login": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.GetTokenResponse": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
         "domain.Report": {
             "type": "object",
             "properties": {
@@ -404,6 +388,25 @@ const docTemplate = `{
                 },
                 "work_time": {
                     "type": "integer"
+                }
+            }
+        },
+        "domain.SignInRequest": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.SignInResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
                 }
             }
         },

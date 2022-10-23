@@ -16,7 +16,7 @@ func RegisterHTTPEndpoints(router chi.Router, c core.Core, apiConfig *configurat
 
 	router.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL(swaggerUrl)))
 
-	router.Post("/api/v1/login", h.GetToken)
+	router.Post("/api/v1/sign_in", h.SignIn)
 	router.Post("/api/v1/sign_up", h.SignUp)
 
 	router.Get("/api/v1/profile", h.GetProfile)

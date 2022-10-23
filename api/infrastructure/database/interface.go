@@ -6,7 +6,7 @@ import (
 
 type InterfaceDatabase interface {
 	SignUp(ctx context.Context, msg *SignUp) error
-	GetAuthUser(ctx context.Context, msg *GetAuthUser) (*Auth, error)
+	SignIn(ctx context.Context, msg *SignIn) (*Auth, error)
 
 	GetProfile(ctx context.Context, msg *GetProfile) (*Profile, error)
 
