@@ -8,6 +8,8 @@ type InterfaceDatabase interface {
 	SignUp(ctx context.Context, msg *SignUp) error
 	GetAuthUser(ctx context.Context, msg *GetAuthUser) (*Auth, error)
 
+	GetProfile(ctx context.Context, msg *GetProfile) (*Profile, error)
+
 	GetReport(ctx context.Context, msg *GetReport) (*Report, error)
 	GetReports(ctx context.Context, msg *GetReports) ([]ReportItem, *int, error)
 	CreateReport(ctx context.Context, msg *CreateReport) (*CreatedReport, error)

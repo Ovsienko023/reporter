@@ -40,6 +40,19 @@ func (t *Transport) SignUp(w http.ResponseWriter, r *http.Request) {
 	handlers.SignUp(&t.core, w, r)
 }
 
+// PROFILE
+
+// GetProfile ...  Get Profile
+// @Summary Get Profile
+// @Description Getting user data
+// @Tags Profile
+// @Param request body domain.GetProfileRequest true "query params"
+// @Success 200 {object} domain.GetProfileResponse
+// @Router /api/v1/profile [get]
+func (t *Transport) GetProfile(w http.ResponseWriter, r *http.Request) {
+	handlers.GetProfile(&t.core, w, r)
+}
+
 // REPORTS
 
 // GetReport ... Get report

@@ -15,6 +15,8 @@ create table if not exists main.users
 
 insert into main.users (display_name, login, hash) values ('Babintsev', 'babintsev', 'dp');
 insert into main.users (display_name, login, hash) values ('Ovsienko', 'ovsienko', 'dp');
+insert into main.users (display_name, login, hash) values ('Sungatullina', 'sungatullina', 'dp');
+
 
 create table if not exists main.reports
 (

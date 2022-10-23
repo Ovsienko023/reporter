@@ -22,6 +22,17 @@ definitions:
       id:
         type: string
     type: object
+  domain.GetProfileRequest:
+    type: object
+  domain.GetProfileResponse:
+    properties:
+      display_name:
+        type: string
+      id:
+        type: string
+      login:
+        type: string
+    type: object
   domain.GetReportResponse:
     properties:
       report:
@@ -100,6 +111,15 @@ definitions:
       work_time:
         type: integer
     type: object
+  domain.SignUpRequest:
+    properties:
+      display_name:
+        type: string
+      login:
+        type: string
+      password:
+        type: string
+    type: object
   domain.UpdateReportRequest:
     properties:
       body:
@@ -166,6 +186,24 @@ paths:
       summary: Get token
       tags:
       - Auth
+  /api/v1/profile:
+    get:
+      description: Getting user data
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.GetProfileRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetProfileResponse'
+      summary: Get Profile
+      tags:
+      - Profile
   /api/v1/reports:
     get:
       description: get all reports
@@ -259,6 +297,13 @@ paths:
   /api/v1/sign_up:
     post:
       description: User registration
+      parameters:
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SignUpRequest'
       responses:
         "204":
           description: No Content

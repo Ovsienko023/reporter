@@ -44,6 +44,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/profile": {
+            "get": {
+                "description": "Getting user data",
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Get Profile",
+                "parameters": [
+                    {
+                        "description": "query params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetProfileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetProfileResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/reports": {
             "get": {
                 "description": "get all reports",
@@ -188,6 +216,17 @@ const docTemplate = `{
                     "Auth"
                 ],
                 "summary": "Sign Up",
+                "parameters": [
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.SignUpRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "No Content"
@@ -227,6 +266,23 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.GetProfileRequest": {
+            "type": "object"
+        },
+        "domain.GetProfileResponse": {
+            "type": "object",
+            "properties": {
+                "display_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "login": {
                     "type": "string"
                 }
             }
@@ -348,6 +404,20 @@ const docTemplate = `{
                 },
                 "work_time": {
                     "type": "integer"
+                }
+            }
+        },
+        "domain.SignUpRequest": {
+            "type": "object",
+            "properties": {
+                "display_name": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         },
