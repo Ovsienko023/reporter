@@ -5,6 +5,10 @@ import (
 	"net/http"
 )
 
+const (
+	InvalidRequest = "invalid request"
+)
+
 type ErrorResponseDetails struct {
 	Reason      string `json:"reason,omitempty"`
 	Description string `json:"description,omitempty"`

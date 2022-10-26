@@ -1,6 +1,8 @@
 package domain
 
-import "github.com/Ovsienko023/reporter/infrastructure/database"
+import (
+	"github.com/Ovsienko023/reporter/infrastructure/database"
+)
 
 type SignInRequest struct {
 	Login    string `json:"login,omitempty"`
