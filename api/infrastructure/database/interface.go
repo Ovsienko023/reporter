@@ -9,6 +9,7 @@ type InterfaceDatabase interface {
 	SignIn(ctx context.Context, msg *SignIn) (*Auth, error)
 
 	GetProfile(ctx context.Context, msg *GetProfile) (*Profile, error)
+	UpdateProfile(ctx context.Context, msg *UpdateProfile) error
 
 	GetReport(ctx context.Context, msg *GetReport) (*Report, error)
 	GetReports(ctx context.Context, msg *GetReports) ([]ReportItem, *int, error)
