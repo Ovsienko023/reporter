@@ -12,7 +12,12 @@ import (
 //	ErrInternal
 //	ErrLoginAlreadyInUse
 func (c *Core) SignUp(ctx context.Context, msg *domain.SignUpRequest) error {
-	err := c.db.SignUp(ctx, msg.ToDbSignUp())
+	hash, err := c.generateHash(msg.Password)
+	if err != nil {
+		return fmt.Errorf("%w: %v", ErrInternal, err)
+	}
+
+	err = c.db.SignUp(ctx, msg.ToDbSignUp(hash))
 	if err != nil {
 		switch {
 		case errors.Is(err, database.ErrLoginAlreadyInUse):

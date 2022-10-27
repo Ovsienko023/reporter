@@ -4,9 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/Ovsienko023/reporter/infrastructure/configuration"
-	"log"
-
 	"github.com/Ovsienko023/reporter/server"
+	"log"
 )
 
 // @title Reporter API

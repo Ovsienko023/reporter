@@ -20,9 +20,11 @@ func (c *Core) SignIn(ctx context.Context, msg *domain.SignInRequest) (*domain.S
 		return nil, fmt.Errorf("%w: %v", ErrInternal, err)
 	}
 
-	if msg.Password != *auth.Password {
+	err = c.checkPassword(*auth.Password, msg.Password)
+	if err != nil {
 		return nil, ErrCredentials
 	}
+
 	mySigningKey := []byte("SecretKey") // todo add secret from config
 
 	claims := &jwt.StandardClaims{

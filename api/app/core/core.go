@@ -3,6 +3,7 @@ package core
 import (
 	"github.com/Ovsienko023/reporter/infrastructure/database"
 	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 	"strings"
 )
 
@@ -41,4 +42,21 @@ func (c *Core) authorize(token string) (string, error) {
 	} else {
 		return "", ErrUnauthorized
 	}
+}
+
+func (c *Core) generateHash(s string) (string, error) {
+	saltedBytes := []byte(s)
+	hashedBytes, err := bcrypt.GenerateFromPassword(saltedBytes, 13)
+	if err != nil {
+		return "", err
+	}
+
+	hash := string(hashedBytes[:])
+	return hash, nil
+}
+
+func (c *Core) checkPassword(hash string, s string) error {
+	incoming := []byte(s)
+	existing := []byte(hash)
+	return bcrypt.CompareHashAndPassword(existing, incoming)
 }

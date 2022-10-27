@@ -13,10 +13,10 @@ type SignUpRequest struct {
 	DisplayName *string `json:"display_name,omitempty"`
 }
 
-func (r *SignUpRequest) ToDbSignUp() *database.SignUp {
+func (r *SignUpRequest) ToDbSignUp(hashPassword string) *database.SignUp {
 	return &database.SignUp{
 		Login:       r.Login,
-		Password:    r.Password,
+		Password:    hashPassword,
 		DisplayName: r.DisplayName,
 	}
 }
