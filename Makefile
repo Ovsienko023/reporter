@@ -6,3 +6,6 @@ run:
 	sudo docker system prune -a
 	sudo docker-compose down --volumes
 	sudo docker-compose up -d --build
+
+docker:
+	sudo docker-compose up --build
