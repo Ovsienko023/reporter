@@ -5,43 +5,59 @@ import (
 	"time"
 )
 
-const sqlMostEarlyStartTime = `
+const (
+	sqlMostEarlyStartTime = `
 	select date, start_time 
 	from main.reports 
 	inner join main.reports_to_users rtu on reports.id = rtu.report_id
     where rtu.user_id = $1 and 
 	      date_trunc('day', date) >= date_trunc('day', $2::timestamp) and 
 	      date_trunc('day', date) <= date_trunc('day', $3::timestamp)
-	order by start_time limit 1` // самое раннее начало
+	order by start_time limit 1`  // самое раннее начало
 
-const sqlMostLateStartTime = `
+	sqlMostLateStartTime = `
 	select date, start_time 
 	from main.reports 
 	inner join main.reports_to_users rtu on reports.id = rtu.report_id
     where rtu.user_id = $1 and 
 	      date_trunc('day', date) >= date_trunc('day', $2::timestamp) and 
 	      date_trunc('day', date) <= date_trunc('day', $3::timestamp)
-	order by start_time desc limit 1` // самое подзнее начало
+	order by start_time desc limit 1`  // самое подзнее начало
 
-const sqlMostShortBreakTime = `
+	sqlMostShortBreakTime = `
 	select date, break_time 
 	from main.reports
 	inner join main.reports_to_users rtu on reports.id = rtu.report_id
     where rtu.user_id = $1 and 
 	      date_trunc('day', date) >= date_trunc('day', $2::timestamp) and 
 	      date_trunc('day', date) <= date_trunc('day', $3::timestamp)
-	order by break_time limit 1` // самый короткий перерыв
+	order by break_time limit 1`  // самый короткий перерыв
 
-const sqlMostLongBreakTime = `
+	sqlMostLongBreakTime = `
 	select date, break_time 
 	from main.reports
 	inner join main.reports_to_users rtu on reports.id = rtu.report_id
     where rtu.user_id = $1 and 
 	      date_trunc('day', date) >= date_trunc('day', $2::timestamp) and 
 	      date_trunc('day', date) <= date_trunc('day', $3::timestamp)
-	order by break_time desc limit 1` // самыей длинный перерыв
+	order by break_time desc limit 1`  // самыей длинный перерыв
 
-const sqlGetStatistics = `
+	sqlMostLongDay = `
+	select date, (extract(epoch from end_time) -
+              extract(epoch from start_time) -
+              extract(epoch from break_time)) / 3600 -- самый длинный рабочий день(последний)
+	from main.reports
+	inner join main.reports_to_users rtu on reports.id = rtu.report_id
+	where rtu.user_id = $1 and 
+	      (extract(epoch from end_time) -
+       	   extract(epoch from start_time) -
+           extract(epoch from break_time)) = (select max(extract(epoch from end_time) -
+                                                         extract(epoch from start_time) -
+                                                         extract(epoch from break_time))
+                                             from main.reports)
+	order by date desc limit 1`
+
+	sqlGetStatistics = `
 	select avg(extract(epoch from end_time) -
                extract(epoch from start_time) -
                extract(epoch from break_time)) as avg_hours_worked,  -- среднне количество отработанных часов
@@ -55,6 +71,7 @@ const sqlGetStatistics = `
 	where rtu.user_id = $1 and 
 	      date_trunc('day', date) >= date_trunc('day', $2::timestamp) and 
 	      date_trunc('day', date) <= date_trunc('day', $3::timestamp)`
+)
 
 func (c *Client) GetStatistics(ctx context.Context, msg *GetStatistics) (*Statistics, error) {
 	row, err := c.driver.Query(ctx, sqlGetStatistics,
