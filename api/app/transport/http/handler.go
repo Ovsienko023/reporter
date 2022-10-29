@@ -132,3 +132,15 @@ func (t *Transport) UpdateReport(w http.ResponseWriter, r *http.Request) {
 func (t *Transport) DeleteReport(w http.ResponseWriter, r *http.Request) {
 	handlers.DeleteReport(&t.core, w, r)
 }
+
+// GetStatistics ...  Get Statistics
+// @Summary Get Statistics
+// @Description Get Statistics
+// @Tags Statistics
+// @Param request body domain.GetStatisticsRequest true "body params"
+// @Success 200 {object} domain.GetStatisticsResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/stats [get]
+func (t *Transport) GetStatistics(w http.ResponseWriter, r *http.Request) {
+	handlers.GetStatistics(&t.core, w, r)
+}

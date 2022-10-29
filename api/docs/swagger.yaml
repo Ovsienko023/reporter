@@ -49,6 +49,24 @@ definitions:
           $ref: '#/definitions/domain.ReportItem'
         type: array
     type: object
+  domain.GetStatisticsRequest:
+    properties:
+      from_date:
+        type: integer
+      to_date:
+        type: integer
+    type: object
+  domain.GetStatisticsResponse:
+    properties:
+      avg_hours_break:
+        type: integer
+      avg_hours_worked:
+        type: integer
+      avg_start_time:
+        type: integer
+      hours_worked:
+        type: integer
+    type: object
   domain.Report:
     properties:
       body:
@@ -368,4 +386,26 @@ paths:
       summary: Sign Up
       tags:
       - Auth
+  /api/v1/stats:
+    get:
+      description: Get Statistics
+      parameters:
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.GetStatisticsRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetStatisticsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Get Statistics
+      tags:
+      - Statistics
 swagger: "2.0"

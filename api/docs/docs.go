@@ -313,6 +313,40 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/stats": {
+            "get": {
+                "description": "Get Statistics",
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get Statistics",
+                "parameters": [
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetStatisticsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetStatisticsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -389,6 +423,34 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/domain.ReportItem"
                     }
+                }
+            }
+        },
+        "domain.GetStatisticsRequest": {
+            "type": "object",
+            "properties": {
+                "from_date": {
+                    "type": "integer"
+                },
+                "to_date": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.GetStatisticsResponse": {
+            "type": "object",
+            "properties": {
+                "avg_hours_break": {
+                    "type": "integer"
+                },
+                "avg_hours_worked": {
+                    "type": "integer"
+                },
+                "avg_start_time": {
+                    "type": "integer"
+                },
+                "hours_worked": {
+                    "type": "integer"
                 }
             }
         },
