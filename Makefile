@@ -1,3 +1,4 @@
+.PHONY: run
 run:
 	git pull
 	git reset --hard origin/main
@@ -7,5 +8,6 @@ run:
 	sudo docker-compose down --volumes
 	sudo docker-compose up -d --build
 
+.PHONY: docker
 docker:
 	sudo docker-compose up --build
