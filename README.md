@@ -26,3 +26,9 @@ Rest api for working reports
 
 Чтобы удалить все остановленные контейнеры и неиспользуемые образы (а не только образы, не связанные с контейнерами
 docker system prune -a
+
+gRPC builds
+
+go get google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+protoc api/proto/*.proto --go_out=. --proto_path=. --go-grpc_out=.

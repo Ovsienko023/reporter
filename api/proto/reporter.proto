@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package reporter;
+
+option go_package = "app/transport/grpc/grpc_domain";
+
+service Reporter {
+  // Auth
+  rpc SignIn(SignInRequest) returns (SignInResponse){}
+}
+
+
+// Auth
+
+message SignInRequest {
+  string Login = 1;
+  string Password = 2;
+}
+
+message SignInResponse {
+ optional string Token = 1;
+}
