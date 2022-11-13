@@ -9,7 +9,7 @@ import (
 
 const sqlUpdateReport = `
 	update main.reports
-    set title = $2, 
+    set display_name = $2, 
         date = $3, 
         start_time = $4, 
         end_time = $5, 
@@ -32,7 +32,7 @@ func (c *Client) UpdateReport(ctx context.Context, msg *UpdateReport) error {
 
 	row, err := transaction.Query(ctx, sqlUpdateReport,
 		msg.ReportId,
-		msg.Title,
+		msg.DisplayName,
 		msg.Date,
 		msg.StartTime,
 		msg.EndTime,
@@ -61,13 +61,13 @@ func (c *Client) UpdateReport(ctx context.Context, msg *UpdateReport) error {
 }
 
 type UpdateReport struct {
-	InvokerId string    `json:"invoker_id,omitempty"`
-	ReportId  string    `json:"id,omitempty"`
-	Title     string    `json:"title,omitempty"`
-	Date      time.Time `json:"date,omitempty"`
-	StartTime time.Time `json:"start_time,omitempty"`
-	EndTime   time.Time `json:"end_time,omitempty"`
-	BreakTime time.Time `json:"break_time,omitempty"`
-	WorkTime  time.Time `json:"work_time,omitempty"`
-	Body      string    `json:"body,omitempty"`
+	InvokerId   string    `json:"invoker_id,omitempty"`
+	ReportId    string    `json:"id,omitempty"`
+	DisplayName string    `json:"display_name,omitempty"`
+	Date        time.Time `json:"date,omitempty"`
+	StartTime   time.Time `json:"start_time,omitempty"`
+	EndTime     time.Time `json:"end_time,omitempty"`
+	BreakTime   time.Time `json:"break_time,omitempty"`
+	WorkTime    time.Time `json:"work_time,omitempty"`
+	Body        string    `json:"body,omitempty"`
 }

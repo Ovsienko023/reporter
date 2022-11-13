@@ -362,14 +362,14 @@ const docTemplate = `{
                 "date": {
                     "type": "integer"
                 },
+                "display_name": {
+                    "type": "string"
+                },
                 "end_time": {
                     "type": "integer"
                 },
                 "start_time": {
                     "type": "integer"
-                },
-                "title": {
-                    "type": "string"
                 },
                 "work_time": {
                     "type": "integer"
@@ -472,6 +472,9 @@ const docTemplate = `{
                 "date": {
                     "type": "integer"
                 },
+                "display_name": {
+                    "type": "string"
+                },
                 "end_time": {
                     "type": "integer"
                 },
@@ -480,9 +483,6 @@ const docTemplate = `{
                 },
                 "start_time": {
                     "type": "integer"
-                },
-                "title": {
-                    "type": "string"
                 },
                 "updated_at": {
                     "type": "integer"
@@ -510,6 +510,9 @@ const docTemplate = `{
                 "date": {
                     "type": "integer"
                 },
+                "display_name": {
+                    "type": "string"
+                },
                 "end_time": {
                     "type": "integer"
                 },
@@ -518,9 +521,6 @@ const docTemplate = `{
                 },
                 "start_time": {
                     "type": "integer"
-                },
-                "title": {
-                    "type": "string"
                 },
                 "updated_at": {
                     "type": "integer"
@@ -583,14 +583,14 @@ const docTemplate = `{
                 "date": {
                     "type": "integer"
                 },
+                "display_name": {
+                    "type": "string"
+                },
                 "end_time": {
                     "type": "integer"
                 },
                 "start_time": {
                     "type": "integer"
-                },
-                "title": {
-                    "type": "string"
                 },
                 "work_time": {
                     "type": "integer"

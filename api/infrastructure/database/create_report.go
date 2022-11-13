@@ -9,7 +9,7 @@ import (
 
 const sqlCreateReport = `
     INSERT INTO main.reports
-        (title, date, start_time, end_time, break_time, work_time, body, creator_id)
+        (display_name, date, start_time, end_time, break_time, work_time, body, creator_id)
     VALUES
     ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING id
@@ -29,7 +29,7 @@ func (c *Client) CreateReport(ctx context.Context, msg *CreateReport) (*CreatedR
 	}
 
 	row, err := transaction.Query(ctx, sqlCreateReport,
-		msg.Title,
+		msg.DisplayName,
 		msg.Date,
 		msg.StartTime,
 		msg.EndTime,
@@ -73,14 +73,14 @@ func (c *Client) CreateReport(ctx context.Context, msg *CreateReport) (*CreatedR
 }
 
 type CreateReport struct {
-	InvokerId string    `json:"invoker_id,omitempty"`
-	Date      time.Time `json:"date,omitempty"`
-	Title     string    `json:"title,omitempty"`
-	StartTime time.Time `json:"start_time,omitempty"`
-	EndTime   time.Time `json:"end_time,omitempty"`
-	BreakTime time.Time `json:"break_time,omitempty"`
-	WorkTime  time.Time `json:"work_time,omitempty"`
-	Body      string    `json:"body,omitempty"`
+	InvokerId   string    `json:"invoker_id,omitempty"`
+	Date        time.Time `json:"date,omitempty"`
+	DisplayName string    `json:"display_name,omitempty"`
+	StartTime   time.Time `json:"start_time,omitempty"`
+	EndTime     time.Time `json:"end_time,omitempty"`
+	BreakTime   time.Time `json:"break_time,omitempty"`
+	WorkTime    time.Time `json:"work_time,omitempty"`
+	Body        string    `json:"body,omitempty"`
 }
 
 type CreatedReport struct {
