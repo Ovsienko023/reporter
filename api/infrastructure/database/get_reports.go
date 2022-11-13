@@ -8,7 +8,7 @@ import (
 
 const sqlGetReports = `
 	select id,
-	       title,
+	       display_name,
 		   date,
 		   start_time,
 		   end_time,
@@ -35,7 +35,7 @@ func (c *Client) GetReports(ctx context.Context, msg *GetReports) ([]ReportItem,
 		report := ReportItem{}
 		err := row.Scan(
 			&report.Id,
-			&report.Title,
+			&report.DisplayName,
 			&report.Date,
 			&report.StartTime,
 			&report.EndTime,
@@ -61,16 +61,16 @@ type GetReports struct {
 }
 
 type ReportItem struct {
-	Id        *string    `json:"id,omitempty"`
-	Title     *string    `json:"title,omitempty"`
-	Date      *time.Time `json:"date,omitempty"`
-	StartTime *time.Time `json:"start_time,omitempty"`
-	EndTime   *time.Time `json:"end_time,omitempty"`
-	BreakTime *time.Time `json:"break_time,omitempty"`
-	WorkTime  *time.Time `json:"work_time,omitempty"`
-	Body      *string    `json:"body,omitempty"`
-	CreatorId *string    `json:"creator_id,omitempty"`
-	CreatedAt *time.Time `json:"created_at,omitempty"`
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	Id          *string    `json:"id,omitempty"`
+	DisplayName *string    `json:"display_name,omitempty"`
+	Date        *time.Time `json:"date,omitempty"`
+	StartTime   *time.Time `json:"start_time,omitempty"`
+	EndTime     *time.Time `json:"end_time,omitempty"`
+	BreakTime   *time.Time `json:"break_time,omitempty"`
+	WorkTime    *time.Time `json:"work_time,omitempty"`
+	Body        *string    `json:"body,omitempty"`
+	CreatorId   *string    `json:"creator_id,omitempty"`
+	CreatedAt   *time.Time `json:"created_at,omitempty"`
+	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
+	DeletedAt   *time.Time `json:"deleted_at,omitempty"`
 }
