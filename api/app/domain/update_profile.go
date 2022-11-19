@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/app/repository"
 )
 
 type UpdateProfileRequest struct {
@@ -9,8 +9,8 @@ type UpdateProfileRequest struct {
 	DisplayName string `json:"display_name,omitempty"`
 }
 
-func (r *UpdateProfileRequest) ToDbUpdateProfile(invokerId string) *database.UpdateProfile {
-	return &database.UpdateProfile{
+func (r *UpdateProfileRequest) ToDbUpdateProfile(invokerId string) *repository.UpdateProfile {
+	return &repository.UpdateProfile{
 		InvokerId:   invokerId,
 		DisplayName: r.DisplayName,
 	}

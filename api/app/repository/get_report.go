@@ -1,12 +1,11 @@
-package database
+package repository
 
 import (
 	"context"
-	"github.com/Ovsienko023/reporter/infrastructure/utils/ptr"
 	"time"
 )
 
-const sqlGetReports = `
+const sqlGetReport = `
 	select id,
 	       display_name,
 		   date,
@@ -17,22 +16,20 @@ const sqlGetReports = `
 		   body,
 		   creator_id,
 		   created_at,
-		   updated_at,
-		   deleted_at
+		   updated_at
     from main.reports
     inner join main.reports_to_users rtu on reports.id = rtu.report_id
-    where rtu.user_id = $1`
+    where id = $1 and rtu.user_id = $2`
 
-func (c *Client) GetReports(ctx context.Context, msg *GetReports) ([]ReportItem, *int, error) {
-	row, err := c.driver.Query(ctx, sqlGetReports, msg.InvokerId)
+func (c *Client) GetReport(ctx context.Context, msg *GetReport) (*Report, error) {
+	row, err := c.driver.Query(ctx, sqlGetReport, msg.ReportId, msg.InvokerId)
 	if err != nil {
-		return nil, nil, NewInternalError(err)
+		return nil, NewInternalError(err)
 	}
 
-	reports := make([]ReportItem, 0, 0)
+	report := &Report{}
 
 	for row.Next() {
-		report := ReportItem{}
 		err := row.Scan(
 			&report.Id,
 			&report.DisplayName,
@@ -45,22 +42,25 @@ func (c *Client) GetReports(ctx context.Context, msg *GetReports) ([]ReportItem,
 			&report.CreatorId,
 			&report.CreatedAt,
 			&report.UpdatedAt,
-			&report.DeletedAt,
 		)
 		if err != nil {
-			return nil, nil, NewInternalError(err)
+			return nil, NewInternalError(err)
 		}
-		reports = append(reports, report)
 	}
 
-	return reports, ptr.Int(len(reports)), nil
+	if report.Id == nil {
+		return nil, ErrReportIdNotFound
+	}
+
+	return report, nil
 }
 
-type GetReports struct {
+type GetReport struct {
 	InvokerId string `json:"invoker_id,omitempty"`
+	ReportId  string `json:"report_id,omitempty"`
 }
 
-type ReportItem struct {
+type Report struct {
 	Id          *string    `json:"id,omitempty"`
 	DisplayName *string    `json:"display_name,omitempty"`
 	Date        *time.Time `json:"date,omitempty"`
@@ -72,5 +72,4 @@ type ReportItem struct {
 	CreatorId   *string    `json:"creator_id,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
-	DeletedAt   *time.Time `json:"deleted_at,omitempty"`
 }

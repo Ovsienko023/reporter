@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/app/repository"
 	"time"
 )
 
@@ -17,8 +17,8 @@ type UpdateReportRequest struct {
 	Body        string `json:"body,omitempty,"`
 }
 
-func (r *UpdateReportRequest) ToDbUpdateReport(invokerId string) *database.UpdateReport {
-	return &database.UpdateReport{
+func (r *UpdateReportRequest) ToDbUpdateReport(invokerId string) *repository.UpdateReport {
+	return &repository.UpdateReport{
 		InvokerId:   invokerId,
 		ReportId:    r.ReportId,
 		DisplayName: r.DisplayName,

@@ -1,13 +1,15 @@
 package domain
 
-import "github.com/Ovsienko023/reporter/infrastructure/database"
+import (
+	"github.com/Ovsienko023/reporter/app/repository"
+)
 
 type GetProfileRequest struct {
 	Token string `json:"token,omitempty" swaggerignore:"true"`
 }
 
-func (r *GetProfileRequest) ToDbGetProfile(invokerId string) *database.GetProfile {
-	return &database.GetProfile{
+func (r *GetProfileRequest) ToDbGetProfile(invokerId string) *repository.GetProfile {
+	return &repository.GetProfile{
 		InvokerId: invokerId,
 	}
 }
@@ -18,7 +20,7 @@ type GetProfileResponse struct {
 	Login       *string `json:"login,omitempty"`
 }
 
-func FromGetProfileResponse(resp *database.Profile) *GetProfileResponse {
+func FromGetProfileResponse(resp *repository.Profile) *GetProfileResponse {
 	if resp == nil {
 		return nil
 	}

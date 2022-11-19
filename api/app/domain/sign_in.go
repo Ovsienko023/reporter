@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/app/repository"
 )
 
 type SignInRequest struct {
@@ -9,8 +9,8 @@ type SignInRequest struct {
 	Password string `json:"password,omitempty"`
 }
 
-func (r *SignInRequest) ToDbSignIn() *database.SignIn {
-	return &database.SignIn{
+func (r *SignInRequest) ToDbSignIn() *repository.SignIn {
+	return &repository.SignIn{
 		Login: r.Login,
 	}
 }

@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/app/repository"
 	"strconv"
 	"time"
 )
@@ -12,8 +12,8 @@ type GetStatisticsRequest struct {
 	ToDate   int64  `json:"to_date,omitempty"`
 }
 
-func (r *GetStatisticsRequest) ToDbGetStatistics(invokerId string) *database.GetStatistics {
-	return &database.GetStatistics{
+func (r *GetStatisticsRequest) ToDbGetStatistics(invokerId string) *repository.GetStatistics {
+	return &repository.GetStatistics{
 		InvokerId: invokerId,
 		FromDate:  time.Unix(r.FromDate, 0).UTC(),
 		ToDate:    time.Unix(r.ToDate, 0).UTC(),
@@ -40,7 +40,7 @@ type GetStatisticsResponse struct {
 	AvgStartTime   *int64 `json:"avg_start_time,omitempty"`
 }
 
-func FromGetStatisticsResponse(stats *database.Statistics) *GetStatisticsResponse {
+func FromGetStatisticsResponse(stats *repository.Statistics) *GetStatisticsResponse {
 	if stats == nil {
 		return nil
 	}

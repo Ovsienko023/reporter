@@ -3,9 +3,9 @@ package server
 import (
 	"context"
 	"github.com/Ovsienko023/reporter/app/core"
+	"github.com/Ovsienko023/reporter/app/repository"
 	transportHttp "github.com/Ovsienko023/reporter/app/transport/http"
 	"github.com/Ovsienko023/reporter/infrastructure/configuration"
-	"github.com/Ovsienko023/reporter/infrastructure/database"
 	"log"
 	"net/http"
 	"os"
@@ -23,7 +23,7 @@ type App struct {
 }
 
 func NewApp(cnf *configuration.Config) *App {
-	client, _ := database.New(&cnf.Db)
+	client, _ := repository.New(&cnf.Db)
 	recordCore := core.NewCore(client)
 
 	return &App{
@@ -63,8 +63,4 @@ func (a *App) Run(apiConfig *configuration.Api) error {
 	defer shutdown()
 
 	return a.httpServer.Shutdown(ctx)
-}
-
-func docs() {
-
 }

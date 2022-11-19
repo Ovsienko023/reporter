@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Ovsienko023/reporter/app/domain"
-	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/app/repository"
 	"github.com/golang-jwt/jwt"
 	"time"
 )
@@ -14,7 +14,7 @@ func (c *Core) SignIn(ctx context.Context, msg *domain.SignInRequest) (*domain.S
 	auth, err := c.db.SignIn(ctx, msg.ToDbSignIn())
 	if err != nil {
 		switch {
-		case errors.Is(err, database.ErrCredentials):
+		case errors.Is(err, repository.ErrCredentials):
 			return nil, ErrCredentials
 		}
 		return nil, fmt.Errorf("%w: %v", ErrInternal, err)

@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/app/repository"
 	"github.com/Ovsienko023/reporter/infrastructure/utils/ptr"
 )
 
@@ -9,8 +9,8 @@ type GetReportsRequest struct {
 	Token string `json:"token,omitempty" swaggerignore:"true"`
 }
 
-func (r *GetReportsRequest) ToDbGetReports(invokerId string) *database.GetReports {
-	return &database.GetReports{
+func (r *GetReportsRequest) ToDbGetReports(invokerId string) *repository.GetReports {
+	return &repository.GetReports{
 		InvokerId: invokerId,
 	}
 }
@@ -34,7 +34,7 @@ type ReportItem struct {
 	Body        *string `json:"body,omitempty"`
 }
 
-func FromGetReportsResponse(resp []database.ReportItem, cnt *int) *GetReportsResponse {
+func FromGetReportsResponse(resp []repository.ReportItem, cnt *int) *GetReportsResponse {
 	if resp == nil {
 		return nil
 	}
