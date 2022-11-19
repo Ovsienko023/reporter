@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/Ovsienko023/reporter/app/domain"
-	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/app/repository"
 )
 
 func (c *Core) UpdateReport(ctx context.Context, msg *domain.UpdateReportRequest) error {
@@ -16,7 +16,7 @@ func (c *Core) UpdateReport(ctx context.Context, msg *domain.UpdateReportRequest
 	err = c.db.UpdateReport(ctx, msg.ToDbUpdateReport(invokerId))
 	if err != nil {
 		switch {
-		case errors.Is(err, database.ErrReportIdNotFound):
+		case errors.Is(err, repository.ErrReportIdNotFound):
 			return ErrReportIdNotFound
 		}
 		return err

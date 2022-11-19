@@ -2,7 +2,7 @@ package domain
 
 import (
 	"errors"
-	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/app/repository"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"regexp"
 )
@@ -13,8 +13,8 @@ type SignUpRequest struct {
 	DisplayName *string `json:"display_name,omitempty"`
 }
 
-func (r *SignUpRequest) ToDbSignUp(hashPassword string) *database.SignUp {
-	return &database.SignUp{
+func (r *SignUpRequest) ToDbSignUp(hashPassword string) *repository.SignUp {
+	return &repository.SignUp{
 		Login:       r.Login,
 		Password:    hashPassword,
 		DisplayName: r.DisplayName,

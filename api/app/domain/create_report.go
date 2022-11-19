@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/app/repository"
 	"time"
 )
 
@@ -16,8 +16,8 @@ type CreateReportRequest struct {
 	Body        string `json:"body,omitempty"`
 }
 
-func (r *CreateReportRequest) ToDbCreateReport(invokerId string) *database.CreateReport {
-	return &database.CreateReport{
+func (r *CreateReportRequest) ToDbCreateReport(invokerId string) *repository.CreateReport {
+	return &repository.CreateReport{
 		InvokerId:   invokerId,
 		DisplayName: r.DisplayName,
 		Date:        time.Unix(r.Date, 0).UTC(),
@@ -33,7 +33,7 @@ type CreateReportResponse struct {
 	Id string `json:"id,omitempty"`
 }
 
-func FromCreateReportResponse(resp *database.CreatedReport) *CreateReportResponse {
+func FromCreateReportResponse(resp *repository.CreatedReport) *CreateReportResponse {
 	if resp == nil {
 		return nil
 	}

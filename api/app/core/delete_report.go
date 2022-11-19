@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Ovsienko023/reporter/app/domain"
-	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/app/repository"
 )
 
 func (c *Core) DeleteReport(ctx context.Context, msg *domain.DeleteReportRequest) error {
@@ -18,7 +18,7 @@ func (c *Core) DeleteReport(ctx context.Context, msg *domain.DeleteReportRequest
 
 	if err != nil {
 		switch {
-		case errors.Is(err, database.ErrReportIdNotFound):
+		case errors.Is(err, repository.ErrReportIdNotFound):
 			return ErrReportIdNotFound
 		default:
 			return fmt.Errorf("%w: %v", ErrInternal, err)

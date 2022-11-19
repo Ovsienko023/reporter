@@ -1,4 +1,4 @@
-package database
+package repository
 
 import (
 	"github.com/Ovsienko023/reporter/infrastructure/utils/ptr"

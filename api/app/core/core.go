@@ -1,17 +1,17 @@
 package core
 
 import (
-	"github.com/Ovsienko023/reporter/infrastructure/database"
+	"github.com/Ovsienko023/reporter/app/repository"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 	"strings"
 )
 
 type Core struct {
-	db database.InterfaceDatabase
+	db repository.InterfaceDatabase
 }
 
-func NewCore(db database.InterfaceDatabase) *Core {
+func NewCore(db repository.InterfaceDatabase) *Core {
 	return &Core{
 		db: db,
 	}
