@@ -1,22 +1,39 @@
 # Reporter
 Rest api for working reports
 
-# Requirements
+# Deploy
+#### Requirements deploy: `docker`, `docker-compose`
 
-- docker
-- docker-compose
 
-# Starting
+1) ```git clone https://github.com/Ovsienko023/reporter.git```
+2) ```cd reporter```
+3) ```make run```
 
-1) ```cd reporter```
-2) ```docker-compose up --build``` (Для запуска в фоне, использовать команду: ```docker-compose up -d --build```)
-3) ```docker-compose down --volumes``` (Еслинужно отчистить БД)
-4) `sudo docker stop $(docker ps -a -q)` (Остановка всех запущенных контейнеров)
+# Build
+#### Requirements build: `golang 3.18+`
+
+Для корректной работы прилажения необходимо накатить БД и подправить настройки подключения к бд`/reporter/api/infrastructure/configuration/config.go`: 
+1) ```cd reporter/api``` 
+2) ```go get```
+3) ```go build main.go```
+
+
 # Generate documentation swagger
 
 1) ```go get github.com/swaggo/swag/cmd/swag```
 2) ```swag init``` (если команда не срабатывает: ```export GOBIN=$(go env GOPATH)/bin```)
 3) http://0.0.0.0:8888/docs/index.html
+
+
+# Init db
+
+1) `cd reporter`
+2) `make docker`
+
+Так же можно руками накатить файл `init.sql` на установленную БД `postgres 14`. 
+
+Путь к файлу: `/reporter/database/init.sql`
+
 
 # useful links
 - `https://github.com/swaggo/http-swagger`
