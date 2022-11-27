@@ -6,8 +6,10 @@ services:
       context: ./database
       dockerfile: Dockerfile
     restart: always
-    ports:
-      - "5442:5432"
+#    ports:
+#      - "5442:5432"
+    volumes:
+      - database:/var/lib/postgresql/data
   server:
     build:
       context: ./api
@@ -20,3 +22,6 @@ services:
       - "8888:8888"
     networks:
       - default
+
+volumes:
+  database:
