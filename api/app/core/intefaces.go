@@ -6,8 +6,10 @@ import (
 )
 
 type InterfaceCore interface {
+	SignIn(ctx context.Context, msg *domain.SignInRequest) (*domain.SignInResponse, error)
 	SignUp(ctx context.Context, msg *domain.SignUpRequest) error
-	GetToken(ctx context.Context, msg *domain.SignInRequest) (*domain.SignInResponse, error)
+
+	SendEmail(ctx context.Context, msg *domain.SendEmailRequest) error
 
 	GetProfile(ctx context.Context, msg *domain.GetReportRequest) (*domain.GetProfileResponse, error)
 

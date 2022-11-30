@@ -117,6 +117,21 @@ definitions:
       work_time:
         type: integer
     type: object
+  domain.SendEmailRequest:
+    properties:
+      body:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      recipients:
+        items:
+          type: string
+        type: array
+      subject:
+        type: string
+    type: object
   domain.SignInRequest:
     properties:
       login:
@@ -342,6 +357,26 @@ paths:
       summary: Update report
       tags:
       - Reports
+  /api/v1/send_mail:
+    post:
+      description: Send email
+      parameters:
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SendEmailRequest'
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Send email
+      tags:
+      - Email
   /api/v1/sign_in:
     post:
       description: Getting an authorization token

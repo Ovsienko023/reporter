@@ -133,6 +133,18 @@ func (t *Transport) DeleteReport(w http.ResponseWriter, r *http.Request) {
 	handlers.DeleteReport(&t.core, w, r)
 }
 
+// SendEmail ...  Sending a report by mail
+// @Summary Send email
+// @Description Send email
+// @Tags Email
+// @Param request body domain.SendEmailRequest true "body params"
+// @Success 204
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/send_mail [post]
+func (t *Transport) SendEmail(w http.ResponseWriter, r *http.Request) {
+	handlers.SendEmail(&t.core, w, r) // todo
+}
+
 // GetStatistics ...  Get Statistics
 // @Summary Get Statistics
 // @Description Get Statistics

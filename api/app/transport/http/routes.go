@@ -30,5 +30,7 @@ func RegisterHTTPEndpoints(router chi.Router, c core.Core, apiConfig *configurat
 
 	router.Get("/api/v1/stats", h.GetStatistics)
 
+	router.Post("/api/v1/send_email", h.SendEmail)
+
 	return router
 }

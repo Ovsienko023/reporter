@@ -246,6 +246,37 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/send_mail": {
+            "post": {
+                "description": "Send email",
+                "tags": [
+                    "Email"
+                ],
+                "summary": "Send email",
+                "parameters": [
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.SendEmailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/sign_in": {
             "post": {
                 "description": "Getting an authorization token",
@@ -527,6 +558,29 @@ const docTemplate = `{
                 },
                 "work_time": {
                     "type": "integer"
+                }
+            }
+        },
+        "domain.SendEmailRequest": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "recipients": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "subject": {
+                    "type": "string"
                 }
             }
         },
