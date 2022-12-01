@@ -28,7 +28,7 @@ func (c *Core) SignIn(ctx context.Context, msg *domain.SignInRequest) (*domain.S
 	mySigningKey := []byte("SecretKey") // todo add secret from config
 
 	claims := &jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(100 * time.Minute).Unix(),
+		ExpiresAt: time.Now().Add(740 * time.Hour).Unix(),
 		Issuer:    *auth.UserId,
 	}
 
