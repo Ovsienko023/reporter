@@ -39,6 +39,11 @@ definitions:
         $ref: '#/definitions/domain.Report'
     type: object
   domain.GetReportsRequest:
+    properties:
+      date_from:
+        type: string
+      date_to:
+        type: string
     type: object
   domain.GetReportsResponse:
     properties:

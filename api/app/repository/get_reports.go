@@ -21,10 +21,17 @@ const sqlGetReports = `
 		   deleted_at
     from main.reports
     inner join main.reports_to_users rtu on reports.id = rtu.report_id
-    where rtu.user_id = $1`
+    where rtu.user_id = $1 and 
+    	($2::timestamp is null and $3::timestamp is null or 
+    	    date >= $2::timestamp and 
+    	    date <= $3::timestamp + interval '1 DAY')`
 
 func (c *Client) GetReports(ctx context.Context, msg *GetReports) ([]ReportItem, *int, error) {
-	row, err := c.driver.Query(ctx, sqlGetReports, msg.InvokerId)
+	row, err := c.driver.Query(ctx, sqlGetReports,
+		msg.InvokerId,
+		msg.DateFrom,
+		msg.DateTo,
+	)
 	if err != nil {
 		return nil, nil, NewInternalError(err)
 	}
@@ -57,7 +64,9 @@ func (c *Client) GetReports(ctx context.Context, msg *GetReports) ([]ReportItem,
 }
 
 type GetReports struct {
-	InvokerId string `json:"invoker_id,omitempty"`
+	InvokerId string     `json:"invoker_id,omitempty"`
+	DateFrom  *time.Time `json:"date_from,omitempty"`
+	DateTo    *time.Time `json:"date_to,omitempty"`
 }
 
 type ReportItem struct {

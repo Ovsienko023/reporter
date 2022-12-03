@@ -441,7 +441,15 @@ const docTemplate = `{
             }
         },
         "domain.GetReportsRequest": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "date_from": {
+                    "type": "string"
+                },
+                "date_to": {
+                    "type": "string"
+                }
+            }
         },
         "domain.GetReportsResponse": {
             "type": "object",

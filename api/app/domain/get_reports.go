@@ -3,15 +3,20 @@ package domain
 import (
 	"github.com/Ovsienko023/reporter/app/repository"
 	"github.com/Ovsienko023/reporter/infrastructure/utils/ptr"
+	"time"
 )
 
 type GetReportsRequest struct {
-	Token string `json:"token,omitempty" swaggerignore:"true"`
+	Token    string     `json:"token,omitempty" swaggerignore:"true"`
+	DateFrom *time.Time `json:"date_from,omitempty"`
+	DateTo   *time.Time `json:"date_to,omitempty"`
 }
 
 func (r *GetReportsRequest) ToDbGetReports(invokerId string) *repository.GetReports {
 	return &repository.GetReports{
 		InvokerId: invokerId,
+		DateFrom:  r.DateFrom,
+		DateTo:    r.DateTo,
 	}
 }
 
