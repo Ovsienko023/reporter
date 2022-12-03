@@ -66,7 +66,7 @@ func Send(cfg *Config, msg *Letter) error {
 	m.SetHeader("To", msg.To...)
 
 	m.SetHeader("Subject", msg.Subject)
-	m.SetBody("text/html", msg.Body)
+	m.SetBody("text/plain", msg.Body)
 
 	// Send the email to Bob, Cora and Dan.
 	if err := d.DialAndSend(m); err != nil {
