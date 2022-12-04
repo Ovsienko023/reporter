@@ -448,6 +448,12 @@ const docTemplate = `{
                 },
                 "date_to": {
                     "type": "string"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
                 }
             }
         },

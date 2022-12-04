@@ -6,6 +6,7 @@ import (
 	"github.com/Ovsienko023/reporter/app/core"
 	"github.com/Ovsienko023/reporter/app/domain"
 	"github.com/Ovsienko023/reporter/app/transport/http/httperror"
+	"github.com/Ovsienko023/reporter/infrastructure/utils/ptr"
 	"net/http"
 	"strconv"
 	"time"
@@ -43,6 +44,30 @@ func GetReports(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		}
 		tm := time.Unix(i, 0)
 		message.DateTo = &tm
+	}
+
+	page := query.Get("page")
+	if page != "" {
+		intVar, err := strconv.Atoi(page)
+		if err != nil {
+			errorContainer.Done(w, http.StatusBadRequest, "Invalid requests")
+			return
+		}
+		message.Page = ptr.Int(intVar)
+	} else {
+		message.Page = ptr.Int(1)
+	}
+
+	pageSize := query.Get("page_size")
+	if pageSize != "" {
+		intVar, err := strconv.Atoi(pageSize)
+		if err != nil {
+			errorContainer.Done(w, http.StatusBadRequest, "Invalid requests")
+			return
+		}
+		message.PageSize = ptr.Int(intVar)
+	} else {
+		message.PageSize = ptr.Int(200)
 	}
 
 	result, err := c.GetReports(r.Context(), &message)
