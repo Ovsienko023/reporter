@@ -23,23 +23,15 @@ func (r *UpdateReportRequest) ToDbUpdateReport(invokerId string) *repository.Upd
 		InvokerId:   invokerId,
 		ReportId:    r.ReportId,
 		DisplayName: r.DisplayName,
+		StartTime:   r.StartTime,
+		EndTime:     r.EndTime,
+		BreakTime:   r.BreakTime,
+		WorkTime:    r.WorkTime,
 		Body:        r.Body,
 	}
 
 	if r.Date != nil {
 		result.Date = ptr.Time(time.Unix(*r.Date, 0).UTC())
-	}
-	if r.StartTime != nil {
-		result.StartTime = ptr.Time(time.Unix(*r.StartTime, 0).UTC())
-	}
-	if r.EndTime != nil {
-		result.EndTime = ptr.Time(time.Unix(*r.EndTime, 0).UTC())
-	}
-	if r.BreakTime != nil {
-		result.BreakTime = ptr.Time(time.Unix(*r.BreakTime, 0).UTC())
-	}
-	if r.WorkTime != nil {
-		result.WorkTime = ptr.Time(time.Unix(*r.WorkTime, 0).UTC())
 	}
 
 	return result

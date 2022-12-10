@@ -65,9 +65,9 @@ type UpdateReport struct {
 	ReportId    string     `json:"id,omitempty"`
 	DisplayName *string    `json:"display_name,omitempty"`
 	Date        *time.Time `json:"date,omitempty"`
-	StartTime   *time.Time `json:"start_time,omitempty"`
-	EndTime     *time.Time `json:"end_time,omitempty"`
-	BreakTime   *time.Time `json:"break_time,omitempty"`
-	WorkTime    *time.Time `json:"work_time,omitempty"`
+	StartTime   *int64     `json:"start_time,omitempty"`
+	EndTime     *int64     `json:"end_time,omitempty"`
+	BreakTime   *int64     `json:"break_time,omitempty"`
+	WorkTime    *int64     `json:"work_time,omitempty"`
 	Body        *string    `json:"body,omitempty"`
 }

@@ -58,14 +58,10 @@ const (
 	order by date desc limit 1`
 
 	sqlGetStatistics = `
-	select avg(extract(epoch from end_time) -
-               extract(epoch from start_time) -
-               extract(epoch from break_time)) as avg_hours_worked,  -- среднне количество отработанных часов
-       	   sum(extract(epoch from end_time) -
-               extract(epoch from start_time) -
-               extract(epoch from break_time)) as hours_worked,      -- отработаннно часов
-       	   avg(extract(epoch from break_time)) as avg_hours_break,   -- среднне количество часов перерыва
-           avg(extract(epoch from start_time)) as avg_start_time     -- среднее время начала дня
+	select avg(work_time) as avg_hours_worked,   -- среднне количество отработанных часов
+       	   sum(work_time) as hours_worked,       -- отработаннно часов
+       	   avg(break_time) as avg_hours_break,   -- среднне количество часов перерыва
+           avg(start_time) as avg_start_time     -- среднее время начала дня
 	from main.reports
 	inner join main.reports_to_users rtu on reports.id = rtu.report_id
 	where rtu.user_id = $1 and 

@@ -58,10 +58,10 @@ func FromGetReportsResponse(resp []repository.ReportItem, cnt *int) *GetReportsR
 			CreatorId:   obj.CreatorId,
 			CreatedAt:   ptr.Int64(obj.CreatedAt.Unix()),
 			UpdatedAt:   ptr.Int64(obj.UpdatedAt.Unix()),
-			StartTime:   ptr.Int64(obj.StartTime.Unix()),
-			EndTime:     ptr.Int64(obj.EndTime.Unix()),
-			BreakTime:   ptr.Int64(obj.BreakTime.Unix()),
-			WorkTime:    ptr.Int64(obj.WorkTime.Unix()),
+			StartTime:   obj.StartTime,
+			EndTime:     obj.EndTime,
+			BreakTime:   obj.BreakTime,
+			WorkTime:    obj.WorkTime,
 			Body:        obj.Body,
 		}
 		reports = append(reports, item)
