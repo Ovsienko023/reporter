@@ -21,10 +21,10 @@ func (r *CreateReportRequest) ToDbCreateReport(invokerId string) *repository.Cre
 		InvokerId:   invokerId,
 		DisplayName: r.DisplayName,
 		Date:        time.Unix(r.Date, 0).UTC(),
-		StartTime:   time.Unix(r.StartTime, 0).UTC(),
-		EndTime:     time.Unix(r.EndTime, 0).UTC(),
-		BreakTime:   time.Unix(r.BreakTime, 0).UTC(),
-		WorkTime:    time.Unix(r.WorkTime, 0).UTC(),
+		StartTime:   r.StartTime,
+		EndTime:     r.EndTime,
+		BreakTime:   r.BreakTime,
+		WorkTime:    r.WorkTime,
 		Body:        r.Body,
 	}
 }
