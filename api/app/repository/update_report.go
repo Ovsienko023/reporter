@@ -9,13 +9,13 @@ import (
 
 const sqlUpdateReport = `
 	update main.reports
-    set display_name = $2, 
-        date = $3, 
-        start_time = $4, 
-        end_time = $5, 
-        break_time = $6, 
-        work_time = $7, 
-        body = $8, 
+    set display_name = coalesce($2, display_name), 
+        date = coalesce($3, date), 
+        start_time = coalesce($4, start_time), 
+        end_time = coalesce($5, end_time), 
+        break_time = coalesce($6, break_time), 
+        work_time = coalesce($7, work_time), 
+        body = coalesce($8, body), 
         updated_at = now()
     where id = $1 and exists(select 1 
 							 from main.reports
@@ -61,13 +61,13 @@ func (c *Client) UpdateReport(ctx context.Context, msg *UpdateReport) error {
 }
 
 type UpdateReport struct {
-	InvokerId   string    `json:"invoker_id,omitempty"`
-	ReportId    string    `json:"id,omitempty"`
-	DisplayName string    `json:"display_name,omitempty"`
-	Date        time.Time `json:"date,omitempty"`
-	StartTime   time.Time `json:"start_time,omitempty"`
-	EndTime     time.Time `json:"end_time,omitempty"`
-	BreakTime   time.Time `json:"break_time,omitempty"`
-	WorkTime    time.Time `json:"work_time,omitempty"`
-	Body        string    `json:"body,omitempty"`
+	InvokerId   string     `json:"invoker_id,omitempty"`
+	ReportId    string     `json:"id,omitempty"`
+	DisplayName *string    `json:"display_name,omitempty"`
+	Date        *time.Time `json:"date,omitempty"`
+	StartTime   *time.Time `json:"start_time,omitempty"`
+	EndTime     *time.Time `json:"end_time,omitempty"`
+	BreakTime   *time.Time `json:"break_time,omitempty"`
+	WorkTime    *time.Time `json:"work_time,omitempty"`
+	Body        *string    `json:"body,omitempty"`
 }
