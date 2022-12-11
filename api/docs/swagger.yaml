@@ -434,7 +434,7 @@ paths:
     get:
       description: Get Statistics
       parameters:
-      - description: body params
+      - description: query params
         in: body
         name: request
         required: true

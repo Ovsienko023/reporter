@@ -142,14 +142,14 @@ func (t *Transport) DeleteReport(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} httperror.ErrorResponse
 // @Router /api/v1/send_mail [post]
 func (t *Transport) SendEmail(w http.ResponseWriter, r *http.Request) {
-	handlers.SendEmail(&t.core, w, r) // todo
+	handlers.SendEmail(&t.core, w, r)
 }
 
 // GetStatistics ...  Get Statistics
 // @Summary Get Statistics
 // @Description Get Statistics
 // @Tags Statistics
-// @Param request body domain.GetStatisticsRequest true "body params"
+// @Param request body domain.GetStatisticsRequest true "query params"
 // @Success 200 {object} domain.GetStatisticsResponse
 // @Failure 500 {object} httperror.ErrorResponse
 // @Router /api/v1/stats [get]

@@ -354,7 +354,7 @@ const docTemplate = `{
                 "summary": "Get Statistics",
                 "parameters": [
                     {
-                        "description": "body params",
+                        "description": "query params",
                         "name": "request",
                         "in": "body",
                         "required": true,
