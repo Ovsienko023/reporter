@@ -31,6 +31,7 @@ const (
 	DefaultApiPort = "8888"
 
 	DefaultDocHost = "85.193.83.76"
+	//DefaultDocHost = "localhost"
 	DefaultDocPort = "8888"
 
 	//DefaultDbConnStr = "postgresql://postgres:1234@localhost:5442/postgres"
