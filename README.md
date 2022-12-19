@@ -10,9 +10,9 @@ Rest api for working reports
 3) ```make run```
 
 # Build
-#### Requirements build: `golang 3.18+`
+#### Requirements build: `golang 1.18+`
 
-Для корректной работы прилажения необходимо накатить БД и подправить настройки подключения к бд`/reporter/api/infrastructure/configuration/config.go`: 
+Для корректной работы приложения необходимо накатить БД и подправить настройки подключения к бд`/reporter/api/infrastructure/configuration/config.go`: 
 1) ```cd reporter/api``` 
 2) ```go get```
 3) ```go build main.go```
