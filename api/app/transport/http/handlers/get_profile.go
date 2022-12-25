@@ -31,4 +31,5 @@ func GetProfile(c *core.Core, w http.ResponseWriter, r *http.Request) {
 
 	response, _ := json.Marshal(result)
 	_, _ = w.Write(response)
+
 }

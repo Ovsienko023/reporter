@@ -32,6 +32,5 @@ func SignIn(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, _ := json.Marshal(result)
-	_, _ = w.Write(response)
+	ResponseMarshaller(w, http.StatusOK, result)
 }

@@ -35,6 +35,5 @@ func SendEmail(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.WriteHeader(http.StatusNoContent)
-	_, _ = w.Write([]byte{})
+	ResponseMarshaller(w, http.StatusNoContent, nil)
 }

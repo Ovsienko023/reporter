@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/Ovsienko023/reporter/app/core"
 	"github.com/Ovsienko023/reporter/app/domain"
@@ -33,6 +32,5 @@ func GetStatistics(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, _ := json.Marshal(result)
-	_, _ = w.Write(response)
+	ResponseMarshaller(w, http.StatusOK, result)
 }
