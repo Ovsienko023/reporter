@@ -25,7 +25,7 @@ const (
 		where rtu.user_id = $1 and 
 			($2::timestamp is null and $3::timestamp is null or 
 				date >= $2::timestamp and 
-				date <= $3::timestamp + interval '1 DAY')
+				date <= $3::timestamp)
 	)
 	select (select count(*) from tab) as count,
 			r.id                      as report_id,
