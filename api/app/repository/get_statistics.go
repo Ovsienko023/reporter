@@ -65,8 +65,9 @@ const (
 	from main.reports
 	inner join main.reports_to_users rtu on reports.id = rtu.report_id
 	where rtu.user_id = $1 and 
-	      date_trunc('day', date) >= date_trunc('day', $2::timestamp) and 
-	      date_trunc('day', date) <= date_trunc('day', $3::timestamp)`
+	      ($2::timestamp is null and $3::timestamp is null or 
+				date >= $2::timestamp and 
+				date <= $3::timestamp)`
 )
 
 func (c *Client) GetStatistics(ctx context.Context, msg *GetStatistics) (*Statistics, error) {
