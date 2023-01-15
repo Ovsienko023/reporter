@@ -35,5 +35,5 @@ func UpdateProfile(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ResponseMarshaller(w, http.StatusNoContent, nil)
+	JsonResponse(w, http.StatusNoContent, nil)
 }

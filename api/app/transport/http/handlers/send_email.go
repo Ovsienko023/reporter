@@ -35,5 +35,5 @@ func SendEmail(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	ResponseMarshaller(w, http.StatusNoContent, nil)
+	JsonResponse(w, http.StatusNoContent, nil)
 }

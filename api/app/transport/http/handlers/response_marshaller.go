@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func ResponseMarshaller(w http.ResponseWriter, code int, resp any) {
+func JsonResponse(w http.ResponseWriter, code int, resp any) {
 	if resp == nil {
 		w.WriteHeader(code)
 		return
@@ -21,4 +21,14 @@ func ResponseMarshaller(w http.ResponseWriter, code int, resp any) {
 
 	w.WriteHeader(code)
 	_, _ = w.Write(response)
+}
+
+func FileResponse(w http.ResponseWriter, file []byte) error {
+	w.Header().Add("Content-Type", "application/octet-stream")
+	_, err := w.Write(file)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

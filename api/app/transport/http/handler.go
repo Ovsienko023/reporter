@@ -133,6 +133,17 @@ func (t *Transport) DeleteReport(w http.ResponseWriter, r *http.Request) {
 	handlers.DeleteReport(&t.core, w, r)
 }
 
+// ExportReportsToCsv ... Get all reports
+// @Summary Export reports to csv
+// @Description Export reports to csv
+// @Tags Reports
+// @Param request body domain.GetReportsRequest true "query params"
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/export/reports [get]
+func (t *Transport) ExportReportsToCsv(w http.ResponseWriter, r *http.Request) {
+	handlers.ExportReportsToCsv(&t.core, w, r)
+}
+
 // SendEmail ...  Sending a report by mail
 // @Summary Send email
 // @Description Send email

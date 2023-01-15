@@ -80,5 +80,5 @@ func GetReports(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ResponseMarshaller(w, http.StatusOK, result)
+	JsonResponse(w, http.StatusOK, result)
 }

@@ -47,5 +47,5 @@ func CreateReport(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	ResponseMarshaller(w, http.StatusCreated, result)
+	JsonResponse(w, http.StatusCreated, result)
 }

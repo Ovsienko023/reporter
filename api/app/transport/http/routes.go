@@ -27,6 +27,7 @@ func RegisterHTTPEndpoints(router chi.Router, c core.Core, apiConfig *configurat
 	router.Post("/api/v1/reports", h.CreateReport)
 	router.Put("/api/v1/reports/{report_id}", h.UpdateReport)
 	router.Delete("/api/v1/reports/{report_id}", h.DeleteReport)
+	router.Get("/api/v1/export/reports", h.ExportReportsToCsv)
 
 	router.Get("/api/v1/stats", h.GetStatistics)
 
