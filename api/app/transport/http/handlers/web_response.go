@@ -23,8 +23,10 @@ func JsonResponse(w http.ResponseWriter, code int, resp any) {
 	_, _ = w.Write(response)
 }
 
-func FileResponse(w http.ResponseWriter, file []byte) error {
-	w.Header().Add("Content-Type", "application/octet-stream")
+func FileResponse(w http.ResponseWriter, file []byte, filename string) error {
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Header().Set("Content-Disposition", "attachment;filename="+filename)
+
 	_, err := w.Write(file)
 	if err != nil {
 		return err
