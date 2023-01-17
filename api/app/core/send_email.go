@@ -11,7 +11,7 @@ import (
 // SendEmail возвращает следующие ошибки:
 // ErrUnauthorized
 // ErrInternal
-func (c *Core) SendEmail(ctx context.Context, msg *domain.SendEmailRequest) error {
+func (c *Core) SendEmail(_ context.Context, msg *domain.SendEmailRequest) error {
 	_, err := c.authorize(msg.Token)
 	if err != nil {
 		return err
@@ -64,6 +64,7 @@ func Send(cfg *Config, msg *Letter) error {
 		return errors.New("not to") // todo
 	}
 	m.SetHeader("To", msg.To...)
+	m.SetHeader("Cc", cfg.Username)
 
 	m.SetHeader("Subject", msg.Subject)
 	m.SetBody("text/html", msg.Body)
