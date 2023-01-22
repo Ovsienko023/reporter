@@ -21,4 +21,6 @@ type InterfaceDatabase interface {
 	GetSystemUser() *SystemUser
 
 	GetStatistics(ctx context.Context, msg *GetStatistics) (*Statistics, error)
+
+	AddObjectToUserPermission(ctx context.Context, msg *AddUserPermission) error
 }

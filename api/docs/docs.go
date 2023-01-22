@@ -276,11 +276,11 @@ const docTemplate = `{
         },
         "/api/v1/send_mail": {
             "post": {
-                "description": "Send email",
+                "description": "Give the user permission to read an object",
                 "tags": [
-                    "Email"
+                    "Permission"
                 ],
-                "summary": "Send email",
+                "summary": "Add user permission",
                 "parameters": [
                     {
                         "description": "body params",
@@ -288,7 +288,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.SendEmailRequest"
+                            "$ref": "#/definitions/domain.AddObjectToUserPermissionRequest"
                         }
                     }
                 ],
@@ -443,6 +443,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "domain.AddObjectToUserPermissionRequest": {
+            "type": "object",
+            "properties": {
+                "object_id": {
+                    "type": "string"
+                },
+                "object_type": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.CreateReportRequest": {
             "type": "object",
             "properties": {

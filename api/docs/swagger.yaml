@@ -1,5 +1,14 @@
 basePath: /api/v1
 definitions:
+  domain.AddObjectToUserPermissionRequest:
+    properties:
+      object_id:
+        type: string
+      object_type:
+        type: string
+      user_id:
+        type: string
+    type: object
   domain.CreateReportRequest:
     properties:
       body:
@@ -411,14 +420,14 @@ paths:
       - Reports
   /api/v1/send_mail:
     post:
-      description: Send email
+      description: Give the user permission to read an object
       parameters:
       - description: body params
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/domain.SendEmailRequest'
+          $ref: '#/definitions/domain.AddObjectToUserPermissionRequest'
       responses:
         "204":
           description: No Content
@@ -426,9 +435,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/httperror.ErrorResponse'
-      summary: Send email
+      summary: Add user permission
       tags:
-      - Email
+      - Permission
   /api/v1/sign_in:
     post:
       description: Getting an authorization token

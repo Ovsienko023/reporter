@@ -181,3 +181,15 @@ func (t *Transport) SendEmail(w http.ResponseWriter, r *http.Request) {
 func (t *Transport) GetStatistics(w http.ResponseWriter, r *http.Request) {
 	handlers.GetStatistics(&t.core, w, r)
 }
+
+// AddObjectToUserPermission ...  Give the user permission to read an object
+// @Summary Add user permission
+// @Description Give the user permission to read an object
+// @Tags Permission
+// @Param request body domain.AddObjectToUserPermissionRequest true "body params"
+// @Success 204
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/send_mail [post]
+func (t *Transport) AddObjectToUserPermission(w http.ResponseWriter, r *http.Request) {
+	handlers.AddObjectToUserPermission(&t.core, w, r)
+}
