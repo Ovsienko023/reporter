@@ -69,6 +69,20 @@ func (t *Transport) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	handlers.UpdateProfile(&t.core, w, r)
 }
 
+// USERS
+
+// GetUsers ...  Get Users
+// @Summary Get Users
+// @Description Get Users
+// @Tags Users
+// @Param request body domain.GetUsersRequest true "query params"
+// @Success 200 {object} domain.GetUsersResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/users [get]
+func (t *Transport) GetUsers(w http.ResponseWriter, r *http.Request) {
+	handlers.GetUsers(&t.core, w, r)
+}
+
 // REPORTS
 
 // GetReport ... Get report

@@ -11,6 +11,8 @@ type InterfaceDatabase interface {
 	GetProfile(ctx context.Context, msg *GetProfile) (*Profile, error)
 	UpdateProfile(ctx context.Context, msg *UpdateProfile) error
 
+	GetUsers(ctx context.Context, msg *GetUsers) ([]UserItem, *int, error)
+
 	GetReport(ctx context.Context, msg *GetReport) (*Report, error)
 	GetReports(ctx context.Context, msg *GetReports) ([]ReportItem, *int, error)
 	CreateReport(ctx context.Context, msg *CreateReport) (*CreatedReport, error)

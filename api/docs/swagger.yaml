@@ -76,6 +76,22 @@ definitions:
       hours_worked:
         type: integer
     type: object
+  domain.GetUsersRequest:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+    type: object
+  domain.GetUsersResponse:
+    properties:
+      count:
+        type: integer
+      reports:
+        items:
+          $ref: '#/definitions/domain.UsersItem'
+        type: array
+    type: object
   domain.Report:
     properties:
       body:
@@ -184,6 +200,15 @@ definitions:
       work_time:
         type: integer
     type: object
+  domain.UsersItem:
+    properties:
+      display_name:
+        type: string
+      id:
+        type: string
+      login:
+        type: string
+    type: object
   httperror.ErrorResponse:
     properties:
       error:
@@ -215,6 +240,24 @@ info:
   title: Reporter API
   version: 0.0.1
 paths:
+  /api/v1/export/reports:
+    get:
+      description: Export reports to csv
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.GetReportsRequest'
+      responses:
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Export reports to csv
+      tags:
+      - Reports
   /api/v1/profile:
     get:
       description: Getting user data
@@ -452,4 +495,26 @@ paths:
       summary: Get Statistics
       tags:
       - Statistics
+  /api/v1/users:
+    get:
+      description: Get Users
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.GetUsersRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetUsersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Get Users
+      tags:
+      - Users
 swagger: "2.0"
