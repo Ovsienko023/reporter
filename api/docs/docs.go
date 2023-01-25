@@ -276,11 +276,11 @@ const docTemplate = `{
         },
         "/api/v1/send_mail": {
             "post": {
-                "description": "Give the user permission to read an object",
+                "description": "Send email",
                 "tags": [
-                    "Permission"
+                    "Email"
                 ],
-                "summary": "Add user permission",
+                "summary": "Send email",
                 "parameters": [
                     {
                         "description": "body params",
@@ -288,7 +288,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.AddObjectToUserPermissionRequest"
+                            "$ref": "#/definitions/domain.SendEmailRequest"
                         }
                     }
                 ],
@@ -431,6 +431,66 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/domain.GetUsersResponse"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{user_id}/permissions": {
+            "post": {
+                "description": "Give the user permission to read an object",
+                "tags": [
+                    "Permission"
+                ],
+                "summary": "Add object to user permission",
+                "parameters": [
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.AddObjectToUserPermissionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove the user's permission to read an object",
+                "tags": [
+                    "Permission"
+                ],
+                "summary": "Remove object from user permission",
+                "parameters": [
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.AddObjectToUserPermissionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
                     },
                     "500": {
                         "description": "Internal Server Error",

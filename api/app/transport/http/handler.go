@@ -183,13 +183,25 @@ func (t *Transport) GetStatistics(w http.ResponseWriter, r *http.Request) {
 }
 
 // AddObjectToUserPermission ...  Give the user permission to read an object
-// @Summary Add user permission
+// @Summary Add object to user permission
 // @Description Give the user permission to read an object
 // @Tags Permission
 // @Param request body domain.AddObjectToUserPermissionRequest true "body params"
 // @Success 204
 // @Failure 500 {object} httperror.ErrorResponse
-// @Router /api/v1/send_mail [post]
+// @Router /api/v1/users/{user_id}/permissions [post]
 func (t *Transport) AddObjectToUserPermission(w http.ResponseWriter, r *http.Request) {
 	handlers.AddObjectToUserPermission(&t.core, w, r)
+}
+
+// RemoveObjectFromUserPermission ...  Remove the user's permission to read an object
+// @Summary Remove object from user permission
+// @Description Remove the user's permission to read an object
+// @Tags Permission
+// @Param request body domain.AddObjectToUserPermissionRequest true "body params"
+// @Success 204
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/users/{user_id}/permissions [delete]
+func (t *Transport) RemoveObjectFromUserPermission(w http.ResponseWriter, r *http.Request) {
+	handlers.RemoveObjectFromUserPermission(&t.core, w, r)
 }

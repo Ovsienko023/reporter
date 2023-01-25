@@ -22,5 +22,6 @@ type InterfaceDatabase interface {
 
 	GetStatistics(ctx context.Context, msg *GetStatistics) (*Statistics, error)
 
-	AddObjectToUserPermission(ctx context.Context, msg *AddUserPermission) error
+	AddObjectToUserPermission(ctx context.Context, msg *AddObjectToUserPermission) error
+	RemoveObjectFromUserPermission(ctx context.Context, msg *RemoveObjectFromUserPermission) error
 }

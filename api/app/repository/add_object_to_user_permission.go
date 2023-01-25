@@ -9,24 +9,24 @@ import (
 
 var ErrPermission = errors.New("permission denied")
 
-const sqlAddUserPermission = `
+const sqlAddObjectToUserPermission = `
     INSERT INTO main.permissions_users_to_objects
         (user_id, object_type, object_id)
     VALUES
     ($1, $2, $3)
 `
 
-func (c *Client) AddObjectToUserPermission(ctx context.Context, msg *AddUserPermission) error {
+func (c *Client) AddObjectToUserPermission(ctx context.Context, msg *AddObjectToUserPermission) error {
 	if isAdmin, _ := c.checkPermission(ctx, msg.InvokerId); isAdmin != true {
 		return ErrPermission
 	}
-
+	// todo Добавить проверки на существование сущьностей
 	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		return fmt.Errorf("%w: %v", ErrInternal, err)
 	}
 	// todo добавить проверку роли администратора
-	rowAdded, err := transaction.Query(ctx, sqlAddUserPermission,
+	rowAdded, err := transaction.Query(ctx, sqlAddObjectToUserPermission,
 		msg.UserId,
 		msg.ObjectType,
 		msg.ObjectId,
@@ -46,7 +46,7 @@ func (c *Client) AddObjectToUserPermission(ctx context.Context, msg *AddUserPerm
 	return nil
 }
 
-type AddUserPermission struct {
+type AddObjectToUserPermission struct {
 	InvokerId  string `json:"invoker_id,omitempty"`
 	UserId     string `json:"user_id,omitempty"`
 	ObjectType string `json:"object_type,omitempty"`

@@ -9,8 +9,8 @@ type AddObjectToUserPermissionRequest struct {
 	ObjectId   string `json:"object_id,omitempty"`
 }
 
-func (r *AddObjectToUserPermissionRequest) ToDbAddObjectToUserPermission(invokerId string) *repository.AddUserPermission {
-	return &repository.AddUserPermission{
+func (r *AddObjectToUserPermissionRequest) ToDbAddObjectToUserPermission(invokerId string) *repository.AddObjectToUserPermission {
+	return &repository.AddObjectToUserPermission{
 		InvokerId:  invokerId,
 		UserId:     r.UserId,
 		ObjectType: r.ObjectType,

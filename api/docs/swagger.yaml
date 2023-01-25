@@ -420,14 +420,14 @@ paths:
       - Reports
   /api/v1/send_mail:
     post:
-      description: Give the user permission to read an object
+      description: Send email
       parameters:
       - description: body params
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/domain.AddObjectToUserPermissionRequest'
+          $ref: '#/definitions/domain.SendEmailRequest'
       responses:
         "204":
           description: No Content
@@ -435,9 +435,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/httperror.ErrorResponse'
-      summary: Add user permission
+      summary: Send email
       tags:
-      - Permission
+      - Email
   /api/v1/sign_in:
     post:
       description: Getting an authorization token
@@ -526,4 +526,43 @@ paths:
       summary: Get Users
       tags:
       - Users
+  /api/v1/users/{user_id}/permissions:
+    delete:
+      description: Remove the user's permission to read an object
+      parameters:
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.AddObjectToUserPermissionRequest'
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Remove object from user permission
+      tags:
+      - Permission
+    post:
+      description: Give the user permission to read an object
+      parameters:
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.AddObjectToUserPermissionRequest'
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Add object to user permission
+      tags:
+      - Permission
 swagger: "2.0"

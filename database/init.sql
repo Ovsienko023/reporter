@@ -88,13 +88,14 @@ insert into main.users_to_roles (user_id, role_id)
 values ((select id from main.users where display_name = 'Administrator'),
         (select id from main.roles where id = 'administrator'));
 
-
+-- todo не дупускать дубли в таблицу
 create table if not exists main.permissions_users_to_objects
 (
     user_id     uuid not null references main.users (id),
     object_type varchar,
     object_id   uuid
 );
+
 
 -- Таблица для больничного
 create table if not exists main.sick_leave
