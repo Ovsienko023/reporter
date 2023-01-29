@@ -38,5 +38,7 @@ func RegisterHTTPEndpoints(router chi.Router, c core.Core, apiConfig *configurat
 	router.Post("/api/v1/users/{user_id}/permissions", h.AddObjectToUserPermission)
 	router.Delete("/api/v1/users/{user_id}/permissions", h.RemoveObjectFromUserPermission)
 
+	router.Get("/api/v1/calendar", h.GetCalendarEvents)
+
 	return router
 }

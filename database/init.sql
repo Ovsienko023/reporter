@@ -111,6 +111,13 @@ create table if not exists main.sick_leave
     deleted_at  timestamptz
 );
 
+create table if not exists main.sick_leave_to_users
+(
+    user_id uuid    not null references main.users (id),
+    sick_leave_id uuid not null references main.sick_leave (id),
+    primary key (user_id, sick_leave_id)
+);
+
 -- Таблица для отпуска
 create table if not exists main.vacation
 (
@@ -125,24 +132,38 @@ create table if not exists main.vacation
     deleted_at  timestamptz
 );
 
+create table if not exists main.vacation_to_users
+(
+    user_id uuid    not null references main.users (id),
+    vacation_id uuid not null references main.vacation (id),
+    primary key (user_id, vacation_id)
+);
+
 -- Вьюха для отображения ивентов
 create or replace view main.events as
 with tab as (select r.id               as id,
+                    rtu.user_id        as user_id,
                     'report':: varchar as event_type,
                     r.date             as date
              from main.reports as r
+                      inner join main.reports_to_users rtu on r.id = rtu.report_id
              union all
              select v.id                 as id,
+                    vtu.user_id          as user_id,
                     'vacation':: varchar as event_type,
                     v.date               as date
              from main.vacation as v
+                      inner join main.vacation_to_users vtu on v.id = vtu.vacation_id
              union all
-             select v.id                   as id,
+             select s.id                   as id,
+                    stu.user_id            as user_id,
                     'sick_leave':: varchar as event_type,
-                    v.date                 as date
-             from main.sick_leave as v)
+                    s.date                 as date
+             from main.sick_leave as s
+                      inner join main.sick_leave_to_users stu on s.id = stu.sick_leave_id)
 
 select a.id         as id,
+       a.user_id    as user_id,
        a.event_type as event_type,
        a.date       as date
 from tab as a;

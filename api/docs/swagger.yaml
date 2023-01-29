@@ -9,6 +9,15 @@ definitions:
       user_id:
         type: string
     type: object
+  domain.CalendarEvent:
+    properties:
+      date:
+        type: string
+      event_type:
+        type: string
+      id:
+        type: string
+    type: object
   domain.CreateReportRequest:
     properties:
       body:
@@ -30,6 +39,26 @@ definitions:
     properties:
       id:
         type: string
+    type: object
+  domain.GetCalendarEventsRequest:
+    properties:
+      date_from:
+        type: string
+      date_to:
+        type: string
+      page:
+        type: integer
+      page_size:
+        type: integer
+    type: object
+  domain.GetCalendarEventsResponse:
+    properties:
+      count:
+        type: integer
+      events:
+        items:
+          $ref: '#/definitions/domain.CalendarEvent'
+        type: array
     type: object
   domain.GetProfileRequest:
     type: object
@@ -249,6 +278,28 @@ info:
   title: Reporter API
   version: 0.0.1
 paths:
+  /api/v1/calendar:
+    get:
+      description: Get Calendar Events
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.GetCalendarEventsRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetCalendarEventsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Get Calendar Events
+      tags:
+      - Calendar
   /api/v1/export/reports:
     get:
       description: Export reports to csv

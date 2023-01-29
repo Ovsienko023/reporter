@@ -205,3 +205,15 @@ func (t *Transport) AddObjectToUserPermission(w http.ResponseWriter, r *http.Req
 func (t *Transport) RemoveObjectFromUserPermission(w http.ResponseWriter, r *http.Request) {
 	handlers.RemoveObjectFromUserPermission(&t.core, w, r)
 }
+
+// GetCalendarEvents ...  Get Calendar Events
+// @Summary Get Calendar Events
+// @Description Get Calendar Events
+// @Tags Calendar
+// @Param request body domain.GetCalendarEventsRequest true "query params"
+// @Success 200 {object} domain.GetCalendarEventsResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/calendar [get]
+func (t *Transport) GetCalendarEvents(w http.ResponseWriter, r *http.Request) {
+	handlers.GetCalendarEvents(&t.core, w, r)
+}
