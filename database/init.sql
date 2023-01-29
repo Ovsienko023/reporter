@@ -3,6 +3,16 @@ CREATE EXTENSION pgcrypto;
 create schema main authorization postgres;
 grant all on schema main to postgres;
 
+-- Таблица для статусов
+create table if not exists main.statuses
+(
+    id varchar primary key
+);
+
+insert into main.statuses (id)
+values ('approved')
+on conflict do nothing;
+
 create table if not exists main.users
 (
     id           uuid primary key     default gen_random_uuid(),
@@ -60,7 +70,7 @@ create table if not exists main.groups_to_objects
 
 create table if not exists main.roles
 (
-    id varchar primary key,
+    id          varchar primary key,
     description varchar
 );
 insert into main.roles (id, description)
@@ -85,3 +95,53 @@ create table if not exists main.permissions_users_to_objects
     object_type varchar,
     object_id   uuid
 );
+
+-- Таблица для больничного
+create table if not exists main.sick_leave
+(
+    id          uuid primary key     default gen_random_uuid(),
+    date        timestamptz not null,
+    is_paid     bool        not null,
+    status      varchar references main.statuses (id),
+    description varchar,
+    creator_id  uuid references main.users (id),
+    created_at  timestamptz not null default now(),
+    updated_at  timestamptz not null default now(),
+    deleted_at  timestamptz
+);
+
+-- Таблица для отпуска
+create table if not exists main.vacation
+(
+    id          uuid primary key     default gen_random_uuid(),
+    date        timestamptz not null,
+    is_paid     bool        not null,
+    status      varchar references main.statuses (id),
+    description varchar,
+    creator_id  uuid references main.users (id),
+    created_at  timestamptz not null default now(),
+    updated_at  timestamptz not null default now(),
+    deleted_at  timestamptz
+);
+
+-- Вьюха для отображения ивентов
+create or replace view main.events as
+with tab as (select r.id               as id,
+                    'report':: varchar as event_type,
+                    r.date             as date
+             from main.reports as r
+             union all
+             select v.id                 as id,
+                    'vacation':: varchar as event_type,
+                    v.date               as date
+             from main.vacation as v
+             union all
+             select v.id                   as id,
+                    'sick_leave':: varchar as event_type,
+                    v.date                 as date
+             from main.sick_leave as v)
+
+select a.id         as id,
+       a.event_type as event_type,
+       a.date       as date
+from tab as a;
