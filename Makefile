@@ -20,4 +20,9 @@ cleanly:
 
 .PHONY: docker
 docker:
-	sudo docker-compose up --build
+	sudo docker-compose up --build server
+
+
+.PHONY: deploy
+deploy:
+	sudo docker-compose --file docker-compose.deploy.yaml up --build

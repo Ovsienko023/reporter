@@ -3,30 +3,28 @@ package repository
 import "context"
 
 const sqlCheckPermission = `
-	select role_id
-    from main.users_to_roles
-    where user_id = $1`
+	select 1
+    from main.permissions_users_to_objects
+    where object_type = 'users' and
+          user_id = $1 and
+          object_id = $2`
 
-func (c *Client) checkPermission(ctx context.Context, invokerId string) (bool, error) {
-	row, err := c.driver.Query(ctx, sqlCheckPermission, invokerId)
+func (c *Client) checkUserPermission(ctx context.Context, invokerId string, userId string) (bool, error) {
+	if invokerId == userId {
+		return true, nil
+	}
+
+	raw, err := c.driver.Query(ctx, sqlCheckPermission, invokerId, userId)
 	if err != nil {
 		return false, NewInternalError(err)
 	}
 
-	var roleId *string
+	raw.Next()
+	status := raw.CommandTag()
 
-	for row.Next() {
-		err := row.Scan(
-			&roleId,
-		)
-		if err != nil {
-			return false, NewInternalError(err)
-		}
+	if status != nil && status.String() == "SELECT 1" {
+		return true, nil
 	}
 
-	if *roleId != "administrator" {
-		return false, nil
-	}
-
-	return true, nil
+	return false, nil
 }

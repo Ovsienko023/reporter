@@ -23,8 +23,8 @@ func (r *SignUpRequest) ToDbSignUp(hashPassword string) *repository.SignUp {
 
 func (r SignUpRequest) Validate() error {
 	return validation.ValidateStruct(&r,
-		validation.Field(&r.Login, validation.Required, validation.Length(3, 20)),
-		validation.Field(&r.Password, validation.Length(6, 128)),
+		validation.Field(&r.Login, validation.Required, validation.Length(2, 20)),
+		validation.Field(&r.Password, validation.Length(2, 128)),
 		//validation.Field(&r.Password, validation.By(checkPassword)),
 		validation.Field(&r.DisplayName, validation.Required, validation.Length(0, 128)),
 	)

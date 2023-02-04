@@ -83,6 +83,20 @@ func (t *Transport) GetUsers(w http.ResponseWriter, r *http.Request) {
 	handlers.GetUsers(&t.core, w, r)
 }
 
+// CALENDAR EVENTS
+
+// GetCalendarEvents ...  Get Calendar Events
+// @Summary Get Calendar Events
+// @Description Get Calendar Events
+// @Tags Calendar
+// @Param request body domain.GetCalendarEventsRequest true "query params"
+// @Success 200 {object} domain.GetCalendarEventsResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/calendar [get]
+func (t *Transport) GetCalendarEvents(w http.ResponseWriter, r *http.Request) {
+	handlers.GetCalendarEvents(&t.core, w, r)
+}
+
 // REPORTS
 
 // GetReport ... Get report
@@ -147,6 +161,20 @@ func (t *Transport) DeleteReport(w http.ResponseWriter, r *http.Request) {
 	handlers.DeleteReport(&t.core, w, r)
 }
 
+// GetSickLeave ... Get sick leave
+// @Summary Get sick leave
+// @Description get sick leave
+// @Tags SickLeaves
+// @Param   sick_leave_id   path      string  true  "sick_leave_id"
+// @Success 200 {object} domain.GetSickLeaveResponse
+// @Failure 403 {object} httperror.ErrorResponse
+// @Failure 404 {object} httperror.ErrorResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/users/{user_id}/sick_leaves/{sick_leave_id} [get]
+func (t *Transport) GetSickLeave(w http.ResponseWriter, r *http.Request) {
+	handlers.GetSickLeave(&t.core, w, r)
+}
+
 // ExportReportsToCsv ... Get all reports
 // @Summary Export reports to csv
 // @Description Export reports to csv
@@ -204,16 +232,4 @@ func (t *Transport) AddObjectToUserPermission(w http.ResponseWriter, r *http.Req
 // @Router /api/v1/users/{user_id}/permissions [delete]
 func (t *Transport) RemoveObjectFromUserPermission(w http.ResponseWriter, r *http.Request) {
 	handlers.RemoveObjectFromUserPermission(&t.core, w, r)
-}
-
-// GetCalendarEvents ...  Get Calendar Events
-// @Summary Get Calendar Events
-// @Description Get Calendar Events
-// @Tags Calendar
-// @Param request body domain.GetCalendarEventsRequest true "query params"
-// @Success 200 {object} domain.GetCalendarEventsResponse
-// @Failure 500 {object} httperror.ErrorResponse
-// @Router /api/v1/calendar [get]
-func (t *Transport) GetCalendarEvents(w http.ResponseWriter, r *http.Request) {
-	handlers.GetCalendarEvents(&t.core, w, r)
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-var ErrPermission = errors.New("permission denied")
+var ErrPermissionDenied = errors.New("permission denied")
 
 const sqlAddObjectToUserPermission = `
     INSERT INTO main.permissions_users_to_objects
@@ -17,8 +17,8 @@ const sqlAddObjectToUserPermission = `
 `
 
 func (c *Client) AddObjectToUserPermission(ctx context.Context, msg *AddObjectToUserPermission) error {
-	if isAdmin, _ := c.checkPermission(ctx, msg.InvokerId); isAdmin != true {
-		return ErrPermission
+	if isAdmin, _ := c.checkAdminRole(ctx, msg.InvokerId); isAdmin != true {
+		return ErrPermissionDenied
 	}
 	// todo Добавить проверки на существование сущьностей
 	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})

@@ -13,8 +13,8 @@ const sqlRemoveObjectFromUserPermission = `
           puo.object_id = $2`
 
 func (c *Client) RemoveObjectFromUserPermission(ctx context.Context, msg *RemoveObjectFromUserPermission) error {
-	if isAdmin, _ := c.checkPermission(ctx, msg.InvokerId); isAdmin != true {
-		return ErrPermission
+	if isAdmin, _ := c.checkAdminRole(ctx, msg.InvokerId); isAdmin != true {
+		return ErrPermissionDenied
 	}
 	// todo Добавить проверки на существование сущьностей
 	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})

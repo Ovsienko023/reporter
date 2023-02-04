@@ -12,7 +12,7 @@ definitions:
   domain.CalendarEvent:
     properties:
       date:
-        type: string
+        type: integer
       event_type:
         type: string
       id:
@@ -95,6 +95,11 @@ definitions:
         items:
           $ref: '#/definitions/domain.ReportItem'
         type: array
+    type: object
+  domain.GetSickLeaveResponse:
+    properties:
+      sick_leave:
+        $ref: '#/definitions/domain.SickLeave'
     type: object
   domain.GetStatisticsRequest:
     properties:
@@ -193,6 +198,21 @@ definitions:
           type: string
         type: array
       subject:
+        type: string
+    type: object
+  domain.SickLeave:
+    properties:
+      date:
+        type: integer
+      description:
+        type: string
+      id:
+        type: string
+      is_paid:
+        type: boolean
+      state:
+        type: string
+      status:
         type: string
     type: object
   domain.SignInRequest:
@@ -616,4 +636,33 @@ paths:
       summary: Add object to user permission
       tags:
       - Permission
+  /api/v1/users/{user_id}/sick_leaves/{sick_leave_id}:
+    get:
+      description: get sick leave
+      parameters:
+      - description: sick_leave_id
+        in: path
+        name: sick_leave_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetSickLeaveResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Get sick leave
+      tags:
+      - SickLeaves
 swagger: "2.0"

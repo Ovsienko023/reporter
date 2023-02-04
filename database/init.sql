@@ -13,6 +13,17 @@ insert into main.statuses (id)
 values ('approved')
 on conflict do nothing;
 
+--Таблица для состояний ивентов
+create table if not exists main.event_states
+(
+    id varchar primary key
+);
+
+insert into main.event_states (id)
+values ('draft'),
+       ('ready')
+on conflict do nothing;
+
 create table if not exists main.users
 (
     id           uuid primary key     default gen_random_uuid(),
@@ -20,7 +31,8 @@ create table if not exists main.users
     display_name varchar     not null,
     login        varchar     not null,
     hash         text        not null,
-    deleted_at   timestamptz
+    deleted_at   timestamptz,
+    payload      jsonb
 );
 
 insert into main.users (display_name, login, hash)
@@ -29,8 +41,9 @@ values ('Administrator', 'admin', '$2a$10$tjATGo3v5KrXQ6.cQz1CbugeBKRyJdmDbwr20r
 
 create table if not exists main.reports
 (
-    id           uuid primary key     default gen_random_uuid(),
+    id           uuid primary key                          default gen_random_uuid(),
     display_name varchar,
+    state        varchar references main.event_states (id) default 'draft',
     date         timestamptz not null,
     start_time   integer,
     end_time     integer,
@@ -38,9 +51,10 @@ create table if not exists main.reports
     work_time    integer,
     body         varchar,
     creator_id   uuid references main.users (id),
-    created_at   timestamptz not null default now(),
-    updated_at   timestamptz not null default now(),
-    deleted_at   timestamptz
+    created_at   timestamptz not null                      default now(),
+    updated_at   timestamptz not null                      default now(),
+    deleted_at   timestamptz,
+    payload      jsonb
 );
 
 create table if not exists main.reports_to_users
@@ -57,7 +71,8 @@ create table if not exists main.groups
     creator_id   uuid references main.users (id),
     created_at   timestamptz not null default now(),
     updated_at   timestamptz not null default now(),
-    deleted_at   timestamptz
+    deleted_at   timestamptz,
+    payload      jsonb
 );
 
 create table if not exists main.groups_to_objects
@@ -100,20 +115,22 @@ create table if not exists main.permissions_users_to_objects
 -- Таблица для больничного
 create table if not exists main.sick_leave
 (
-    id          uuid primary key     default gen_random_uuid(),
+    id          uuid primary key                          default gen_random_uuid(),
     date        timestamptz not null,
     is_paid     bool        not null,
+    state       varchar references main.event_states (id) default 'draft',
     status      varchar references main.statuses (id),
     description varchar,
     creator_id  uuid references main.users (id),
-    created_at  timestamptz not null default now(),
-    updated_at  timestamptz not null default now(),
-    deleted_at  timestamptz
+    created_at  timestamptz not null                      default now(),
+    updated_at  timestamptz not null                      default now(),
+    deleted_at  timestamptz,
+    payload     jsonb
 );
 
 create table if not exists main.sick_leave_to_users
 (
-    user_id uuid    not null references main.users (id),
+    user_id       uuid not null references main.users (id),
     sick_leave_id uuid not null references main.sick_leave (id),
     primary key (user_id, sick_leave_id)
 );
@@ -121,20 +138,22 @@ create table if not exists main.sick_leave_to_users
 -- Таблица для отпуска
 create table if not exists main.vacation
 (
-    id          uuid primary key     default gen_random_uuid(),
+    id          uuid primary key                          default gen_random_uuid(),
     date        timestamptz not null,
     is_paid     bool        not null,
+    state       varchar references main.event_states (id) default 'draft',
     status      varchar references main.statuses (id),
     description varchar,
     creator_id  uuid references main.users (id),
-    created_at  timestamptz not null default now(),
-    updated_at  timestamptz not null default now(),
-    deleted_at  timestamptz
+    created_at  timestamptz not null                      default now(),
+    updated_at  timestamptz not null                      default now(),
+    deleted_at  timestamptz,
+    payload     jsonb
 );
 
 create table if not exists main.vacation_to_users
 (
-    user_id uuid    not null references main.users (id),
+    user_id     uuid not null references main.users (id),
     vacation_id uuid not null references main.vacation (id),
     primary key (user_id, vacation_id)
 );

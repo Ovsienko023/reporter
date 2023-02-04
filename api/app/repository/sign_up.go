@@ -7,40 +7,40 @@ import (
 
 const sqlSignUp = `
     insert into main.users (display_name, login, hash)
-    values ($1, $2, $3)`
+    values ($1, $2, $3)
+    returning id`
 
 const sqlCheckLogin = `
-   select 1 from main.users 
-            where login = $1`
+   select id
+   from main.users 
+	where login = $1
+	limit 1`
+
+const sqlAddPermission = `
+	insert into main.permissions_users_to_objects (user_id, object_type, object_id)
+	values ($1, 'users', $1)`
 
 // SignUp возвращает следующие ошибки:
 // ErrInternal
 // ErrLoginAlreadyInUse
 func (c *Client) SignUp(ctx context.Context, msg *SignUp) error {
-	rowCheck, err := c.driver.Query(ctx, sqlCheckLogin, msg.Login)
-	if err != nil {
-		return NewInternalError(err)
-	}
-
-	var isUseLogin *int
-
-	for rowCheck.Next() {
-		err := rowCheck.Scan(&isUseLogin)
-		if err != nil {
-			return NewInternalError(err)
-		}
-	}
-
-	if isUseLogin != nil {
-		return ErrLoginAlreadyInUse
-	}
-
 	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		return NewInternalError(err)
 	}
 
-	row, err := transaction.Query(ctx, sqlSignUp,
+	defer transaction.Rollback(ctx)
+
+	rawCheck, err := transaction.Exec(ctx, sqlCheckLogin, msg.Login)
+	if err != nil {
+		return NewInternalError(err)
+	}
+
+	if rawCheck.String() == "SELECT 1" {
+		return ErrLoginAlreadyInUse
+	}
+
+	rawCreate, err := transaction.Query(ctx, sqlSignUp,
 		msg.DisplayName,
 		msg.Login,
 		msg.Password,
@@ -49,9 +49,17 @@ func (c *Client) SignUp(ctx context.Context, msg *SignUp) error {
 		return NewInternalError(err)
 	}
 
-	row.Next()
-	status := row.CommandTag()
-	if status != nil && !status.Insert() {
+	var userId *string
+
+	for rawCreate.Next() {
+		err := rawCreate.Scan(&userId)
+		if err != nil {
+			return NewInternalError(err)
+		}
+	}
+
+	rawAdd, err := transaction.Exec(ctx, sqlAddPermission, userId)
+	if !rawAdd.Insert() {
 		return NewInternalError(err)
 	}
 

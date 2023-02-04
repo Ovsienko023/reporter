@@ -2,6 +2,7 @@ package domain
 
 import (
 	"github.com/Ovsienko023/reporter/app/repository"
+	"github.com/Ovsienko023/reporter/infrastructure/utils/ptr"
 	"time"
 )
 
@@ -29,9 +30,9 @@ type GetCalendarEventsResponse struct {
 }
 
 type CalendarEvent struct {
-	Id        *string    `json:"id,omitempty"`
-	EventType *string    `json:"event_type,omitempty"`
-	Date      *time.Time `json:"date,omitempty"`
+	Id        *string `json:"id,omitempty"`
+	EventType *string `json:"event_type,omitempty"`
+	Date      *int64  `json:"date,omitempty"`
 }
 
 func (e *GetCalendarEventsResponse) FromGetCalendarEvents(events []repository.CalendarEvent, cnt *int64) *GetCalendarEventsResponse {
@@ -41,7 +42,7 @@ func (e *GetCalendarEventsResponse) FromGetCalendarEvents(events []repository.Ca
 		item := CalendarEvent{
 			Id:        event.Id,
 			EventType: event.EventType,
-			Date:      event.Date,
+			Date:      ptr.Int64(event.Date.Unix()),
 		}
 		calendarEvents = append(calendarEvents, item)
 	}

@@ -534,6 +534,50 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/users/{user_id}/sick_leaves/{sick_leave_id}": {
+            "get": {
+                "description": "get sick leave",
+                "tags": [
+                    "SickLeaves"
+                ],
+                "summary": "Get sick leave",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "sick_leave_id",
+                        "name": "sick_leave_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetSickLeaveResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -555,7 +599,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "date": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "event_type": {
                     "type": "string"
@@ -683,6 +727,14 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/domain.ReportItem"
                     }
+                }
+            }
+        },
+        "domain.GetSickLeaveResponse": {
+            "type": "object",
+            "properties": {
+                "sick_leave": {
+                    "$ref": "#/definitions/domain.SickLeave"
                 }
             }
         },
@@ -834,6 +886,29 @@ const docTemplate = `{
                     }
                 },
                 "subject": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.SickLeave": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_paid": {
+                    "type": "boolean"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 }
             }
