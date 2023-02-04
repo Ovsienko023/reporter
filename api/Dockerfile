@@ -1,6 +1,11 @@
-FROM golang:1.18-bullseye
+FROM golang:1.18-bullseye AS builder
 RUN mkdir /app
-ADD . /app/
+ADD . /app
 WORKDIR /app
 RUN go get
-CMD ["/app/main"]
+RUN go build -o reporter main.go
+
+FROM alpine
+RUN apk add git make libc6-compat
+WORKDIR /app
+COPY --from=builder /app/reporter /app/reporter
