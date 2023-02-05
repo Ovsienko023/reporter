@@ -18,9 +18,9 @@ cleanly:
 	sudo docker-compose up -d --build
 
 
-.PHONY: docker
-docker:
-	sudo docker-compose up --build server
+.PHONY: build
+build:
+	sudo docker-compose up --build
 
 
 .PHONY: deploy

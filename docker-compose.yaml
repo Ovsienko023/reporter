@@ -2,6 +2,7 @@ version: "3.3"
 
 services:
   database:
+    platform: linux/amd64
     build:
       context: ./database
       dockerfile: Dockerfile
@@ -11,6 +12,7 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
   server:
+    platform: linux/amd64
     build:
       context: ./api
       dockerfile: Dockerfile
