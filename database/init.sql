@@ -24,20 +24,94 @@ values ('draft'),
        ('ready')
 on conflict do nothing;
 
+-- USERS
+
 create table if not exists main.users
 (
     id           uuid primary key     default gen_random_uuid(),
-    created_at   timestamptz not null default now(),
     display_name varchar     not null,
-    login        varchar     not null,
-    hash         text        not null,
+    creator_id   uuid        not null references main.users (id),
+    created_at   timestamptz not null default now(),
     deleted_at   timestamptz,
     payload      jsonb
 );
 
-insert into main.users (display_name, login, hash)
-values ('Administrator', 'admin', '$2a$10$tjATGo3v5KrXQ6.cQz1CbugeBKRyJdmDbwr20rFMtzVJxOHtw3EIi');
+-- CREDENTIALS
 
+create table if not exists main.user_passwords
+(
+    id         uuid primary key     default gen_random_uuid(),
+    created_at timestamptz not null default now(),
+    creator_id uuid        not null references main.users (id),
+    user_id    uuid        not null references main.users (id),
+    hash       text        not null,
+    deleted_at timestamptz
+);
+
+create index if not exists __created_at_idx on main.user_passwords (created_at) where deleted_at is null;
+create index if not exists __deleted_at_idx on main.user_passwords (deleted_at) where deleted_at is not null;
+
+
+create table if not exists main.user_logins
+(
+    id         uuid primary key     default gen_random_uuid(),
+    login      varchar     not null,
+    grant_id   uuid not null references main.user_passwords(id),
+    created_at timestamptz not null default now(),
+    creator_id uuid        not null references main.users (id),
+    deleted_at timestamptz
+);
+
+create unique index if not exists __login_idx on main.user_logins (lower(login)) where deleted_at is null;
+create index if not exists __created_at_idx on main.user_logins (created_at) where deleted_at is null;
+create index if not exists __deleted_at_idx on main.user_logins (deleted_at) where deleted_at is not null;
+
+-- ROLES
+
+create table if not exists main.roles
+(
+    id          varchar primary key,
+    description varchar
+);
+
+insert into main.roles (id, description)
+values ('administrator', null),
+       ('default', null);
+
+create table if not exists main.users_to_roles
+(
+    user_id uuid    not null references main.users (id),
+    role_id varchar not null references main.roles (id),
+    primary key (user_id, role_id)
+);
+
+
+-- todo не дупускать дубли в таблицу
+create table if not exists main.permissions_users_to_objects
+(
+    user_id     uuid not null references main.users (id),
+    object_type varchar,
+    object_id   uuid
+);
+
+-- init default user
+
+do
+$$
+    declare
+        _user_id uuid := gen_random_uuid();
+        _password_id uuid;
+    begin
+        insert into main.users(id, creator_id, display_name) values (_user_id, _user_id,  'Administrator') returning id into _user_id;
+        insert into main.user_passwords(creator_id, user_id, hash) values (_user_id, _user_id, '$2a$10$tjATGo3v5KrXQ6.cQz1CbugeBKRyJdmDbwr20rFMtzVJxOHtw3EIi') returning id into _password_id;
+        insert into main.user_logins(creator_id, login, grant_id) values (_user_id, 'admin', _password_id);
+        insert into main.users_to_roles (user_id, role_id) values (_user_id, 'administrator');
+        insert into main.permissions_users_to_objects (user_id, object_type, object_id) values (_user_id, 'users', _user_id);
+        commit;
+    end
+$$;
+
+-- REPORTS
 
 create table if not exists main.reports
 (
@@ -78,36 +152,6 @@ create table if not exists main.groups
 create table if not exists main.groups_to_objects
 (
     group_id    uuid references main.groups (id),
-    object_type varchar,
-    object_id   uuid
-);
-
-
-create table if not exists main.roles
-(
-    id          varchar primary key,
-    description varchar
-);
-insert into main.roles (id, description)
-values ('administrator', null),
-       ('default', null);
-
-create table if not exists main.users_to_roles
-(
-    user_id uuid    not null references main.users (id),
-    role_id varchar not null references main.roles (id),
-    primary key (user_id, role_id)
-);
-
-
-insert into main.users_to_roles (user_id, role_id)
-values ((select id from main.users where display_name = 'Administrator'),
-        (select id from main.roles where id = 'administrator'));
-
--- todo не дупускать дубли в таблицу
-create table if not exists main.permissions_users_to_objects
-(
-    user_id     uuid not null references main.users (id),
     object_type varchar,
     object_id   uuid
 );
