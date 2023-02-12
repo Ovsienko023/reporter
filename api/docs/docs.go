@@ -589,9 +589,6 @@ const docTemplate = `{
                 },
                 "object_type": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
                 }
             }
         },
@@ -769,6 +766,9 @@ const docTemplate = `{
         "domain.GetUsersRequest": {
             "type": "object",
             "properties": {
+                "allowed_to": {
+                    "type": "string"
+                },
                 "page": {
                     "type": "integer"
                 },

@@ -16,6 +16,10 @@ const sqlCheckLogin = `
 	where login = $1
 	limit 1`
 
+const sqlAddDefRole = `
+	insert into main.users_to_roles (user_id, role_id)
+	values ($1, 'default')`
+
 const sqlAddPermission = `
 	insert into main.permissions_users_to_objects (user_id, object_type, object_id)
 	values ($1, 'users', $1)`
@@ -56,6 +60,11 @@ func (c *Client) SignUp(ctx context.Context, msg *SignUp) error {
 		if err != nil {
 			return NewInternalError(err)
 		}
+	}
+
+	rawAddRole, err := transaction.Exec(ctx, sqlAddDefRole, userId)
+	if !rawAddRole.Insert() {
+		return NewInternalError(err)
 	}
 
 	rawAdd, err := transaction.Exec(ctx, sqlAddPermission, userId)

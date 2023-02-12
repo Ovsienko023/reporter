@@ -6,8 +6,6 @@ definitions:
         type: string
       object_type:
         type: string
-      user_id:
-        type: string
     type: object
   domain.CalendarEvent:
     properties:
@@ -121,6 +119,8 @@ definitions:
     type: object
   domain.GetUsersRequest:
     properties:
+      allowed_to:
+        type: string
       page:
         type: integer
       page_size:

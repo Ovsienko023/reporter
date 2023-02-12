@@ -2,7 +2,9 @@ package core
 
 import (
 	"context"
+	"errors"
 	"github.com/Ovsienko023/reporter/app/domain"
+	"github.com/Ovsienko023/reporter/app/repository"
 )
 
 // RemoveObjectFromUserPermission возвращает следующие ошибки:
@@ -16,7 +18,12 @@ func (c *Core) RemoveObjectFromUserPermission(ctx context.Context, msg *domain.R
 
 	err = c.db.RemoveObjectFromUserPermission(ctx, msg.ToDbRemoveObjectFromUserPermission(invokerId))
 	if err != nil {
-		return err
+		switch {
+		case errors.Is(err, repository.ErrPermissionDenied):
+			return ErrPermissionDenied
+		default:
+			return ErrInternal
+		}
 	}
 
 	return nil

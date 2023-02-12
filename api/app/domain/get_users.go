@@ -5,9 +5,10 @@ import (
 )
 
 type GetUsersRequest struct {
-	Token    string `json:"token,omitempty" swaggerignore:"true"`
-	Page     *int   `json:"page,omitempty"`
-	PageSize *int   `json:"page_size,omitempty"`
+	Token     string  `json:"token,omitempty" swaggerignore:"true"`
+	Page      *int    `json:"page,omitempty"`
+	PageSize  *int    `json:"page_size,omitempty"`
+	AllowedTo *string `json:"allowed_to,omitempty"`
 }
 
 func (r *GetUsersRequest) ToDbGetUsers(invokerId string) *repository.GetUsers {
@@ -15,6 +16,7 @@ func (r *GetUsersRequest) ToDbGetUsers(invokerId string) *repository.GetUsers {
 		InvokerId: invokerId,
 		Page:      r.Page,
 		PageSize:  r.PageSize,
+		AllowedTo: r.AllowedTo,
 	}
 }
 

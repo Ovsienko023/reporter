@@ -32,6 +32,9 @@ func AddObjectToUserPermission(c *core.Core, w http.ResponseWriter, r *http.Requ
 		case errors.Is(err, core.ErrUnauthorized):
 			errorContainer.Done(w, http.StatusUnauthorized, err.Error())
 			return
+		case errors.Is(err, core.ErrPermissionDenied):
+			errorContainer.Done(w, http.StatusForbidden, err.Error())
+			return
 		default:
 			errorContainer.Done(w, http.StatusInternalServerError, err.Error())
 			return

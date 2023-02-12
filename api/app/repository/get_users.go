@@ -10,11 +10,22 @@ const (
 	sqlGetUsers = `
 	with tab as (
 		select id,
-			   display_name,
-			   login,
-			   created_at
-		from main.users as u
-		where u.deleted_at is null
+       display_name,
+       login,
+       created_at,
+       role_id
+from main.users as u
+         left join main.users_to_roles as utr on u.id = utr.user_id
+
+where u.deleted_at is null
+  and (
+        $3::uuid is null or
+        u.id in (select pto.object_id
+               from main.permissions_users_to_objects as pto
+               where pto.object_type = 'users'
+                 and pto.user_id = $3
+                 and pto.object_id != pto.user_id)
+    )
 	)
 	select (select count(*) from tab) as count,
 			r.id                      as report_id,
@@ -29,6 +40,7 @@ func (c *Client) GetUsers(ctx context.Context, msg *GetUsers) ([]UserItem, *int,
 	row, err := c.driver.Query(ctx, sqlGetUsers,
 		msg.PageSize,
 		msg.Page,
+		msg.AllowedTo,
 	)
 	if err != nil {
 		return nil, nil, NewInternalError(err)
@@ -56,9 +68,10 @@ func (c *Client) GetUsers(ctx context.Context, msg *GetUsers) ([]UserItem, *int,
 }
 
 type GetUsers struct {
-	InvokerId string `json:"invoker_id,omitempty"`
-	Page      *int   `json:"page,omitempty"`
-	PageSize  *int   `json:"page_size,omitempty"`
+	InvokerId string  `json:"invoker_id,omitempty"`
+	Page      *int    `json:"page,omitempty"`
+	PageSize  *int    `json:"page_size,omitempty"`
+	AllowedTo *string `json:"allowed_to,omitempty"`
 }
 
 type UserItem struct {

@@ -4,7 +4,7 @@ import "github.com/Ovsienko023/reporter/app/repository"
 
 type AddObjectToUserPermissionRequest struct {
 	Token      string `json:"token,omitempty" swaggerignore:"true"`
-	UserId     string `json:"user_id,omitempty"`
+	UserId     string `json:"user_id,omitempty" swaggerignore:"true"`
 	ObjectType string `json:"object_type,omitempty"`
 	ObjectId   string `json:"object_id,omitempty"`
 }

@@ -46,6 +46,13 @@ func GetUsers(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		message.PageSize = ptr.Int(200)
 	}
 
+	allowedTo := query.Get("allowed_to")
+	if allowedTo != "" {
+		message.AllowedTo = &allowedTo
+	} else {
+		message.AllowedTo = nil
+	}
+
 	result, err := c.GetUsers(r.Context(), &message)
 	if err != nil {
 		switch {
