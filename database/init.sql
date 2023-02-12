@@ -89,7 +89,8 @@ create table if not exists main.roles
     description varchar
 );
 insert into main.roles (id, description)
-values ('administrator', null);
+values ('administrator', null),
+       ('default', null);
 
 create table if not exists main.users_to_roles
 (

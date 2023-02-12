@@ -10,10 +10,9 @@ const (
 	sqlGetUsers = `
 	with tab as (
 		select id,
-       display_name,
-       login,
-       created_at,
-       role_id
+			   display_name,
+			   role_id,
+			   created_at
 from main.users as u
          left join main.users_to_roles as utr on u.id = utr.user_id
 
@@ -30,7 +29,7 @@ where u.deleted_at is null
 	select (select count(*) from tab) as count,
 			r.id                      as report_id,
        		r.display_name            as display_name,
-			r.login                   as login,
+			r.role_id                 as role, 
 			r.created_at              as created_at
 	from tab as r
 	limit $1 offset $1 * ($2 - 1)`
@@ -55,7 +54,7 @@ func (c *Client) GetUsers(ctx context.Context, msg *GetUsers) ([]UserItem, *int,
 			&count,
 			&user.Id,
 			&user.DisplayName,
-			&user.Login,
+			&user.Role,
 			&user.CreatedAt,
 		)
 		if err != nil {
@@ -77,6 +76,6 @@ type GetUsers struct {
 type UserItem struct {
 	Id          *string    `json:"id,omitempty"`
 	DisplayName *string    `json:"display_name,omitempty"`
-	Login       *string    `json:"login,omitempty"`
+	Role        *string    `json:"role,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty"`
 }

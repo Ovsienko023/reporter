@@ -22,13 +22,13 @@ func (r *GetUsersRequest) ToDbGetUsers(invokerId string) *repository.GetUsers {
 
 type GetUsersResponse struct {
 	Count *int        `json:"count,omitempty"`
-	Users []UsersItem `json:"reports" json:"reports,omitempty"`
+	Users []UsersItem `json:"users,omitempty"`
 }
 
 type UsersItem struct {
 	Id          *string `json:"id,omitempty"`
-	Login       *string `json:"login,omitempty"`
 	DisplayName *string `json:"display_name,omitempty"`
+	Role        *string `json:"role,omitempty"`
 }
 
 func FromGetUsersResponse(resp []repository.UserItem, cnt *int) *GetUsersResponse {
@@ -42,7 +42,7 @@ func FromGetUsersResponse(resp []repository.UserItem, cnt *int) *GetUsersRespons
 		item := UsersItem{
 			Id:          obj.Id,
 			DisplayName: obj.DisplayName,
-			Login:       obj.Login,
+			Role:        obj.Role,
 		}
 		users = append(users, item)
 	}
