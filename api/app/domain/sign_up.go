@@ -13,8 +13,9 @@ type SignUpRequest struct {
 	DisplayName *string `json:"display_name,omitempty"`
 }
 
-func (r *SignUpRequest) ToDbSignUp(hashPassword string) *repository.SignUp {
+func (r *SignUpRequest) ToDbSignUp(invokerId, hashPassword string) *repository.SignUp {
 	return &repository.SignUp{
+		InvokerId:   invokerId,
 		Login:       r.Login,
 		Password:    hashPassword,
 		DisplayName: r.DisplayName,

@@ -56,7 +56,7 @@ create table if not exists main.user_logins
 (
     id         uuid primary key     default gen_random_uuid(),
     login      varchar     not null,
-    grant_id   uuid not null references main.user_passwords(id),
+    grant_id   uuid        not null references main.user_passwords (id),
     created_at timestamptz not null default now(),
     creator_id uuid        not null references main.users (id),
     deleted_at timestamptz
@@ -99,14 +99,19 @@ create table if not exists main.permissions_users_to_objects
 do
 $$
     declare
-        _user_id uuid := gen_random_uuid();
+        _user_id     uuid := gen_random_uuid();
         _password_id uuid;
     begin
-        insert into main.users(id, creator_id, display_name) values (_user_id, _user_id,  'Administrator') returning id into _user_id;
-        insert into main.user_passwords(creator_id, user_id, hash) values (_user_id, _user_id, '$2a$10$tjATGo3v5KrXQ6.cQz1CbugeBKRyJdmDbwr20rFMtzVJxOHtw3EIi') returning id into _password_id;
+        insert into main.users(id, creator_id, display_name)
+        values (_user_id, _user_id, 'Administrator')
+        returning id into _user_id;
+        insert into main.user_passwords(creator_id, user_id, hash)
+        values (_user_id, _user_id, '$2a$10$tjATGo3v5KrXQ6.cQz1CbugeBKRyJdmDbwr20rFMtzVJxOHtw3EIi')
+        returning id into _password_id;
         insert into main.user_logins(creator_id, login, grant_id) values (_user_id, 'admin', _password_id);
         insert into main.users_to_roles (user_id, role_id) values (_user_id, 'administrator');
-        insert into main.permissions_users_to_objects (user_id, object_type, object_id) values (_user_id, 'users', _user_id);
+        insert into main.permissions_users_to_objects (user_id, object_type, object_id)
+        values (_user_id, 'users', _user_id);
         commit;
     end
 $$;
@@ -231,3 +236,71 @@ select a.id         as id,
        a.event_type as event_type,
        a.date       as date
 from tab as a;
+
+
+drop function if exists main.create_user;
+
+create or replace function main.create_user(
+    _invoker_id uuid,
+    _login varchar,
+    _password varchar,
+    _display_name varchar,
+    --
+    out error jsonb
+) as
+$$
+declare
+    _exception   text;
+    _user_id     uuid;
+    _password_id uuid;
+begin
+
+    if not exists(select 1
+                  from main.users
+                  where id = _invoker_id
+                    and deleted_at is null) then
+        error = '{"code": 1, "message": "unauthorized", "details": []}'::jsonb;
+        return;
+    end if;
+
+    if exists(select 1
+              from main.user_logins
+              where login = _login
+                and deleted_at is null) then
+        error = '{"code": 3, "message": "", "details": [{"name": "_login", "reason": "exists"}]}'::jsonb;
+        return;
+    end if;
+
+    insert into main.users(creator_id, display_name)
+    values (_invoker_id, _display_name)
+    returning id into _user_id;
+
+    insert into main.user_passwords(creator_id, user_id, hash)
+    values (_invoker_id, _user_id, _password)
+    returning id into _password_id;
+
+    insert into main.user_logins(creator_id, login, grant_id)
+    values (_invoker_id, _login, _password_id);
+
+    insert into main.users_to_roles (user_id, role_id)
+    values (_user_id, 'default');
+
+    insert into main.permissions_users_to_objects (user_id, object_type, object_id)
+    values (_user_id, 'users', _user_id);
+
+    error := null;
+    return;
+
+exception
+    when others then
+        get stacked diagnostics _exception = PG_EXCEPTION_CONTEXT;
+        _exception := _exception || ' | ' || SQLERRM || ' | ' || SQLSTATE;
+        raise notice 'ERROR: % ', _exception;
+
+        error := _exception;
+        return;
+
+end;
+$$
+    language plpgsql volatile
+                     security definer;

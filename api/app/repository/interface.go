@@ -22,7 +22,7 @@ type InterfaceDatabase interface {
 	CreateReport(ctx context.Context, msg *CreateReport) (*CreatedReport, error)
 	UpdateReport(ctx context.Context, msg *UpdateReport) error
 	DeleteReport(ctx context.Context, msg *DeleteReport) error
-	GetSystemUser() *SystemUser
+	GetSystemUser(ctx context.Context) (*SystemUser, error)
 
 	GetStatistics(ctx context.Context, msg *GetStatistics) (*Statistics, error)
 

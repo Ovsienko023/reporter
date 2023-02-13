@@ -18,11 +18,16 @@ func (c *Core) SignUp(ctx context.Context, msg *domain.SignUpRequest) error {
 		return fmt.Errorf("%w: %v", ErrInternal, err)
 	}
 
-	err = c.db.SignUp(ctx, msg.ToDbSignUp(hash))
+	systemUser, _ := c.db.GetSystemUser(ctx)
+
+	err = c.db.SignUp(ctx, msg.ToDbSignUp(*systemUser.UserId, hash))
 	if err != nil {
 		switch {
 		case errors.Is(err, repository.ErrLoginAlreadyInUse):
 			return ErrLoginAlreadyInUse
+		case errors.Is(err, repository.ErrUnauthorized):
+			return ErrUnauthorized
+
 		default:
 			return fmt.Errorf("%w: %v", ErrInternal, err)
 		}

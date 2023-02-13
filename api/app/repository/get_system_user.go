@@ -1,14 +1,51 @@
 package repository
 
 import (
-	"github.com/Ovsienko023/reporter/infrastructure/utils/ptr"
+	"context"
 )
 
-func (c *Client) GetSystemUser() *SystemUser {
-	return &SystemUser{
-		UserId:      ptr.String("781785ff-676f-46e6-9b6f-e6438d96fe7c"),
-		DisplayName: ptr.String("SystemUser"),
+//func (c *Client) GetSystemUser(ctx context.Context) (*SystemUser, error) {
+//	return &SystemUser{
+//		UserId:      ptr.String("08bc6135-dcb1-4ebe-bc3a-cfaa88db138f"), // todo
+//		DisplayName: ptr.String("SystemUser"),
+//	}
+//}
+
+const sqlGetSystem = `
+	select id,
+	       display_name
+	from main.users
+	where display_name = 'Administrator' and 
+	      id = creator_id`
+
+// GetSystemUser возвращает следующие ошибки:
+//
+// database.ErrInternal
+// database.ErrUnexpectedBehavior
+// database.ErrUserNotFound
+func (c *Client) GetSystemUser(ctx context.Context) (*SystemUser, error) {
+	row, err := c.driver.Query(ctx, sqlGetSystem)
+	if err != nil {
+		return nil, NewInternalError(err)
 	}
+
+	user := &SystemUser{}
+
+	for row.Next() {
+		err := row.Scan(
+			&user.UserId,
+			&user.DisplayName,
+		)
+		if err != nil {
+			return nil, NewInternalError(err)
+		}
+	}
+
+	if user.UserId == nil {
+		return nil, ErrInternal // todo
+	}
+
+	return user, nil
 }
 
 type SystemUser struct {

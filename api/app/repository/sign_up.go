@@ -2,81 +2,57 @@ package repository
 
 import (
 	"context"
-	"github.com/jackc/pgx/v4"
+	"fmt"
 )
 
-const sqlSignUp = `
-    insert into main.users (display_name, login, hash)
-    values ($1, $2, $3)
-    returning id`
-
-const sqlCheckLogin = `
-   select id
-   from main.users 
-	where login = $1
-	limit 1`
-
-const sqlAddDefRole = `
-	insert into main.users_to_roles (user_id, role_id)
-	values ($1, 'default')`
-
-const sqlAddPermission = `
-	insert into main.permissions_users_to_objects (user_id, object_type, object_id)
-	values ($1, 'users', $1)`
+const sqlCreateUser = `
+	select error
+	from main.create_user(
+	    _invoker_id := $1, 
+	    _login := $2, 
+	    _password := $3, 
+	    _display_name := $4
+	);`
 
 // SignUp возвращает следующие ошибки:
 // ErrInternal
+// ErrUnauthorized
 // ErrLoginAlreadyInUse
 func (c *Client) SignUp(ctx context.Context, msg *SignUp) error {
-	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})
-	if err != nil {
-		return NewInternalError(err)
-	}
-
-	defer transaction.Rollback(ctx)
-
-	rawCheck, err := transaction.Exec(ctx, sqlCheckLogin, msg.Login)
-	if err != nil {
-		return NewInternalError(err)
-	}
-
-	if rawCheck.String() == "SELECT 1" {
-		return ErrLoginAlreadyInUse
-	}
-
-	rawCreate, err := transaction.Query(ctx, sqlSignUp,
-		msg.DisplayName,
+	raw, err := c.driver.Query(ctx, sqlCreateUser,
+		msg.InvokerId,
 		msg.Login,
 		msg.Password,
+		msg.DisplayName,
 	)
 	if err != nil {
 		return NewInternalError(err)
 	}
 
-	var userId *string
-
-	for rawCreate.Next() {
-		err := rawCreate.Scan(&userId)
-		if err != nil {
-			return NewInternalError(err)
+	if !raw.Next() {
+		if err = raw.Err(); err != nil {
+			return AnalyzeRowsError(err)
 		}
 	}
 
-	rawAddRole, err := transaction.Exec(ctx, sqlAddDefRole, userId)
-	if !rawAddRole.Insert() {
-		return NewInternalError(err)
+	var queryErr []byte
+
+	err = raw.Scan(&queryErr)
+	if err != nil {
+		return fmt.Errorf("%w: %v", ErrInternal, err)
 	}
 
-	rawAdd, err := transaction.Exec(ctx, sqlAddPermission, userId)
-	if !rawAdd.Insert() {
-		return NewInternalError(err)
+	if queryErr != nil {
+		if err = AnalyzeError(queryErr); err != nil {
+			return err
+		}
 	}
 
-	_ = transaction.Commit(ctx)
 	return nil
 }
 
 type SignUp struct {
+	InvokerId   string  `json:"invoker_id,omitempty"`
 	Login       string  `json:"login,omitempty"`
 	Password    string  `json:"password,omitempty"`
 	DisplayName *string `json:"display_name,"`
