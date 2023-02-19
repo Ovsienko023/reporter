@@ -175,6 +175,20 @@ func (t *Transport) GetSickLeave(w http.ResponseWriter, r *http.Request) {
 	handlers.GetSickLeave(&t.core, w, r)
 }
 
+// GetVacation ... Get vacation
+// @Summary Get vacation
+// @Description get vacation
+// @Tags Vacation
+// @Param   vacation_id   path      string  true  "vacation_id"
+// @Success 200 {object} domain.GetVacationResponse
+// @Failure 403 {object} httperror.ErrorResponse
+// @Failure 404 {object} httperror.ErrorResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/users/{user_id}/vacation/{vacation_id} [get]
+func (t *Transport) GetVacation(w http.ResponseWriter, r *http.Request) {
+	handlers.GetVacation(&t.core, w, r)
+}
+
 // ExportReportsToCsv ... Get all reports
 // @Summary Export reports to csv
 // @Description Export reports to csv

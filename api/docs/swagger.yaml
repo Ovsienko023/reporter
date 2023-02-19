@@ -130,10 +130,15 @@ definitions:
     properties:
       count:
         type: integer
-      reports:
+      users:
         items:
           $ref: '#/definitions/domain.UsersItem'
         type: array
+    type: object
+  domain.GetVacationResponse:
+    properties:
+      vacation:
+        $ref: '#/definitions/domain.Vacation'
     type: object
   domain.Report:
     properties:
@@ -264,7 +269,22 @@ definitions:
         type: string
       id:
         type: string
-      login:
+      role:
+        type: string
+    type: object
+  domain.Vacation:
+    properties:
+      date:
+        type: integer
+      description:
+        type: string
+      id:
+        type: string
+      is_paid:
+        type: boolean
+      state:
+        type: string
+      status:
         type: string
     type: object
   httperror.ErrorResponse:
@@ -665,4 +685,33 @@ paths:
       summary: Get sick leave
       tags:
       - SickLeaves
+  /api/v1/users/{user_id}/vacation/{vacation_id}:
+    get:
+      description: get vacation
+      parameters:
+      - description: vacation_id
+        in: path
+        name: vacation_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetVacationResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Get vacation
+      tags:
+      - Vacation
 swagger: "2.0"

@@ -16,6 +16,7 @@ type InterfaceDatabase interface {
 	GetCalendarEvents(ctx context.Context, msg *GetCalendarEvents) ([]CalendarEvent, *int64, error)
 
 	GetSickLeave(ctx context.Context, msg *GetSickLeave) (*SickLeave, error)
+	GetVacation(ctx context.Context, msg *GetVacation) (*Vacation, error)
 
 	GetReport(ctx context.Context, msg *GetReport) (*Report, error)
 	GetReports(ctx context.Context, msg *GetReports) ([]ReportItem, *int, error)

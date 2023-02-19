@@ -578,6 +578,50 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/users/{user_id}/vacation/{vacation_id}": {
+            "get": {
+                "description": "get vacation",
+                "tags": [
+                    "Vacation"
+                ],
+                "summary": "Get vacation",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "vacation_id",
+                        "name": "vacation_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetVacationResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -783,11 +827,19 @@ const docTemplate = `{
                 "count": {
                     "type": "integer"
                 },
-                "reports": {
+                "users": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/domain.UsersItem"
                     }
+                }
+            }
+        },
+        "domain.GetVacationResponse": {
+            "type": "object",
+            "properties": {
+                "vacation": {
+                    "$ref": "#/definitions/domain.Vacation"
                 }
             }
         },
@@ -989,7 +1041,30 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "login": {
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Vacation": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_paid": {
+                    "type": "boolean"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 }
             }
