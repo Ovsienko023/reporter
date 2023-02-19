@@ -579,7 +579,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/{user_id}/vacation/{vacation_id}": {
+        "/api/v1/users/{user_id}/vacations/{vacation_id}": {
             "get": {
                 "description": "get vacation",
                 "tags": [

@@ -184,7 +184,7 @@ func (t *Transport) GetSickLeave(w http.ResponseWriter, r *http.Request) {
 // @Failure 403 {object} httperror.ErrorResponse
 // @Failure 404 {object} httperror.ErrorResponse
 // @Failure 500 {object} httperror.ErrorResponse
-// @Router /api/v1/users/{user_id}/vacation/{vacation_id} [get]
+// @Router /api/v1/users/{user_id}/vacations/{vacation_id} [get]
 func (t *Transport) GetVacation(w http.ResponseWriter, r *http.Request) {
 	handlers.GetVacation(&t.core, w, r)
 }

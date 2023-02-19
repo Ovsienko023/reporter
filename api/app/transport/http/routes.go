@@ -33,10 +33,6 @@ func RegisterHTTPEndpoints(router chi.Router, c core.Core, apiConfig *configurat
 	// USERS
 	router.Get("/api/v1/users", h.GetUsers)
 
-	// PERMISSIONS
-	router.Post("/api/v1/users/{user_id}/permissions", h.AddObjectToUserPermission)
-	router.Delete("/api/v1/users/{user_id}/permissions", h.RemoveObjectFromUserPermission)
-
 	// CALENDAR EVENTS
 	router.Get("/api/v1/calendar", h.GetCalendarEvents)
 
@@ -52,13 +48,18 @@ func RegisterHTTPEndpoints(router chi.Router, c core.Core, apiConfig *configurat
 	router.Get("/api/v1/users/{user_id}/sick_leaves/{sick_leave_id}", h.GetSickLeave)
 
 	// VACATION
-	router.Get("/api/v1/users/{user_id}/vacation/{vacation_id}", h.GetVacation)
+	router.Get("/api/v1/users/{user_id}/vacations/{vacation_id}", h.GetVacation)
 
 	// STATS
 	router.Get("/api/v1/stats", h.GetStatistics)
 
 	// OTHERS
 	router.Post("/api/v1/send_email", h.SendEmail)
+
+	// FOR ADMINISTRATORS
+	// PERMISSIONS
+	router.Post("/api/v1/users/{user_id}/permissions", h.AddObjectToUserPermission)
+	router.Delete("/api/v1/users/{user_id}/permissions", h.RemoveObjectFromUserPermission)
 
 	return router
 }
