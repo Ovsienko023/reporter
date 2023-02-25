@@ -7,14 +7,12 @@ import (
 
 type GetVacationRequest struct {
 	Token      string `json:"token,omitempty" swaggerignore:"true"`
-	UserId     string `json:"user_id,omitempty" swaggerignore:"true"`
 	VacationId string `json:"vacation_id,omitempty" swaggerignore:"true"`
 }
 
 func (r *GetVacationRequest) ToDbGetVacation(invokerId string) *repository.GetVacation {
 	return &repository.GetVacation{
 		InvokerId:  invokerId,
-		UserId:     r.UserId,
 		VacationId: r.VacationId,
 	}
 }

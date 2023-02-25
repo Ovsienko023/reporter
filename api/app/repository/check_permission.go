@@ -10,7 +10,7 @@ const sqlCheckPermission = `
           object_id = $2`
 
 func (c *Client) checkUserPermission(ctx context.Context, invokerId string, userId string) (bool, error) {
-	if invokerId == userId {
+	if invokerId == userId { // todo fix permission
 		return true, nil
 	}
 

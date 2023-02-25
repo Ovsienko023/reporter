@@ -7,14 +7,12 @@ import (
 
 type GetSickLeaveRequest struct {
 	Token       string `json:"token,omitempty" swaggerignore:"true"`
-	UserId      string `json:"user_id,omitempty" swaggerignore:"true"`
 	SickLeaveId string `json:"sick_leave_id,omitempty" swaggerignore:"true"`
 }
 
 func (r *GetSickLeaveRequest) ToDbGetSickLeave(invokerId string) *repository.GetSickLeave {
 	return &repository.GetSickLeave{
 		InvokerId:   invokerId,
-		UserId:      r.UserId,
 		SickLeaveId: r.SickLeaveId,
 	}
 }

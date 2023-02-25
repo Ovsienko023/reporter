@@ -15,7 +15,6 @@ func GetVacation(c *core.Core, w http.ResponseWriter, r *http.Request) {
 
 	message := &domain.GetVacationRequest{
 		Token:      r.Header.Get("Authorization"),
-		UserId:     chi.URLParam(r, "user_id"),
 		VacationId: chi.URLParam(r, "vacation_id"),
 	}
 
