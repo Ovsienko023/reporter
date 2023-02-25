@@ -16,13 +16,14 @@ const sqlGetSickLeave = `
 		   created_at,
 		   updated_at,
 		   payload
-    from main.sick_leave
-    inner join main.sick_leave_to_users stu on sick_leave.id = stu.sick_leave_id
-    where id = $1 and 
-          stu.user_id = $2`
+    from main.sick_leave as sl
+    where id = $1 and exists(select 1
+        					 from main.permissions_users_to_objects as pto
+            				 where pto.user_id = $2 and
+       							pto.object_id =  sl.creator_id)`
 
 func (c *Client) GetSickLeave(ctx context.Context, msg *GetSickLeave) (*SickLeave, error) {
-	isAuth, err := c.checkUserPermission(ctx, msg.InvokerId, msg.UserId)
+	isAuth, err := c.checkUserPermission(ctx, msg.InvokerId, msg.InvokerId)
 	if !isAuth {
 		return nil, ErrPermissionDenied
 	}
@@ -65,7 +66,6 @@ func (c *Client) GetSickLeave(ctx context.Context, msg *GetSickLeave) (*SickLeav
 
 type GetSickLeave struct {
 	InvokerId   string `json:"invoker_id,omitempty"`
-	UserId      string `json:"user_id,omitempty"`
 	SickLeaveId string `json:"sick_leave_id,omitempty"`
 }
 

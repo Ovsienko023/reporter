@@ -17,10 +17,7 @@ const sqlUpdateReport = `
         work_time = coalesce($7, work_time), 
         body = coalesce($8, body), 
         updated_at = now()
-    where id = $1 and exists(select 1 
-							 from main.reports
-							 inner join main.reports_to_users rtu on reports.id = rtu.report_id
-							 where rtu.user_id = $9)`
+    where id = $1 and creator_id = $9`
 
 func (c *Client) UpdateReport(ctx context.Context, msg *UpdateReport) error {
 	err := c.isFindReport(ctx, msg.InvokerId, msg.ReportId)

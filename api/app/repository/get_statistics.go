@@ -63,8 +63,7 @@ const (
        	   avg(break_time)::bigint as avg_hours_break,   -- среднне количество часов перерыва
            avg(start_time)::bigint as avg_start_time     -- среднее время начала дня
 	from main.reports
-	inner join main.reports_to_users rtu on reports.id = rtu.report_id
-	where rtu.user_id = $1 and 
+	where creator_id = $1 and 
 	      ($2::timestamp is null and $3::timestamp is null or 
 				date >= $2::timestamp and 
 				date <= $3::timestamp)`

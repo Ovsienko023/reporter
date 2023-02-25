@@ -15,7 +15,6 @@ func GetSickLeave(c *core.Core, w http.ResponseWriter, r *http.Request) {
 
 	message := &domain.GetSickLeaveRequest{
 		Token:       r.Header.Get("Authorization"),
-		UserId:      chi.URLParam(r, "user_id"),
 		SickLeaveId: chi.URLParam(r, "sick_leave_id"),
 	}
 

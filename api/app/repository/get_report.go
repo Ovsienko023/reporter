@@ -18,8 +18,7 @@ const sqlGetReport = `
 		   created_at,
 		   updated_at
     from main.reports
-    inner join main.reports_to_users rtu on reports.id = rtu.report_id
-    where id = $1 and rtu.user_id = $2`
+    where id = $1 and creator_id = $2`
 
 func (c *Client) GetReport(ctx context.Context, msg *GetReport) (*Report, error) {
 	row, err := c.driver.Query(ctx, sqlGetReport, msg.ReportId, msg.InvokerId)

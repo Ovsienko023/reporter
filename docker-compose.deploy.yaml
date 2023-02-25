@@ -2,14 +2,14 @@ version: "3.3"
 
 services:
   database:
-    image: ovsienko023/reporter-database:v1.1.2
+    image: ovsienko023/reporter-database:v1.1.6
     restart: unless-stopped
     ports:
       - "5442:5432"
     volumes:
       - database:/var/lib/postgresql/data
   server:
-    image: ovsienko023/reporter-api:v1.1.4
+    image: ovsienko023/reporter-api:v1.1.9
     restart: unless-stopped
     command: ./reporter
     depends_on:

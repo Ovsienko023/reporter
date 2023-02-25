@@ -16,13 +16,14 @@ const sqlGetVacation = `
 		   created_at,
 		   updated_at,
 		   payload
-    from main.vacation
-    inner join main.vacation_to_users stu on vacation.id = stu.vacation_id
-    where id = $1 and 
-          stu.user_id = $2`
+    from main.vacation as v
+    where id = $1 and exists(select 1
+        					 from main.permissions_users_to_objects as pto
+            				 where pto.user_id = $2 and
+       							   pto.object_id =  v.creator_id)`
 
 func (c *Client) GetVacation(ctx context.Context, msg *GetVacation) (*Vacation, error) {
-	isAuth, err := c.checkUserPermission(ctx, msg.InvokerId, msg.UserId)
+	isAuth, err := c.checkUserPermission(ctx, msg.InvokerId, msg.InvokerId)
 	if !isAuth {
 		return nil, ErrPermissionDenied
 	}
@@ -65,7 +66,6 @@ func (c *Client) GetVacation(ctx context.Context, msg *GetVacation) (*Vacation, 
 
 type GetVacation struct {
 	InvokerId  string `json:"invoker_id,omitempty"`
-	UserId     string `json:"user_id,omitempty"`
 	VacationId string `json:"vacation_id,omitempty"`
 }
 

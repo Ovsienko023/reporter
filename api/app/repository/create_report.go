@@ -15,13 +15,6 @@ const sqlCreateReport = `
     RETURNING id
 `
 
-const sqlAddReportToUser = `
-    INSERT INTO main.reports_to_users
-        (report_id, user_id)
-    VALUES
-    ($1, $2)
-`
-
 func (c *Client) CreateReport(ctx context.Context, msg *CreateReport) (*CreatedReport, error) {
 	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
@@ -51,21 +44,6 @@ func (c *Client) CreateReport(ctx context.Context, msg *CreateReport) (*CreatedR
 		if err != nil {
 			return nil, NewInternalError(err)
 		}
-	}
-
-	rowAdded, err := transaction.Query(ctx, sqlAddReportToUser,
-		report.Id,
-		msg.InvokerId,
-	)
-	if err != nil {
-		return nil, NewInternalError(err)
-	}
-
-	rowAdded.Next()
-	status := rowAdded.CommandTag()
-
-	if status != nil && !status.Insert() {
-		return nil, NewInternalError(err)
 	}
 
 	_ = transaction.Commit(ctx)
