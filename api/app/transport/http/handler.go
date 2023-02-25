@@ -175,6 +175,18 @@ func (t *Transport) GetSickLeave(w http.ResponseWriter, r *http.Request) {
 	handlers.GetSickLeave(&t.core, w, r)
 }
 
+// CreateSickLeave ...  Create sick leave
+// @Summary Create sick leave
+// @Description Create sick leave
+// @Tags SickLeaves
+// @Param request body domain.CreateSickLeaveRequest true "body params"
+// @Success 201 {object} domain.CreateSickLeaveResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/sick_leaves [post]
+func (t *Transport) CreateSickLeave(w http.ResponseWriter, r *http.Request) {
+	handlers.CreateSickLeave(&t.core, w, r)
+}
+
 // GetVacation ... Get vacation
 // @Summary Get vacation
 // @Description get vacation
@@ -187,6 +199,18 @@ func (t *Transport) GetSickLeave(w http.ResponseWriter, r *http.Request) {
 // @Router /api/v1/vacations/{vacation_id} [get]
 func (t *Transport) GetVacation(w http.ResponseWriter, r *http.Request) {
 	handlers.GetVacation(&t.core, w, r)
+}
+
+// CreateVacation ...  Create vacation
+// @Summary Create vacation
+// @Description Create vacation
+// @Tags Vacation
+// @Param request body domain.CreateVacationRequest true "body params"
+// @Success 201 {object} domain.CreateVacationResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/vacations [post]
+func (t *Transport) CreateVacation(w http.ResponseWriter, r *http.Request) {
+	handlers.CreateVacation(&t.core, w, r)
 }
 
 // ExportReportsToCsv ... Get all reports

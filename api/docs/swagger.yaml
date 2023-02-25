@@ -38,6 +38,34 @@ definitions:
       id:
         type: string
     type: object
+  domain.CreateSickLeaveRequest:
+    properties:
+      date:
+        type: integer
+      description:
+        type: string
+      is_paid:
+        type: boolean
+    type: object
+  domain.CreateSickLeaveResponse:
+    properties:
+      id:
+        type: string
+    type: object
+  domain.CreateVacationRequest:
+    properties:
+      date:
+        type: integer
+      description:
+        type: string
+      is_paid:
+        type: boolean
+    type: object
+  domain.CreateVacationResponse:
+    properties:
+      id:
+        type: string
+    type: object
   domain.GetCalendarEventsRequest:
     properties:
       date_from:
@@ -529,6 +557,57 @@ paths:
       summary: Send email
       tags:
       - Email
+  /api/v1/sick_leaves:
+    post:
+      description: Create sick leave
+      parameters:
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateSickLeaveRequest'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.CreateSickLeaveResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Create sick leave
+      tags:
+      - SickLeaves
+  /api/v1/sick_leaves/{sick_leave_id}:
+    get:
+      description: get sick leave
+      parameters:
+      - description: sick_leave_id
+        in: path
+        name: sick_leave_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetSickLeaveResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Get sick leave
+      tags:
+      - SickLeaves
   /api/v1/sign_in:
     post:
       description: Getting an authorization token
@@ -656,36 +735,29 @@ paths:
       summary: Add object to user permission
       tags:
       - Permission
-  /api/v1/users/{user_id}/sick_leaves/{sick_leave_id}:
-    get:
-      description: get sick leave
+  /api/v1/vacations:
+    post:
+      description: Create vacation
       parameters:
-      - description: sick_leave_id
-        in: path
-        name: sick_leave_id
+      - description: body params
+        in: body
+        name: request
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/domain.CreateVacationRequest'
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            $ref: '#/definitions/domain.GetSickLeaveResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/httperror.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/httperror.ErrorResponse'
+            $ref: '#/definitions/domain.CreateVacationResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/httperror.ErrorResponse'
-      summary: Get sick leave
+      summary: Create vacation
       tags:
-      - SickLeaves
-  /api/v1/users/{user_id}/vacations/{vacation_id}:
+      - Vacation
+  /api/v1/vacations/{vacation_id}:
     get:
       description: get vacation
       parameters:

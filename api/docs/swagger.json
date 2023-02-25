@@ -331,6 +331,84 @@
                 }
             }
         },
+        "/api/v1/sick_leaves": {
+            "post": {
+                "description": "Create sick leave",
+                "tags": [
+                    "SickLeaves"
+                ],
+                "summary": "Create sick leave",
+                "parameters": [
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateSickLeaveRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateSickLeaveResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/sick_leaves/{sick_leave_id}": {
+            "get": {
+                "description": "get sick leave",
+                "tags": [
+                    "SickLeaves"
+                ],
+                "summary": "Get sick leave",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "sick_leave_id",
+                        "name": "sick_leave_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetSickLeaveResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/sign_in": {
             "post": {
                 "description": "Getting an authorization token",
@@ -527,39 +605,29 @@
                 }
             }
         },
-        "/api/v1/users/{user_id}/sick_leaves/{sick_leave_id}": {
-            "get": {
-                "description": "get sick leave",
+        "/api/v1/vacations": {
+            "post": {
+                "description": "Create vacation",
                 "tags": [
-                    "SickLeaves"
+                    "Vacation"
                 ],
-                "summary": "Get sick leave",
+                "summary": "Create vacation",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "sick_leave_id",
-                        "name": "sick_leave_id",
-                        "in": "path",
-                        "required": true
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateVacationRequest"
+                        }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/domain.GetSickLeaveResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/httperror.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/httperror.ErrorResponse"
+                            "$ref": "#/definitions/domain.CreateVacationResponse"
                         }
                     },
                     "500": {
@@ -571,7 +639,7 @@
                 }
             }
         },
-        "/api/v1/users/{user_id}/vacations/{vacation_id}": {
+        "/api/v1/vacations/{vacation_id}": {
             "get": {
                 "description": "get vacation",
                 "tags": [
@@ -669,6 +737,50 @@
             }
         },
         "domain.CreateReportResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateSickLeaveRequest": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "is_paid": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "domain.CreateSickLeaveResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateVacationRequest": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "is_paid": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "domain.CreateVacationResponse": {
             "type": "object",
             "properties": {
                 "id": {
