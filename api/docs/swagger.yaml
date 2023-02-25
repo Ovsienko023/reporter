@@ -580,6 +580,24 @@ paths:
       tags:
       - SickLeaves
   /api/v1/sick_leaves/{sick_leave_id}:
+    delete:
+      description: Delete sick leave
+      parameters:
+      - description: sick_leave_id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Delete sick leave
+      tags:
+      - SickLeaves
     get:
       description: get sick leave
       parameters:
@@ -758,6 +776,24 @@ paths:
       tags:
       - Vacation
   /api/v1/vacations/{vacation_id}:
+    delete:
+      description: Delete vacation
+      parameters:
+      - description: vacation_id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Delete vacation
+      tags:
+      - Vacation
     get:
       description: get vacation
       parameters:

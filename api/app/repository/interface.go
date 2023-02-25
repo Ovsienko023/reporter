@@ -17,9 +17,11 @@ type InterfaceDatabase interface {
 
 	GetSickLeave(ctx context.Context, msg *GetSickLeave) (*SickLeave, error)
 	CreateSickLeave(ctx context.Context, msg *CreateSickLeave) (*CreatedSickLeave, error)
+	DeleteSickLeave(ctx context.Context, msg *DeleteSickLeave) error
 
 	GetVacation(ctx context.Context, msg *GetVacation) (*Vacation, error)
 	CreateVacation(ctx context.Context, msg *CreateVacation) (*CreatedVacation, error)
+	DeleteVacation(ctx context.Context, msg *DeleteVacation) error
 
 	GetReport(ctx context.Context, msg *GetReport) (*Report, error)
 	GetReports(ctx context.Context, msg *GetReports) ([]ReportItem, *int, error)

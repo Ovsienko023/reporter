@@ -26,5 +26,4 @@ build:
 .PHONY: deploy
 deploy:
 	sudo docker system prune -a
-	sudo docker-compose down --volumes
 	sudo docker-compose --file docker-compose.deploy.yaml up --build

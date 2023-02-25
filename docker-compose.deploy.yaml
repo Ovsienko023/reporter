@@ -9,7 +9,7 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
   server:
-    image: ovsienko023/reporter-api:v1.1.10
+    image: ovsienko023/reporter-api:v1.1.11
     restart: unless-stopped
     command: ./reporter
     depends_on:

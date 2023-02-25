@@ -47,10 +47,12 @@ func RegisterHTTPEndpoints(router chi.Router, c core.Core, apiConfig *configurat
 	// SICK LEAVES
 	router.Get("/api/v1/sick_leaves/{sick_leave_id}", h.GetSickLeave)
 	router.Post("/api/v1/sick_leaves", h.CreateSickLeave)
+	router.Delete("/api/v1/sick_leaves/{sick_leave_id}", h.DeleteSickLeave)
 
 	// VACATION
 	router.Get("/api/v1/vacations/{vacation_id}", h.GetVacation)
 	router.Post("/api/v1/vacations", h.CreateVacation)
+	router.Delete("/api/v1/vacations/{vacation_id}", h.DeleteVacation)
 
 	// STATS
 	router.Get("/api/v1/stats", h.GetStatistics)

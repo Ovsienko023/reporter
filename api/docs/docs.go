@@ -415,6 +415,33 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Delete sick leave",
+                "tags": [
+                    "SickLeaves"
+                ],
+                "summary": "Delete sick leave",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "sick_leave_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/sign_in": {
@@ -681,6 +708,33 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/httperror.ErrorResponse"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete vacation",
+                "tags": [
+                    "Vacation"
+                ],
+                "summary": "Delete vacation",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "vacation_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
                     },
                     "500": {
                         "description": "Internal Server Error",
