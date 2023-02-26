@@ -7,12 +7,12 @@ import (
 )
 
 type GetCalendarEventsRequest struct {
-	Token    string     `json:"token,omitempty" swaggerignore:"true"`
-	DateFrom *time.Time `json:"date_from,omitempty"`
-	DateTo   *time.Time `json:"date_to,omitempty"`
-	Page     *int       `json:"page,omitempty"`
-	PageSize *int       `json:"page_size,omitempty"`
-	//AllowedTo
+	Token     string     `json:"token,omitempty" swaggerignore:"true"`
+	DateFrom  *time.Time `json:"date_from,omitempty"`
+	DateTo    *time.Time `json:"date_to,omitempty"`
+	Page      *int       `json:"page,omitempty"`
+	PageSize  *int       `json:"page_size,omitempty"`
+	AllowedTo *string    `json:"allowed_to,omitempty"`
 }
 
 func (r *GetCalendarEventsRequest) ToDbGetCalendarEvents(invokerId string) *repository.GetCalendarEvents {
@@ -22,6 +22,7 @@ func (r *GetCalendarEventsRequest) ToDbGetCalendarEvents(invokerId string) *repo
 		DateTo:    r.DateTo,
 		Page:      r.Page,
 		PageSize:  r.PageSize,
+		AllowedTo: r.AllowedTo,
 	}
 }
 

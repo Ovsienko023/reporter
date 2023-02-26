@@ -5,44 +5,45 @@ import (
 	"time"
 )
 
-const (
-	sqlGetCalendarEvents = `
-	with tab as (
-		select id,
-			   event_type,
-			   date
-		from main.events
-		where events.user_id = $1 and 
-			($2::timestamp is null and $3::timestamp is null or 
-				date >= $2::timestamp and 
-				date <= $3::timestamp)
-	)
-	select (select count(*) from tab) as count,
-			r.id                      as event_id,
-       		r.event_type              as event_type,
-       		r.date                    as date
-	from tab as r
-	limit $4 offset $4 * ($5 - 1)`
-)
+const sqlGetCalendarEvents = `
+	select error,
+	       count,
+	       event_id,
+	       event_type,
+	       date
+	from main.get_calendar(
+	    _invoker_id := $1, 
+	    _date_from := $2, 
+	    _date_to := $3, 
+	    _page := $4, 
+	    _page_size := $5, 
+	    _allowed_to := $6
+	)`
 
 func (c *Client) GetCalendarEvents(ctx context.Context, msg *GetCalendarEvents) ([]CalendarEvent, *int64, error) {
 	row, err := c.driver.Query(ctx, sqlGetCalendarEvents,
 		msg.InvokerId,
 		msg.DateFrom,
 		msg.DateTo,
-		msg.PageSize,
 		msg.Page,
+		msg.PageSize,
+		msg.AllowedTo,
 	)
 	if err != nil {
 		return nil, nil, NewInternalError(err)
 	}
 
-	var count *int64
+	var (
+		count    *int64
+		queryErr []byte
+	)
+
 	events := make([]CalendarEvent, 0, 0)
 
 	for row.Next() {
 		event := CalendarEvent{}
 		err := row.Scan(
+			&queryErr,
 			&count,
 			&event.Id,
 			&event.EventType,
@@ -50,6 +51,11 @@ func (c *Client) GetCalendarEvents(ctx context.Context, msg *GetCalendarEvents) 
 		)
 		if err != nil {
 			return nil, nil, NewInternalError(err)
+		}
+		if queryErr != nil {
+			if err = AnalyzeError(queryErr); err != nil {
+				return nil, count, err
+			}
 		}
 		events = append(events, event)
 	}
@@ -63,6 +69,7 @@ type GetCalendarEvents struct {
 	DateTo    *time.Time `json:"date_to,omitempty"`
 	Page      *int       `json:"page,omitempty"`
 	PageSize  *int       `json:"page_size,omitempty"`
+	AllowedTo *string    `json:"allowed_to,omitempty"`
 }
 
 type CalendarEvent struct {

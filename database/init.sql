@@ -235,7 +235,7 @@ begin
                   from main.users
                   where id = _invoker_id
                     and deleted_at is null) then
-        error = '{"code": 1, "message": "unauthorized", "details": []}'::jsonb;
+        error := '{"code": 1, "message": "unauthorized", "details": []}'::jsonb;
         return;
     end if;
 
@@ -275,6 +275,118 @@ exception
 
         error := _exception;
         return;
+
+end;
+$$
+    language plpgsql volatile
+                     security definer;
+
+drop function if exists main.get_calendar;
+
+create or replace function main.get_calendar(
+    _invoker_id uuid,
+    _date_from timestamp,
+    _date_to timestamp,
+    _page int = 1,
+    _page_size int = 60,
+    _allowed_to uuid = null,
+    --
+    out error jsonb,
+    out count bigint,
+    out event_id uuid,
+    out event_type varchar,
+    out date timestamptz
+) returns setof record as
+$$
+declare
+    _exception text;
+begin
+
+    if not exists(select 1
+                  from main.users
+                  where id = _invoker_id
+                    and deleted_at is null) then
+        error := '{"code": 1, "message": "unauthorized", "details": []}'::jsonb;
+
+        return query (values (error::jsonb,
+                              null::bigint,
+                              null::uuid,
+                              null::varchar,
+                              null:: timestamptz));
+        return;
+    end if;
+
+    if _allowed_to is not null and
+       not exists(select 1
+                  from main.users
+                  where id = _allowed_to
+                    and deleted_at is null) then
+
+        error = '{"code": 3, "message": "", "details": [{"name": "_user_id", "reason": "not_found"}]}'::jsonb;
+
+        return query (values (error::jsonb,
+                              null::bigint,
+                              null::uuid,
+                              null::varchar,
+                              null:: timestamptz));
+        return;
+    end if;
+
+    if _allowed_to is not null then
+        return query with tab as (select e.id,
+                                         e.event_type,
+                                         e.date
+                                  from main.events as e
+                                  where exists(select 1
+                                               from main.permissions_users_to_objects
+                                               where user_id = _invoker_id
+                                                 and object_id = e.user_id
+                                                 and object_id = _allowed_to
+                                                 and object_id != user_id)
+                                    and (
+                                              _date_from is null and _date_to is null or
+                                              e.date >= _date_from and
+                                              e.date <= _date_to
+                                      ))
+                     select null::jsonb                as error,
+                            (select count(*) from tab) as count,
+                            r.id                       as event_id,
+                            r.event_type               as event_type,
+                            r.date                     as date
+                     from tab as r
+                     limit _page_size offset _page_size * (_page - 1);
+        return;
+    end if;
+    --
+    return query with tab as (select e.id,
+                                     e.event_type,
+                                     e.date
+                              from main.events as e
+                              where e.user_id = _invoker_id
+                                and (_date_from is null and _date_to is null or
+                                     e.date >= _date_from and
+                                     e.date <= _date_to))
+                 select null::jsonb                as error,
+                        (select count(*) from tab) as count,
+                        r.id                       as event_id,
+                        r.event_type               as event_type,
+                        r.date                     as date
+                 from tab as r
+                 limit _page_size offset _page_size * (_page - 1);
+    return;
+
+exception
+    when others then
+        get stacked diagnostics _exception = PG_EXCEPTION_CONTEXT;
+        _exception := _exception || ' | ' || SQLERRM || ' | ' || SQLSTATE;
+        raise notice 'ERROR: % ', _exception;
+
+        return query
+            values (format('{"code": -1, "reason": "unknown", "description": "%s"}', _exception)::jsonb,
+                    null::bigint,
+                    null::uuid,
+                    null::varchar,
+                    null:: timestamptz);
 
 end;
 $$

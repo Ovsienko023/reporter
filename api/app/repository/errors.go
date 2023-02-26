@@ -13,6 +13,7 @@ var (
 	ErrUnauthorized        = errors.New("unauthorized")
 	ErrForbidden           = errors.New("permission denied")
 	ErrReportIdNotFound    = errors.New("report id not found")
+	ErrUserIdNotFound      = errors.New("user id not found")
 	ErrSickLeaveIdNotFound = errors.New("sick leave id not found")
 	ErrVacationIdNotFound  = errors.New("vacation id not found")
 	ErrCredentials         = errors.New("error credentials")
@@ -59,9 +60,11 @@ func AnalyzeError(errorJson []byte) error {
 		return ErrForbidden
 	case 3:
 		for _, obj := range data.Details {
-
 			if obj.Name == "_login" && obj.Reason == "exists" {
 				return ErrLoginAlreadyInUse
+			}
+			if obj.Name == "_user_id" && obj.Reason == "not_found" {
+				return ErrUserIdNotFound
 			}
 
 		}

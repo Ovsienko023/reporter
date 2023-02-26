@@ -853,6 +853,9 @@ const docTemplate = `{
         "domain.GetCalendarEventsRequest": {
             "type": "object",
             "properties": {
+                "allowed_to": {
+                    "type": "string"
+                },
                 "date_from": {
                     "type": "string"
                 },
