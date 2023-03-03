@@ -34,7 +34,8 @@ type GetCalendarEventsResponse struct {
 type CalendarEvent struct {
 	Id        *string `json:"id,omitempty"`
 	EventType *string `json:"event_type,omitempty"`
-	Date      *int64  `json:"date,omitempty"`
+	DateFrom  *int64  `json:"date_from,omitempty"`
+	DateTo    *int64  `json:"date_to,omitempty"`
 }
 
 func (e *GetCalendarEventsResponse) FromGetCalendarEvents(events []repository.CalendarEvent, cnt *int64) *GetCalendarEventsResponse {
@@ -44,7 +45,8 @@ func (e *GetCalendarEventsResponse) FromGetCalendarEvents(events []repository.Ca
 		item := CalendarEvent{
 			Id:        event.Id,
 			EventType: event.EventType,
-			Date:      ptr.Int64(event.Date.Unix()),
+			DateFrom:  ptr.Int64(event.DateFrom.Unix()),
+			DateTo:    ptr.Int64(event.DateTo.Unix()),
 		}
 		calendarEvents = append(calendarEvents, item)
 	}

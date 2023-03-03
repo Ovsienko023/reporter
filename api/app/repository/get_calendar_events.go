@@ -10,8 +10,9 @@ const sqlGetCalendarEvents = `
 	       count,
 	       event_id,
 	       event_type,
-	       date
-	from main.get_calendar(
+	       date_from,
+           date_to
+	from main.get_events(
 	    _invoker_id := $1, 
 	    _date_from := $2, 
 	    _date_to := $3, 
@@ -47,7 +48,8 @@ func (c *Client) GetCalendarEvents(ctx context.Context, msg *GetCalendarEvents) 
 			&count,
 			&event.Id,
 			&event.EventType,
-			&event.Date,
+			&event.DateFrom,
+			&event.DateTo,
 		)
 		if err != nil {
 			return nil, nil, NewInternalError(err)
@@ -75,5 +77,6 @@ type GetCalendarEvents struct {
 type CalendarEvent struct {
 	Id        *string    `json:"id,omitempty"`
 	EventType *string    `json:"event_type,omitempty"`
-	Date      *time.Time `json:"date,omitempty"`
+	DateFrom  *time.Time `json:"date_from,omitempty"`
+	DateTo    *time.Time `json:"date_to,omitempty"`
 }

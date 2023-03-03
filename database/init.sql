@@ -312,9 +312,41 @@ $$
     language plpgsql volatile
                      security definer;
 
-drop function if exists main.get_vacations;
 
-create or replace function main.get_vacations(
+-- Вьюха для отображения ивентов
+create or replace view main.events as
+with tab as (select v.id                 as id,
+                    v.creator_id         as user_id,
+                    'vacation':: varchar as event_type,
+                    v.date_from          as date_from,
+                    v.date_to            as date_to
+             from main.vacations as v
+             union all
+             select s.id                   as id,
+                    s.creator_id           as user_id,
+                    'sick_leave':: varchar as event_type,
+                    s.date_from            as date_from,
+                    s.date_to              as date_to
+             from main.day_off as s
+             union all
+             select d.id                as id,
+                    d.creator_id        as user_id,
+                    'day_off':: varchar as event_type,
+                    d.date_from         as date_from,
+                    d.date_to           as date_to
+             from main.sick_leave as d)
+
+select a.id         as id,
+       a.user_id    as user_id,
+       a.event_type as event_type,
+       a.date_from  as date_from,
+       a.date_to    as date_to
+from tab as a;
+
+
+drop function if exists main.get_events;
+
+create or replace function main.get_events(
     _invoker_id uuid,
     _date_from timestamp,
     _date_to timestamp,
@@ -324,9 +356,8 @@ create or replace function main.get_vacations(
     --
     out error jsonb,
     out count bigint,
-    out vacation_id uuid,
-    out user_id uuid,
-    out status varchar,
+    out event_id uuid,
+    out event_type varchar,
     out date_from timestamptz,
     out date_to timestamptz
 ) returns setof record as
@@ -347,7 +378,6 @@ begin
 
         return query (values (error::jsonb,
                               null::bigint,
-                              null::uuid,
                               null::uuid,
                               null::varchar,
                               null:: timestamptz,
@@ -375,7 +405,6 @@ begin
         return query (values (error::jsonb,
                               null::bigint,
                               null::uuid,
-                              null::uuid,
                               null::varchar,
                               null:: timestamptz,
                               null:: timestamptz));
@@ -383,28 +412,26 @@ begin
     end if;
 
     if _allowed_to is not null then
-        return query with tab as (select v.id,
-                                         v.creator_id,
-                                         v.status,
-                                         v.date_from,
-                                         v.date_to
-                                  from main.vacations as v
+        return query with tab as (select e.id,
+                                         e.event_type,
+                                         e.date_from,
+                                         e.date_to
+                                  from main.events as e
                                   where exists(select 1
-                                               from main.permissions_users_to_objects as pto
-                                               where pto.user_id = _invoker_id
-                                                 and object_id = v.creator_id
+                                               from main.permissions_users_to_objects
+                                               where user_id = _invoker_id
+                                                 and object_id = e.user_id
                                                  and object_id = _allowed_to
-                                                 and object_id != pto.user_id)
+                                                 and object_id != user_id)
                                     and (
                                               _date_from is null and _date_to is null or
-                                              v.date_to >= _date_from and
-                                              v.date_from <= _date_to
+                                              e.date_to >= _date_from and
+                                              e.date_from <= _date_to
                                       ))
                      select null::jsonb                as error,
                             (select count(*) from tab) as count,
-                            r.id                       as vacation_id,
-                            r.creator_id               as user_id,
-                            r.status                   as status,
+                            r.id                       as event_id,
+                            r.event_type               as event_type,
                             r.date_from                as date_from,
                             r.date_to                  as date_to
                      from tab as r
@@ -412,24 +439,19 @@ begin
         return;
     end if;
     --
-    return query with tab as (select v.id,
-                                     v.creator_id,
-                                     v.status,
-                                     v.date_from,
-                                     v.date_to
-                              from main.vacations as v
-                              where v.creator_id = _invoker_id
-                                and (
-                                          _date_from is null and _date_to is null or
-                                          v.date_to >= _date_from and
-                                          v.date_from <= _date_to
-                                  ))
-
+    return query with tab as (select e.id,
+                                     e.event_type,
+                                     e.date_from,
+                                     e.date_to
+                              from main.events as e
+                              where e.user_id = _invoker_id
+                                and (_date_from is null and _date_to is null or
+                                     e.date_to >= _date_from and
+                                     e.date_from <= _date_to))
                  select null::jsonb                as error,
                         (select count(*) from tab) as count,
-                        r.id                       as vacation_id,
-                        r.creator_id               as user_id,
-                        r.status                   as status,
+                        r.id                       as event_id,
+                        r.event_type               as event_type,
                         r.date_from                as date_from,
                         r.date_to                  as date_to
                  from tab as r
@@ -446,7 +468,6 @@ exception
             values (format('{"code": -1, "reason": "unknown", "description": "%s"}', _exception)::jsonb,
                     null::bigint,
                     null::uuid,
-                    null::uuid,
                     null::varchar,
                     null:: timestamptz,
                     null:: timestamptz);
@@ -455,156 +476,3 @@ end;
 $$
     language plpgsql volatile
                      security definer;
-
-
--- -- Вьюха для отображения ивентов
--- create or replace view main.events as
--- with tab as (select r.id               as id,
---                     r.creator_id       as user_id,
---                     'report':: varchar as event_type,
---                     r.date             as date
---              from main.reports as r
---              union all
---              select v.id                 as id,
---                     v.creator_id         as user_id,
---                     'vacation':: varchar as event_type,
---                     v.date               as date
---              from main.vacation as v
---              union all
---              select s.id                   as id,
---                     s.creator_id           as user_id,
---                     'sick_leave':: varchar as event_type,
---                     s.date                 as date
---              from main.sick_leave as s)
---
--- select a.id         as id,
---        a.user_id    as user_id,
---        a.event_type as event_type,
---        a.date       as date
--- from tab as a;
-
-
--- drop function if exists main.get_calendar;
---
--- create or replace function main.get_calendar(
---     _invoker_id uuid,
---     _date_from timestamp,
---     _date_to timestamp,
---     _page int = 1,
---     _page_size int = 60,
---     _allowed_to uuid = null,
---     --
---     out error jsonb,
---     out count bigint,
---     out event_id uuid,
---     out event_type varchar,
---     out date timestamptz
--- ) returns setof record as
--- $$
--- declare
---     _exception text;
--- begin
---
---     if not exists(select 1
---                   from main.users
---                   where id = _invoker_id
---                     and deleted_at is null) then
---         error := '{
---           "code": 1,
---           "message": "unauthorized",
---           "details": []
---         }'::jsonb;
---
---         return query (values (error::jsonb,
---                               null::bigint,
---                               null::uuid,
---                               null::varchar,
---                               null:: timestamptz));
---         return;
---     end if;
---
---     if _allowed_to is not null and
---        not exists(select 1
---                   from main.users
---                   where id = _allowed_to
---                     and deleted_at is null) then
---
---         error = '{
---           "code": 3,
---           "message": "",
---           "details": [
---             {
---               "name": "_user_id",
---               "reason": "not_found"
---             }
---           ]
---         }'::jsonb;
---
---         return query (values (error::jsonb,
---                               null::bigint,
---                               null::uuid,
---                               null::varchar,
---                               null:: timestamptz));
---         return;
---     end if;
---
---     if _allowed_to is not null then
---         return query with tab as (select e.id,
---                                          e.event_type,
---                                          e.date
---                                   from main.events as e
---                                   where exists(select 1
---                                                from main.permissions_users_to_objects
---                                                where user_id = _invoker_id
---                                                  and object_id = e.user_id
---                                                  and object_id = _allowed_to
---                                                  and object_id != user_id)
---                                     and (
---                                               _date_from is null and _date_to is null or
---                                               e.date >= _date_from and
---                                               e.date <= _date_to
---                                       ))
---                      select null::jsonb                as error,
---                             (select count(*) from tab) as count,
---                             r.id                       as event_id,
---                             r.event_type               as event_type,
---                             r.date                     as date
---                      from tab as r
---                      limit _page_size offset _page_size * (_page - 1);
---         return;
---     end if;
---     --
---     return query with tab as (select e.id,
---                                      e.event_type,
---                                      e.date
---                               from main.events as e
---                               where e.user_id = _invoker_id
---                                 and (_date_from is null and _date_to is null or
---                                      e.date >= _date_from and
---                                      e.date <= _date_to))
---                  select null::jsonb                as error,
---                         (select count(*) from tab) as count,
---                         r.id                       as event_id,
---                         r.event_type               as event_type,
---                         r.date                     as date
---                  from tab as r
---                  limit _page_size offset _page_size * (_page - 1);
---     return;
---
--- exception
---     when others then
---         get stacked diagnostics _exception = PG_EXCEPTION_CONTEXT;
---         _exception := _exception || ' | ' || SQLERRM || ' | ' || SQLSTATE;
---         raise notice 'ERROR: % ', _exception;
---
---         return query
---             values (format('{"code": -1, "reason": "unknown", "description": "%s"}', _exception)::jsonb,
---                     null::bigint,
---                     null::uuid,
---                     null::varchar,
---                     null:: timestamptz);
---
--- end;
--- $$
---     language plpgsql volatile
---                      security definer;
