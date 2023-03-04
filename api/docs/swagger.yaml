@@ -18,6 +18,20 @@ definitions:
       id:
         type: string
     type: object
+  domain.CreateDayOffRequest:
+    properties:
+      date_from:
+        type: integer
+      date_to:
+        type: integer
+      description:
+        type: string
+    type: object
+  domain.CreateDayOffResponse:
+    properties:
+      id:
+        type: string
+    type: object
   domain.CreateReportRequest:
     properties:
       body:
@@ -71,6 +85,21 @@ definitions:
       id:
         type: string
     type: object
+  domain.DayOff:
+    properties:
+      creator_id:
+        type: string
+      date_from:
+        type: integer
+      date_to:
+        type: integer
+      description:
+        type: string
+      id:
+        type: string
+      status:
+        type: string
+    type: object
   domain.GetCalendarEventsRequest:
     properties:
       allowed_to:
@@ -92,6 +121,11 @@ definitions:
         items:
           $ref: '#/definitions/domain.CalendarEvent'
         type: array
+    type: object
+  domain.GetDayOffResponse:
+    properties:
+      sick_leave:
+        $ref: '#/definitions/domain.DayOff'
     type: object
   domain.GetProfileRequest:
     type: object
@@ -377,6 +411,75 @@ paths:
       summary: Get Calendar Events
       tags:
       - Calendar
+  /api/v1/day_offs:
+    post:
+      description: Create day off
+      parameters:
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateDayOffRequest'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.CreateDayOffResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Create day off
+      tags:
+      - DayOffs
+  /api/v1/day_offs/{day_off_id}:
+    delete:
+      description: Delete day off
+      parameters:
+      - description: day_off_id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Delete day off
+      tags:
+      - DayOffs
+    get:
+      description: get day off
+      parameters:
+      - description: day_off_id
+        in: path
+        name: day_off_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetDayOffResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Get day off
+      tags:
+      - DayOffs
   /api/v1/export/reports:
     get:
       description: Export reports to csv

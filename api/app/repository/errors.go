@@ -14,6 +14,7 @@ var (
 	ErrForbidden           = errors.New("permission denied")
 	ErrReportIdNotFound    = errors.New("report id not found")
 	ErrUserIdNotFound      = errors.New("user id not found")
+	ErrDayOffIdNotFound    = errors.New("day off id not found")
 	ErrSickLeaveIdNotFound = errors.New("sick leave id not found")
 	ErrVacationIdNotFound  = errors.New("vacation id not found")
 	ErrCredentials         = errors.New("error credentials")

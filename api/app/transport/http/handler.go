@@ -199,6 +199,48 @@ func (t *Transport) DeleteSickLeave(w http.ResponseWriter, r *http.Request) {
 	handlers.DeleteSickLeave(&t.core, w, r)
 }
 
+//-------------
+
+// GetDayOff ... Get day off
+// @Summary Get day off
+// @Description get day off
+// @Tags DayOffs
+// @Param   day_off_id   path      string  true  "day_off_id"
+// @Success 200 {object} domain.GetDayOffResponse
+// @Failure 403 {object} httperror.ErrorResponse
+// @Failure 404 {object} httperror.ErrorResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/day_offs/{day_off_id} [get]
+func (t *Transport) GetDayOff(w http.ResponseWriter, r *http.Request) {
+	handlers.GetDayOff(&t.core, w, r)
+}
+
+// CreateDayOff ...  Create day off
+// @Summary Create day off
+// @Description Create day off
+// @Tags DayOffs
+// @Param request body domain.CreateDayOffRequest true "body params"
+// @Success 201 {object} domain.CreateDayOffResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/day_offs [post]
+func (t *Transport) CreateDayOff(w http.ResponseWriter, r *http.Request) {
+	handlers.CreateDayOff(&t.core, w, r)
+}
+
+// DeleteDayOff ...  Delete day off
+// @Summary Delete day off
+// @Description Delete day off
+// @Tags DayOffs
+// @Param   id   path      string  true  "day_off_id"
+// @Success 204
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/day_offs/{day_off_id} [delete]
+func (t *Transport) DeleteDayOff(w http.ResponseWriter, r *http.Request) {
+	handlers.DeleteDayOff(&t.core, w, r)
+}
+
+//-------------
+
 // GetVacation ... Get vacation
 // @Summary Get vacation
 // @Description get vacation

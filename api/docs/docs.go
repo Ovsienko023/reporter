@@ -50,6 +50,111 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/day_offs": {
+            "post": {
+                "description": "Create day off",
+                "tags": [
+                    "DayOffs"
+                ],
+                "summary": "Create day off",
+                "parameters": [
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateDayOffRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateDayOffResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/day_offs/{day_off_id}": {
+            "get": {
+                "description": "get day off",
+                "tags": [
+                    "DayOffs"
+                ],
+                "summary": "Get day off",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "day_off_id",
+                        "name": "day_off_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetDayOffResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete day off",
+                "tags": [
+                    "DayOffs"
+                ],
+                "summary": "Delete day off",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "day_off_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/export/reports": {
             "get": {
                 "description": "Export reports to csv",
@@ -775,6 +880,28 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.CreateDayOffRequest": {
+            "type": "object",
+            "properties": {
+                "date_from": {
+                    "type": "integer"
+                },
+                "date_to": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateDayOffResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.CreateReportRequest": {
             "type": "object",
             "properties": {
@@ -857,6 +984,29 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.DayOff": {
+            "type": "object",
+            "properties": {
+                "creator_id": {
+                    "type": "string"
+                },
+                "date_from": {
+                    "type": "integer"
+                },
+                "date_to": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.GetCalendarEventsRequest": {
             "type": "object",
             "properties": {
@@ -888,6 +1038,14 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/domain.CalendarEvent"
                     }
+                }
+            }
+        },
+        "domain.GetDayOffResponse": {
+            "type": "object",
+            "properties": {
+                "sick_leave": {
+                    "$ref": "#/definitions/domain.DayOff"
                 }
             }
         },

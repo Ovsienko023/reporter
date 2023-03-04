@@ -15,6 +15,10 @@ type InterfaceDatabase interface {
 
 	GetCalendarEvents(ctx context.Context, msg *GetCalendarEvents) ([]CalendarEvent, *int64, error)
 
+	GetDayOff(ctx context.Context, msg *GetDayOff) (*DayOff, error)
+	CreateDayOff(ctx context.Context, msg *CreateDayOff) (*CreatedDayOff, error)
+	DeleteDayOff(ctx context.Context, msg *DeleteDayOff) error
+
 	GetSickLeave(ctx context.Context, msg *GetSickLeave) (*SickLeave, error)
 	CreateSickLeave(ctx context.Context, msg *CreateSickLeave) (*CreatedSickLeave, error)
 	DeleteSickLeave(ctx context.Context, msg *DeleteSickLeave) error
