@@ -23,9 +23,9 @@ type GetSickLeaveResponse struct {
 
 type SickLeave struct {
 	Id          *string `json:"id,omitempty"`
-	Date        *int64  `json:"date,omitempty"`
-	IsPaid      *bool   `json:"is_paid,omitempty"`
-	State       *string `json:"state,omitempty"`
+	CreatorId   *string `json:"creator_id,omitempty"`
+	DateFrom    *int64  `json:"date_from,omitempty"`
+	DateTo      *int64  `json:"date_to,omitempty"`
 	Status      *string `json:"status,omitempty"`
 	Description *string `json:"description,omitempty"`
 }
@@ -38,9 +38,9 @@ func FromGetSickLeaveResponse(resp *repository.SickLeave) *GetSickLeaveResponse 
 	return &GetSickLeaveResponse{
 		SickLeave: &SickLeave{
 			Id:          resp.Id,
-			Date:        ptr.Int64(resp.Date.Unix()),
-			IsPaid:      resp.IsPaid,
-			State:       resp.State,
+			DateFrom:    ptr.Int64(resp.DateFrom.Unix()),
+			DateTo:      ptr.Int64(resp.DateTo.Unix()),
+			CreatorId:   resp.CreatorId,
 			Status:      resp.Status,
 			Description: resp.Description,
 		},

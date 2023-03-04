@@ -7,16 +7,16 @@ import (
 
 const sqlGetVacation = `
 	select id,
-		   date,
+		   date_from,
+		   date_to,
 		   is_paid,
-		   state,
 		   status,
 		   description,
 		   creator_id,
 		   created_at,
 		   updated_at,
 		   payload
-    from main.vacation as v
+    from main.vacations as v
     where id = $1 and exists(select 1
         					 from main.permissions_users_to_objects as pto
             				 where pto.user_id = $2 and
@@ -42,9 +42,9 @@ func (c *Client) GetVacation(ctx context.Context, msg *GetVacation) (*Vacation, 
 	for row.Next() {
 		err := row.Scan(
 			&vacation.Id,
-			&vacation.Date,
+			&vacation.DateFrom,
+			&vacation.DateTo,
 			&vacation.IsPaid,
-			&vacation.State,
 			&vacation.Status,
 			&vacation.Description,
 			&vacation.CreatorId,
@@ -71,9 +71,9 @@ type GetVacation struct {
 
 type Vacation struct {
 	Id          *string          `json:"id,omitempty"`
-	Date        *time.Time       `json:"date,omitempty"`
+	DateFrom    *time.Time       `json:"date_from,omitempty"`
+	DateTo      *time.Time       `json:"date_to,omitempty"`
 	IsPaid      *bool            `json:"is_paid,omitempty"`
-	State       *string          `json:"state,omitempty"`
 	Status      *string          `json:"status,omitempty"`
 	Description *string          `json:"description,omitempty"`
 	CreatorId   *string          `json:"creator_id,omitempty"`

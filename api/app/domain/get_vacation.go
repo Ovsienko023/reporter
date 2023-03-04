@@ -23,10 +23,11 @@ type GetVacationResponse struct {
 
 type Vacation struct {
 	Id          *string `json:"id,omitempty"`
-	Date        *int64  `json:"date,omitempty"`
+	DateFrom    *int64  `json:"date_from,omitempty"`
+	DateTo      *int64  `json:"date_to,omitempty"`
 	IsPaid      *bool   `json:"is_paid,omitempty"`
-	State       *string `json:"state,omitempty"`
 	Status      *string `json:"status,omitempty"`
+	CreatorId   *string `json:"creator_id,omitempty"`
 	Description *string `json:"description,omitempty"`
 }
 
@@ -38,9 +39,10 @@ func FromGetVacationResponse(resp *repository.Vacation) *GetVacationResponse {
 	return &GetVacationResponse{
 		Vacation: &Vacation{
 			Id:          resp.Id,
-			Date:        ptr.Int64(resp.Date.Unix()),
+			DateFrom:    ptr.Int64(resp.DateFrom.Unix()),
+			DateTo:      ptr.Int64(resp.DateTo.Unix()),
+			CreatorId:   resp.CreatorId,
 			IsPaid:      resp.IsPaid,
-			State:       resp.State,
 			Status:      resp.Status,
 			Description: resp.Description,
 		},

@@ -8,10 +8,10 @@ import (
 )
 
 const sqlCreateVacation = `
-    INSERT INTO main.vacation
-        (date, is_paid, status, description, creator_id)
+    INSERT INTO main.vacations
+        (date_from, date_to, is_paid, status, description, creator_id)
     VALUES
-    ($1, $2, $3, $4, $5)
+    ($1, $2, $3, $4, $5, $6)
     RETURNING id
 `
 
@@ -22,7 +22,8 @@ func (c *Client) CreateVacation(ctx context.Context, msg *CreateVacation) (*Crea
 	}
 
 	row, err := transaction.Query(ctx, sqlCreateVacation,
-		msg.Date,
+		msg.DateFrom,
+		msg.DateTo,
 		msg.IsPaid,
 		msg.Status,
 		msg.Description,
@@ -49,7 +50,8 @@ func (c *Client) CreateVacation(ctx context.Context, msg *CreateVacation) (*Crea
 
 type CreateVacation struct {
 	InvokerId   string    `json:"invoker_id,omitempty"`
-	Date        time.Time `json:"date,omitempty"`
+	DateFrom    time.Time `json:"date_from,omitempty"`
+	DateTo      time.Time `json:"date_to,omitempty"`
 	IsPaid      bool      `json:"is_paid,omitempty"`
 	Status      string    `json:"status,omitempty"`
 	Description string    `json:"description,omitempty"`

@@ -7,7 +7,7 @@ import (
 )
 
 const sqlDeleteVacation = `
-	delete from main.vacation
+	delete from main.vacations
     where id = $1 and creator_id = $2`
 
 func (c *Client) DeleteVacation(ctx context.Context, msg *DeleteVacation) error {

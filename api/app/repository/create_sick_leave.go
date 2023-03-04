@@ -9,7 +9,7 @@ import (
 
 const sqlCreateSickLeave = `
     INSERT INTO main.sick_leave
-        (date, is_paid, status, description, creator_id)
+        (date_from, date_to, status, description, creator_id)
     VALUES
     ($1, $2, $3, $4, $5)
     RETURNING id
@@ -22,8 +22,8 @@ func (c *Client) CreateSickLeave(ctx context.Context, msg *CreateSickLeave) (*Cr
 	}
 
 	row, err := transaction.Query(ctx, sqlCreateSickLeave,
-		msg.Date,
-		msg.IsPaid,
+		msg.DateFrom,
+		msg.DateTo,
 		msg.Status,
 		msg.Description,
 		msg.InvokerId,
@@ -49,8 +49,8 @@ func (c *Client) CreateSickLeave(ctx context.Context, msg *CreateSickLeave) (*Cr
 
 type CreateSickLeave struct {
 	InvokerId   string    `json:"invoker_id,omitempty"`
-	Date        time.Time `json:"date,omitempty"`
-	IsPaid      bool      `json:"is_paid,omitempty"`
+	DateFrom    time.Time `json:"date_from,omitempty"`
+	DateTo      time.Time `json:"date_to,omitempty"`
 	Status      string    `json:"status,omitempty"`
 	Description string    `json:"description,omitempty"`
 }

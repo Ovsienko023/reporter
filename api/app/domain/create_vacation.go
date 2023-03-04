@@ -8,24 +8,29 @@ import (
 
 type CreateVacationRequest struct {
 	Token       string `json:"token,omitempty" swaggerignore:"true"`
-	Date        int64  `json:"date,omitempty"`
+	DateFrom    int64  `json:"date_from,omitempty"`
+	DateTo      int64  `json:"date_to,omitempty"`
 	IsPaid      bool   `json:"is_paid,omitempty"`
-	Description string `json:"description,omitempty"`
+	Description string `json:"description,omitempty"` // todo *
 }
 
 func (r CreateVacationRequest) Validate() error {
-	errs := validation.ValidateStruct(&r) // todo fields
-	//validation.Field(&r.StartTime, validation.Required),
-	//validation.Field(&r.EndTime, validation.Required),
-
+	errs := validation.ValidateStruct(&r,
+		validation.Field(&r.DateFrom, validation.Required),
+		validation.Field(&r.DateTo, validation.Required),
+		validation.Field(&r.IsPaid, validation.Required),
+	)
 	return errs
 }
 
 func (r *CreateVacationRequest) ToDbCreateVacation(invokerId string) *repository.CreateVacation {
-	date := time.Unix(r.Date, 0)
+	dateFrom := time.Unix(r.DateFrom, 0)
+	dateTo := time.Unix(r.DateTo, 0)
+
 	return &repository.CreateVacation{
 		InvokerId:   invokerId,
-		Date:        time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC),
+		DateFrom:    time.Date(dateFrom.Year(), dateFrom.Month(), dateFrom.Day(), 0, 0, 0, 0, time.UTC),
+		DateTo:      time.Date(dateTo.Year(), dateTo.Month(), dateTo.Day(), 0, 0, 0, 0, time.UTC),
 		IsPaid:      r.IsPaid,
 		Status:      "approved", // todo move to const
 		Description: r.Description,

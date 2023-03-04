@@ -36,7 +36,7 @@ func (r *ExportReportsResponse) From(reports []repository.ReportItem) *ExportRep
 }
 
 func ToCsvByte(reports []repository.ReportItem) []byte {
-	rawData := "Id,DisplayName,Date,CreatorId,CreatedAt,UpdatedAt,StartTime,EndTime,BreakTime,WorkTime,Body\n"
+	rawData := "Id,DisplayName,DateFrom,CreatorId,CreatedAt,UpdatedAt,StartTime,EndTime,BreakTime,WorkTime,Body\n"
 
 	for _, report := range reports {
 		startTime := "NULL"

@@ -8,25 +8,27 @@ import (
 
 type CreateSickLeaveRequest struct {
 	Token       string `json:"token,omitempty" swaggerignore:"true"`
-	Date        int64  `json:"date,omitempty"`
-	IsPaid      bool   `json:"is_paid,omitempty"`
+	DateFrom    int64  `json:"date_from,omitempty"`
+	DateTo      int64  `json:"date_to,omitempty"`
 	Description string `json:"description,omitempty"`
 }
 
 func (r CreateSickLeaveRequest) Validate() error {
-	errs := validation.ValidateStruct(&r) // todo fields
-	//validation.Field(&r.StartTime, validation.Required),
-	//validation.Field(&r.EndTime, validation.Required),
+	errs := validation.ValidateStruct(&r,
+		validation.Field(&r.DateFrom, validation.Required),
+		validation.Field(&r.DateTo, validation.Required),
+	)
 
 	return errs
 }
 
 func (r *CreateSickLeaveRequest) ToDbCreateSickLeave(invokerId string) *repository.CreateSickLeave {
-	date := time.Unix(r.Date, 0)
+	dateFrom := time.Unix(r.DateFrom, 0)
+	dateTo := time.Unix(r.DateTo, 0)
 	return &repository.CreateSickLeave{
 		InvokerId:   invokerId,
-		Date:        time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC),
-		IsPaid:      r.IsPaid,
+		DateFrom:    time.Date(dateFrom.Year(), dateFrom.Month(), dateFrom.Day(), 0, 0, 0, 0, time.UTC),
+		DateTo:      time.Date(dateTo.Year(), dateTo.Month(), dateTo.Day(), 0, 0, 0, 0, time.UTC),
 		Status:      "approved", // todo move to const
 		Description: r.Description,
 	}

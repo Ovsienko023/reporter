@@ -127,6 +127,7 @@ create table if not exists main.reports
     start_time   integer,
     end_time     integer,
     break_time   integer,
+    work_time    integer,
     body         varchar,
     creator_id   uuid references main.users (id),
     created_at   timestamptz not null                        default now(),
@@ -324,14 +325,14 @@ with tab as (select v.id                 as id,
              union all
              select s.id                   as id,
                     s.creator_id           as user_id,
-                    'sick_leave':: varchar as event_type,
+                    'day_off':: varchar as event_type,
                     s.date_from            as date_from,
                     s.date_to              as date_to
              from main.day_off as s
              union all
              select d.id                as id,
                     d.creator_id        as user_id,
-                    'day_off':: varchar as event_type,
+                    'sick_leave':: varchar as event_type,
                     d.date_from         as date_from,
                     d.date_to           as date_to
              from main.sick_leave as d)

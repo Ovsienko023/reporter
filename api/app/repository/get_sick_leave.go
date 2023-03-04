@@ -7,9 +7,8 @@ import (
 
 const sqlGetSickLeave = `
 	select id,
-		   date,
-		   is_paid,
-		   state,
+		   date_from,
+		   date_to,
 		   status,
 		   description,
 		   creator_id,
@@ -42,9 +41,8 @@ func (c *Client) GetSickLeave(ctx context.Context, msg *GetSickLeave) (*SickLeav
 	for row.Next() {
 		err := row.Scan(
 			&sickLeave.Id,
-			&sickLeave.Date,
-			&sickLeave.IsPaid,
-			&sickLeave.State,
+			&sickLeave.DateFrom,
+			&sickLeave.DateTo,
 			&sickLeave.Status,
 			&sickLeave.Description,
 			&sickLeave.CreatorId,
@@ -71,9 +69,8 @@ type GetSickLeave struct {
 
 type SickLeave struct {
 	Id          *string           `json:"id,omitempty"`
-	Date        *time.Time        `json:"date,omitempty"`
-	IsPaid      *bool             `json:"is_paid,omitempty"`
-	State       *string           `json:"state,omitempty"`
+	DateFrom    *time.Time        `json:"date_from,omitempty"`
+	DateTo      *time.Time        `json:"date_to,omitempty"`
 	Status      *string           `json:"status,omitempty"`
 	Description *string           `json:"description,omitempty"`
 	CreatorId   *string           `json:"creator_id,omitempty"`
