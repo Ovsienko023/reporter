@@ -761,7 +761,10 @@ const docTemplate = `{
         "domain.CalendarEvent": {
             "type": "object",
             "properties": {
-                "date": {
+                "date_from": {
+                    "type": "integer"
+                },
+                "date_to": {
                     "type": "integer"
                 },
                 "event_type": {
@@ -809,14 +812,14 @@ const docTemplate = `{
         "domain.CreateSickLeaveRequest": {
             "type": "object",
             "properties": {
-                "date": {
+                "date_from": {
+                    "type": "integer"
+                },
+                "date_to": {
                     "type": "integer"
                 },
                 "description": {
                     "type": "string"
-                },
-                "is_paid": {
-                    "type": "boolean"
                 }
             }
         },
@@ -831,10 +834,14 @@ const docTemplate = `{
         "domain.CreateVacationRequest": {
             "type": "object",
             "properties": {
-                "date": {
+                "date_from": {
+                    "type": "integer"
+                },
+                "date_to": {
                     "type": "integer"
                 },
                 "description": {
+                    "description": "todo *",
                     "type": "string"
                 },
                 "is_paid": {
@@ -1114,19 +1121,19 @@ const docTemplate = `{
         "domain.SickLeave": {
             "type": "object",
             "properties": {
-                "date": {
+                "creator_id": {
+                    "type": "string"
+                },
+                "date_from": {
+                    "type": "integer"
+                },
+                "date_to": {
                     "type": "integer"
                 },
                 "description": {
                     "type": "string"
                 },
                 "id": {
-                    "type": "string"
-                },
-                "is_paid": {
-                    "type": "boolean"
-                },
-                "state": {
                     "type": "string"
                 },
                 "status": {
@@ -1218,7 +1225,13 @@ const docTemplate = `{
         "domain.Vacation": {
             "type": "object",
             "properties": {
-                "date": {
+                "creator_id": {
+                    "type": "string"
+                },
+                "date_from": {
+                    "type": "integer"
+                },
+                "date_to": {
                     "type": "integer"
                 },
                 "description": {
@@ -1229,9 +1242,6 @@ const docTemplate = `{
                 },
                 "is_paid": {
                     "type": "boolean"
-                },
-                "state": {
-                    "type": "string"
                 },
                 "status": {
                     "type": "string"

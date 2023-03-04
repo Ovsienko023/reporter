@@ -9,7 +9,9 @@ definitions:
     type: object
   domain.CalendarEvent:
     properties:
-      date:
+      date_from:
+        type: integer
+      date_to:
         type: integer
       event_type:
         type: string
@@ -40,12 +42,12 @@ definitions:
     type: object
   domain.CreateSickLeaveRequest:
     properties:
-      date:
+      date_from:
+        type: integer
+      date_to:
         type: integer
       description:
         type: string
-      is_paid:
-        type: boolean
     type: object
   domain.CreateSickLeaveResponse:
     properties:
@@ -54,9 +56,12 @@ definitions:
     type: object
   domain.CreateVacationRequest:
     properties:
-      date:
+      date_from:
+        type: integer
+      date_to:
         type: integer
       description:
+        description: todo *
         type: string
       is_paid:
         type: boolean
@@ -237,15 +242,15 @@ definitions:
     type: object
   domain.SickLeave:
     properties:
-      date:
+      creator_id:
+        type: string
+      date_from:
+        type: integer
+      date_to:
         type: integer
       description:
         type: string
       id:
-        type: string
-      is_paid:
-        type: boolean
-      state:
         type: string
       status:
         type: string
@@ -304,7 +309,11 @@ definitions:
     type: object
   domain.Vacation:
     properties:
-      date:
+      creator_id:
+        type: string
+      date_from:
+        type: integer
+      date_to:
         type: integer
       description:
         type: string
@@ -312,8 +321,6 @@ definitions:
         type: string
       is_paid:
         type: boolean
-      state:
-        type: string
       status:
         type: string
     type: object
