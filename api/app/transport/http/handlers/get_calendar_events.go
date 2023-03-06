@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"errors"
 	"github.com/Ovsienko023/reporter/app/core"
 	"github.com/Ovsienko023/reporter/app/domain"
 	"github.com/Ovsienko023/reporter/app/transport/http/httperror"
@@ -69,6 +68,13 @@ func GetCalendarEvents(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		message.PageSize = ptr.Int(200)
 	}
 
+	eventType := query.Get("event_type")
+	if eventType != "" {
+		message.EventType = &eventType
+	} else {
+		message.EventType = nil
+	}
+
 	allowedTo := query.Get("allowed_to")
 	if allowedTo != "" {
 		message.AllowedTo = &allowedTo
@@ -78,11 +84,12 @@ func GetCalendarEvents(c *core.Core, w http.ResponseWriter, r *http.Request) {
 
 	result, err := c.GetCalendarEvents(r.Context(), &message)
 	if err != nil {
-		switch {
-		case errors.Is(err, core.ErrUnauthorized):
+		switch err {
+		case core.ErrUnauthorized:
 			errorContainer.Done(w, http.StatusUnauthorized, err.Error())
 			return
-		case errors.Is(err, core.ErrUserIdFromAllowedToNotFound):
+
+		case core.ErrUserIdFromAllowedToNotFound, core.ErrEventTypeNotFound:
 			errorContainer.Done(w, http.StatusNotFound, err.Error())
 			return
 		}

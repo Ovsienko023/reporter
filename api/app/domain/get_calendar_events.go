@@ -12,6 +12,7 @@ type GetCalendarEventsRequest struct {
 	DateTo    *time.Time `json:"date_to,omitempty"`
 	Page      *int       `json:"page,omitempty"`
 	PageSize  *int       `json:"page_size,omitempty"`
+	EventType *string    `json:"event_type,omitempty"`
 	AllowedTo *string    `json:"allowed_to,omitempty"`
 }
 
@@ -22,6 +23,7 @@ func (r *GetCalendarEventsRequest) ToDbGetCalendarEvents(invokerId string) *repo
 		DateTo:    r.DateTo,
 		Page:      r.Page,
 		PageSize:  r.PageSize,
+		EventType: r.EventType,
 		AllowedTo: r.AllowedTo,
 	}
 }

@@ -313,6 +313,16 @@ $$
     language plpgsql volatile
                      security definer;
 
+-- Таблица для отгулов
+create table if not exists main.event_types
+(
+    id varchar primary key
+);
+
+insert into main.event_types (id)
+values ('day_off'),
+       ('sick_leave'),
+       ('vacation');
 
 -- Вьюха для отображения ивентов
 create or replace view main.events as
@@ -353,6 +363,7 @@ create or replace function main.get_events(
     _date_to timestamp,
     _page int = 1,
     _page_size int = 60,
+    _event_type varchar = null,
     _allowed_to uuid = null,
     --
     out error jsonb,
@@ -386,13 +397,38 @@ begin
         return;
     end if;
 
+    if _event_type is not null and
+       not exists(select id
+                  from main.event_types
+                   where id = _event_type) then
+
+        error := '{
+          "code": 3,
+          "message": "",
+          "details": [
+            {
+              "name": "_event_type",
+              "reason": "not_found"
+            }
+          ]
+        }'::jsonb;
+
+        return query (values (error::jsonb,
+                              null::bigint,
+                              null::uuid,
+                              null::varchar,
+                              null:: timestamptz,
+                              null:: timestamptz));
+        return;
+    end if;
+
     if _allowed_to is not null and
        not exists(select 1
                   from main.users
                   where id = _allowed_to
                     and deleted_at is null) then
 
-        error = '{
+        error := '{
           "code": 3,
           "message": "",
           "details": [
@@ -425,10 +461,15 @@ begin
                                                  and object_id = _allowed_to
                                                  and object_id != user_id)
                                     and (
+                                        _event_type is null or
+                                        e.event_type = _event_type
+                                      )
+                                    and (
                                               _date_from is null and _date_to is null or
                                               e.date_to >= _date_from and
                                               e.date_from <= _date_to
-                                      ))
+                                      )
+                                  order by e.date_from desc)
                      select null::jsonb                as error,
                             (select count(*) from tab) as count,
                             r.id                       as event_id,
@@ -446,9 +487,16 @@ begin
                                      e.date_to
                               from main.events as e
                               where e.user_id = _invoker_id
-                                and (_date_from is null and _date_to is null or
+                                and (
+                                      _event_type is null or
+                                      e.event_type = _event_type
+                                  )
+                                and (
+                                    _date_from is null and _date_to is null or
                                      e.date_to >= _date_from and
-                                     e.date_from <= _date_to))
+                                     e.date_from <= _date_to
+                                    )
+                              order by e.date_from desc)
                  select null::jsonb                as error,
                         (select count(*) from tab) as count,
                         r.id                       as event_id,

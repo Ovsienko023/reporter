@@ -1019,6 +1019,9 @@ const docTemplate = `{
                 "date_to": {
                     "type": "string"
                 },
+                "event_type": {
+                    "type": "string"
+                },
                 "page": {
                     "type": "integer"
                 },

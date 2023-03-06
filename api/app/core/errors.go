@@ -13,4 +13,5 @@ var (
 	ErrCredentials                 = errors.New("permission denied")
 	ErrLoginAlreadyInUse           = errors.New("login already in use")
 	ErrUserIdFromAllowedToNotFound = errors.New("user id  from allowed_to not found")
+	ErrEventTypeNotFound           = errors.New("event type not found")
 )

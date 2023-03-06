@@ -34,8 +34,8 @@ const (
 	DefaultDocPort = "8888"
 
 	//DefaultDbConnStr = "postgresql://postgres:1234@localhost:5442/postgres"
-	//DefaultDbConnStr = "postgresql://postgres:1234@localhost:5444/reporter_2.0"
 	DefaultDbConnStr = "postgresql://postgres:1234@database:5432/postgres"
+	//DefaultDbConnStr = "postgresql://postgres:1234@localhost:5444/reporter_2.0"
 )
 
 func NewConfig() (*Config, error) {

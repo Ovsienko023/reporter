@@ -14,6 +14,7 @@ var (
 	ErrForbidden           = errors.New("permission denied")
 	ErrReportIdNotFound    = errors.New("report id not found")
 	ErrUserIdNotFound      = errors.New("user id not found")
+	ErrEventTypeNotFound   = errors.New("event type not found")
 	ErrDayOffIdNotFound    = errors.New("day off id not found")
 	ErrSickLeaveIdNotFound = errors.New("sick leave id not found")
 	ErrVacationIdNotFound  = errors.New("vacation id not found")
@@ -66,6 +67,9 @@ func AnalyzeError(errorJson []byte) error {
 			}
 			if obj.Name == "_user_id" && obj.Reason == "not_found" {
 				return ErrUserIdNotFound
+			}
+			if obj.Name == "_event_type" && obj.Reason == "not_found" {
+				return ErrEventTypeNotFound
 			}
 
 		}

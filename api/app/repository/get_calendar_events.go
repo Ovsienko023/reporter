@@ -17,8 +17,9 @@ const sqlGetCalendarEvents = `
 	    _date_from := $2, 
 	    _date_to := $3, 
 	    _page := $4, 
-	    _page_size := $5, 
-	    _allowed_to := $6
+	    _page_size := $5,
+	    _event_type := $6,
+	    _allowed_to := $7
 	)`
 
 func (c *Client) GetCalendarEvents(ctx context.Context, msg *GetCalendarEvents) ([]CalendarEvent, *int64, error) {
@@ -28,6 +29,7 @@ func (c *Client) GetCalendarEvents(ctx context.Context, msg *GetCalendarEvents) 
 		msg.DateTo,
 		msg.Page,
 		msg.PageSize,
+		msg.EventType,
 		msg.AllowedTo,
 	)
 	if err != nil {
@@ -71,6 +73,7 @@ type GetCalendarEvents struct {
 	DateTo    *time.Time `json:"date_to,omitempty"`
 	Page      *int       `json:"page,omitempty"`
 	PageSize  *int       `json:"page_size,omitempty"`
+	EventType *string    `json:"event_type,omitempty"`
 	AllowedTo *string    `json:"allowed_to,omitempty"`
 }
 
