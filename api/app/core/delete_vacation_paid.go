@@ -8,13 +8,13 @@ import (
 	"github.com/Ovsienko023/reporter/app/repository"
 )
 
-func (c *Core) DeleteVacation(ctx context.Context, msg *domain.DeleteVacationRequest) error {
+func (c *Core) DeleteVacationPaid(ctx context.Context, msg *domain.DeleteVacationPaidRequest) error {
 	invokerId, err := c.authorize(msg.Token)
 	if err != nil {
 		return err
 	}
 
-	err = c.db.DeleteVacation(ctx, msg.ToDbDeleteVacation(invokerId))
+	err = c.db.DeleteVacationPaid(ctx, msg.ToDbDeleteVacationPaid(invokerId))
 
 	if err != nil {
 		switch {

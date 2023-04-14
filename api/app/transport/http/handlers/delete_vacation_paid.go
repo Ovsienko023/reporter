@@ -9,23 +9,23 @@ import (
 	"net/http"
 )
 
-func DeleteVacation(c *core.Core, w http.ResponseWriter, r *http.Request) {
+func DeleteVacationPaid(c *core.Core, w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	errorContainer := httperror.ErrorResponse{}
 
-	message := domain.DeleteVacationRequest{
-		Token:      r.Header.Get("Authorization"),
-		VacationId: chi.URLParam(r, "vacation_id"),
+	message := domain.DeleteVacationPaidRequest{
+		Token:          r.Header.Get("Authorization"),
+		VacationPaidId: chi.URLParam(r, "vacation_paid_id"),
 	}
 
-	err := c.DeleteVacation(r.Context(), &message)
+	err := c.DeleteVacationPaid(r.Context(), &message)
 	if err != nil {
 		switch {
 		case errors.Is(err, core.ErrUnauthorized):
 			errorContainer.Done(w, http.StatusUnauthorized, err.Error())
 			return
 		case errors.Is(err, core.ErrVacationIdNotFound):
-			errorContainer.Done(w, http.StatusNotFound, "vacation id not found")
+			errorContainer.Done(w, http.StatusNotFound, "vacation paid id not found")
 			return
 		}
 		errorContainer.Done(w, http.StatusInternalServerError, "internal error")

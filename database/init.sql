@@ -3,17 +3,8 @@ CREATE EXTENSION pgcrypto;
 create schema main authorization postgres;
 grant all on schema main to postgres;
 
--- Таблица для статусов
-create table if not exists main.report_statuses
-(
-    id varchar primary key
-);
 
-insert into main.report_statuses (id)
-values ('approved')
-on conflict do nothing;
-
---Таблица для состояний ивентов
+--Таблица для состояний ивентов ++++++++
 create table if not exists main.reports_states
 (
     id varchar primary key
@@ -24,7 +15,7 @@ values ('draft'),
        ('ready')
 on conflict do nothing;
 
--- USERS
+-- USERS ++++++++++++++++++
 
 create table if not exists main.users
 (
@@ -36,8 +27,8 @@ create table if not exists main.users
     payload      jsonb
 );
 
--- CREDENTIALS
-
+-- CREDENTIALS ++++
+-- +++
 create table if not exists main.user_passwords
 (
     id         uuid primary key     default gen_random_uuid(),
@@ -51,7 +42,7 @@ create table if not exists main.user_passwords
 create index if not exists __created_at_idx on main.user_passwords (created_at) where deleted_at is null;
 create index if not exists __deleted_at_idx on main.user_passwords (deleted_at) where deleted_at is not null;
 
-
+-- +++++
 create table if not exists main.user_logins
 (
     id         uuid primary key     default gen_random_uuid(),
@@ -66,7 +57,7 @@ create unique index if not exists __login_idx on main.user_logins (lower(login))
 create index if not exists __created_at_idx on main.user_logins (created_at) where deleted_at is null;
 create index if not exists __deleted_at_idx on main.user_logins (deleted_at) where deleted_at is not null;
 
--- ROLES
+-- ROLES ++++
 
 create table if not exists main.roles
 (
@@ -78,6 +69,7 @@ insert into main.roles (id, description)
 values ('administrator', null),
        ('default', null);
 
+-- ++++++++
 create table if not exists main.users_to_roles
 (
     user_id uuid    not null references main.users (id),
@@ -86,7 +78,7 @@ create table if not exists main.users_to_roles
 );
 
 
--- todo не дупускать дубли в таблицу
+-- todo не дупускать дубли в таблицу +++++++
 create table if not exists main.permissions_users_to_objects
 (
     user_id     uuid not null references main.users (id),
@@ -95,7 +87,7 @@ create table if not exists main.permissions_users_to_objects
 );
 
 -- init default user
-
+-- +
 do
 $$
     declare
@@ -116,7 +108,7 @@ $$
     end
 $$;
 
--- REPORTS
+-- REPORTS +++++++++++
 
 create table if not exists main.reports
 (
@@ -154,7 +146,7 @@ create table if not exists main.groups_to_objects
     object_id   uuid
 );
 
--- Таблица для статусов больничных
+-- Таблица для статусов больничных +++++++
 create table if not exists main.sick_leave_statuses
 (
     id varchar primary key
@@ -181,23 +173,48 @@ create table if not exists main.sick_leave
 );
 
 -- Таблица для статусов больничных
-create table if not exists main.vacations_statuses
+create table if not exists main.vacations_unpaid_statuses
 (
     id varchar primary key
 );
 
-insert into main.vacations_statuses (id)
+insert into main.vacations_unpaid_statuses (id)
 values ('approved')
 on conflict do nothing;
 
 -- Таблица для отпуска
-create table if not exists main.vacations
+create table if not exists main.vacations_unpaid
 (
     id          uuid primary key     default gen_random_uuid(),
     date_from   timestamptz not null,
     date_to     timestamptz not null,
-    is_paid     bool        not null,
-    status      varchar references main.vacations_statuses (id),
+    status      varchar references main.vacations_unpaid_statuses (id),
+    description varchar,
+    creator_id  uuid references main.users (id),
+    created_at  timestamptz not null default now(),
+    updated_at  timestamptz not null default now(),
+    deleted_at  timestamptz,
+    payload     jsonb
+);
+
+
+-- Таблица для статусов больничных
+create table if not exists main.vacations_paid_statuses
+(
+    id varchar primary key
+);
+
+insert into main.vacations_paid_statuses (id)
+values ('approved')
+on conflict do nothing;
+
+-- Таблица для отпуска
+create table if not exists main.vacations_paid
+(
+    id          uuid primary key     default gen_random_uuid(),
+    date_from   timestamptz not null,
+    date_to     timestamptz not null,
+    status      varchar references main.vacations_paid_statuses (id),
     description varchar,
     creator_id  uuid references main.users (id),
     created_at  timestamptz not null default now(),
@@ -322,29 +339,37 @@ create table if not exists main.event_types
 insert into main.event_types (id)
 values ('day_off'),
        ('sick_leave'),
-       ('vacation');
+       ('vacations_paid'),
+       ('vacations_unpaid');
 
 -- Вьюха для отображения ивентов
 create or replace view main.events as
-with tab as (select v.id                 as id,
-                    v.creator_id         as user_id,
-                    'vacation':: varchar as event_type,
-                    v.date_from          as date_from,
-                    v.date_to            as date_to
-             from main.vacations as v
+with tab as (select v.id                       as id,
+                    v.creator_id               as user_id,
+                    'vacations_paid':: varchar as event_type,
+                    v.date_from                as date_from,
+                    v.date_to                  as date_to
+             from main.vacations_paid as v
              union all
-             select s.id                   as id,
-                    s.creator_id           as user_id,
+             select v.id                         as id,
+                    v.creator_id                 as user_id,
+                    'vacations_unpaid':: varchar as event_type,
+                    v.date_from                  as date_from,
+                    v.date_to                    as date_to
+             from main.vacations_unpaid as v
+             union all
+             select s.id                as id,
+                    s.creator_id        as user_id,
                     'day_off':: varchar as event_type,
-                    s.date_from            as date_from,
-                    s.date_to              as date_to
+                    s.date_from         as date_from,
+                    s.date_to           as date_to
              from main.day_off as s
              union all
-             select d.id                as id,
-                    d.creator_id        as user_id,
+             select d.id                   as id,
+                    d.creator_id           as user_id,
                     'sick_leave':: varchar as event_type,
-                    d.date_from         as date_from,
-                    d.date_to           as date_to
+                    d.date_from            as date_from,
+                    d.date_to              as date_to
              from main.sick_leave as d)
 
 select a.id         as id,
@@ -400,7 +425,7 @@ begin
     if _event_type is not null and
        not exists(select id
                   from main.event_types
-                   where id = _event_type) then
+                  where id = _event_type) then
 
         error := '{
           "code": 3,
@@ -461,8 +486,8 @@ begin
                                                  and object_id = _allowed_to
                                                  and object_id != user_id)
                                     and (
-                                        _event_type is null or
-                                        e.event_type = _event_type
+                                          _event_type is null or
+                                          e.event_type = _event_type
                                       )
                                     and (
                                               _date_from is null and _date_to is null or
@@ -492,10 +517,10 @@ begin
                                       e.event_type = _event_type
                                   )
                                 and (
-                                    _date_from is null and _date_to is null or
-                                     e.date_to >= _date_from and
-                                     e.date_from <= _date_to
-                                    )
+                                          _date_from is null and _date_to is null or
+                                          e.date_to >= _date_from and
+                                          e.date_from <= _date_to
+                                  )
                               order by e.date_from desc)
                  select null::jsonb                as error,
                         (select count(*) from tab) as count,

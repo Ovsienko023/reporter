@@ -6,19 +6,19 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-const sqlDeleteVacation = `
-	delete from main.vacations
+const sqlDeleteVacationUnpaid = `
+	delete from main.vacations_unpaid
     where id = $1 and creator_id = $2`
 
-func (c *Client) DeleteVacation(ctx context.Context, msg *DeleteVacation) error {
-	err := c.isFindVacation(ctx, msg.InvokerId, msg.VacationId)
+func (c *Client) DeleteVacationUnpaid(ctx context.Context, msg *DeleteVacationUnpaid) error {
+	err := c.isFindVacationUnpaid(ctx, msg.InvokerId, msg.VacationUnpaidId)
 	if errors.Is(err, ErrVacationIdNotFound) {
 		return ErrVacationIdNotFound
 	}
 
 	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})
-	row, err := transaction.Query(ctx, sqlDeleteVacation,
-		msg.VacationId,
+	row, err := transaction.Query(ctx, sqlDeleteVacationUnpaid,
+		msg.VacationUnpaidId,
 		msg.InvokerId,
 	)
 	if err != nil {
@@ -40,7 +40,7 @@ func (c *Client) DeleteVacation(ctx context.Context, msg *DeleteVacation) error 
 	return nil
 }
 
-type DeleteVacation struct {
-	InvokerId  string `json:"invoker_id,omitempty"`
-	VacationId string `json:"vacation_id,omitempty"`
+type DeleteVacationUnpaid struct {
+	InvokerId        string `json:"invoker_id,omitempty"`
+	VacationUnpaidId string `json:"vacation_unpaid_id,omitempty"`
 }

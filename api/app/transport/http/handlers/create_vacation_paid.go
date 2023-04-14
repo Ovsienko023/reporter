@@ -11,12 +11,12 @@ import (
 	"net/http"
 )
 
-func CreateVacation(c *core.Core, w http.ResponseWriter, r *http.Request) {
+func CreateVacationPaid(c *core.Core, w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	errorContainer := httperror.ErrorResponse{}
 
 	decoder := json.NewDecoder(r.Body)
-	var message domain.CreateVacationRequest
+	var message domain.CreateVacationPaidRequest
 
 	err := decoder.Decode(&message)
 	if err != nil {
@@ -35,7 +35,7 @@ func CreateVacation(c *core.Core, w http.ResponseWriter, r *http.Request) {
 	}
 
 	message.Token = r.Header.Get("Authorization")
-	result, err := c.CreateVacation(r.Context(), &message)
+	result, err := c.CreateVacationPaid(r.Context(), &message)
 	if err != nil {
 		switch {
 		case errors.Is(err, core.ErrUnauthorized):

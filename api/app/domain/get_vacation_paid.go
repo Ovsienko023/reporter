@@ -5,44 +5,42 @@ import (
 	"github.com/Ovsienko023/reporter/infrastructure/utils/ptr"
 )
 
-type GetVacationRequest struct {
-	Token      string `json:"token,omitempty" swaggerignore:"true"`
-	VacationId string `json:"vacation_id,omitempty" swaggerignore:"true"`
+type GetVacationPaidRequest struct {
+	Token          string `json:"token,omitempty" swaggerignore:"true"`
+	VacationPaidId string `json:"vacation_paid_id,omitempty" swaggerignore:"true"`
 }
 
-func (r *GetVacationRequest) ToDbGetVacation(invokerId string) *repository.GetVacation {
-	return &repository.GetVacation{
-		InvokerId:  invokerId,
-		VacationId: r.VacationId,
+func (r *GetVacationPaidRequest) ToDbGetVacationPaid(invokerId string) *repository.GetVacationPaid {
+	return &repository.GetVacationPaid{
+		InvokerId:      invokerId,
+		VacationPaidId: r.VacationPaidId,
 	}
 }
 
-type GetVacationResponse struct {
-	Vacation *Vacation `json:"vacation,omitempty"`
+type GetVacationPaidResponse struct {
+	VacationPaid *VacationPaid `json:"vacation_paid,omitempty"`
 }
 
-type Vacation struct {
+type VacationPaid struct {
 	Id          *string `json:"id,omitempty"`
 	DateFrom    *int64  `json:"date_from,omitempty"`
 	DateTo      *int64  `json:"date_to,omitempty"`
-	IsPaid      *bool   `json:"is_paid,omitempty"`
 	Status      *string `json:"status,omitempty"`
 	CreatorId   *string `json:"creator_id,omitempty"`
 	Description *string `json:"description,omitempty"`
 }
 
-func FromGetVacationResponse(resp *repository.Vacation) *GetVacationResponse {
+func FromGetVacationPaidResponse(resp *repository.VacationPaid) *GetVacationPaidResponse {
 	if resp == nil {
 		return nil
 	}
 
-	return &GetVacationResponse{
-		Vacation: &Vacation{
+	return &GetVacationPaidResponse{
+		VacationPaid: &VacationPaid{
 			Id:          resp.Id,
 			DateFrom:    ptr.Int64(resp.DateFrom.Unix()),
 			DateTo:      ptr.Int64(resp.DateTo.Unix()),
 			CreatorId:   resp.CreatorId,
-			IsPaid:      resp.IsPaid,
 			Status:      resp.Status,
 			Description: resp.Description,
 		},

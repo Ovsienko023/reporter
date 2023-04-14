@@ -54,10 +54,15 @@ func RegisterHTTPEndpoints(router chi.Router, c core.Core, apiConfig *configurat
 	router.Post("/api/v1/sick_leaves", h.CreateSickLeave)
 	router.Delete("/api/v1/sick_leaves/{sick_leave_id}", h.DeleteSickLeave)
 
-	// VACATION
-	router.Get("/api/v1/vacations/{vacation_id}", h.GetVacation)
-	router.Post("/api/v1/vacations", h.CreateVacation)
-	router.Delete("/api/v1/vacations/{vacation_id}", h.DeleteVacation)
+	// VACATION PAID
+	router.Get("/api/v1/vacations_paid/{vacation_paid_id}", h.GetVacationPaid)
+	router.Post("/api/v1/vacations_paid", h.CreateVacationPaid)
+	router.Delete("/api/v1/vacations_paid/{vacations_paid_id}", h.DeleteVacationPaid)
+
+	// VACATION UNPAID
+	router.Get("/api/v1/vacations_unpaid/{vacations_unpaid_id}", h.GetVacationUnpaid)
+	router.Post("/api/v1/vacations_unpaid", h.CreateVacationUnpaid)
+	router.Delete("/api/v1/vacations_unpaid/{vacations_unpaid_id}", h.DeleteVacationUnpaid)
 
 	// STATS
 	router.Get("/api/v1/stats", h.GetStatistics)

@@ -241,42 +241,80 @@ func (t *Transport) DeleteDayOff(w http.ResponseWriter, r *http.Request) {
 
 //-------------
 
-// GetVacation ... Get vacation
-// @Summary Get vacation
-// @Description get vacation
-// @Tags Vacation
-// @Param   vacation_id   path      string  true  "vacation_id"
-// @Success 200 {object} domain.GetVacationResponse
+// GetVacationPaid ... Get vacation paid
+// @Summary Get vacation paid
+// @Description get vacation paid
+// @Tags VacationPaid
+// @Param   vacation_paid_id   path      string  true  "vacation_paid_id"
+// @Success 200 {object} domain.GetVacationPaidResponse
 // @Failure 403 {object} httperror.ErrorResponse
 // @Failure 404 {object} httperror.ErrorResponse
 // @Failure 500 {object} httperror.ErrorResponse
-// @Router /api/v1/vacations/{vacation_id} [get]
-func (t *Transport) GetVacation(w http.ResponseWriter, r *http.Request) {
-	handlers.GetVacation(&t.core, w, r)
+// @Router /api/v1/vacations_paid/{vacations_paid_id} [get]
+func (t *Transport) GetVacationPaid(w http.ResponseWriter, r *http.Request) {
+	handlers.GetVacationPaid(&t.core, w, r)
 }
 
-// CreateVacation ...  Create vacation
-// @Summary Create vacation
-// @Description Create vacation
-// @Tags Vacation
-// @Param request body domain.CreateVacationRequest true "body params"
-// @Success 201 {object} domain.CreateVacationResponse
+// CreateVacationPaid ...  Create vacation paid
+// @Summary Create vacation paid
+// @Description Create vacation paid
+// @Tags VacationPaid
+// @Param request body domain.CreateVacationPaidRequest true "body params"
+// @Success 201 {object} domain.CreateVacationPaidResponse
 // @Failure 500 {object} httperror.ErrorResponse
-// @Router /api/v1/vacations [post]
-func (t *Transport) CreateVacation(w http.ResponseWriter, r *http.Request) {
-	handlers.CreateVacation(&t.core, w, r)
+// @Router /api/v1/vacations_paid [post]
+func (t *Transport) CreateVacationPaid(w http.ResponseWriter, r *http.Request) {
+	handlers.CreateVacationPaid(&t.core, w, r)
 }
 
-// DeleteVacation ...  Delete vacation
-// @Summary Delete vacation
-// @Description Delete vacation
-// @Tags Vacation
-// @Param   id   path      string  true  "vacation_id"
+// DeleteVacationPaid ...  Delete vacation paid
+// @Summary Delete vacation paid
+// @Description Delete vacation paid
+// @Tags VacationPaid
+// @Param   id   path      string  true  "vacation_paid_id"
 // @Success 204
 // @Failure 500 {object} httperror.ErrorResponse
-// @Router /api/v1/vacations/{vacation_id} [delete]
-func (t *Transport) DeleteVacation(w http.ResponseWriter, r *http.Request) {
-	handlers.DeleteVacation(&t.core, w, r)
+// @Router /api/v1/vacations_paid/{vacation_paid_id} [delete]
+func (t *Transport) DeleteVacationPaid(w http.ResponseWriter, r *http.Request) {
+	handlers.DeleteVacationPaid(&t.core, w, r)
+}
+
+// GetVacationUnpaid ... Get vacation unpaid
+// @Summary Get vacation unpaid
+// @Description get vacation unpaid
+// @Tags VacationUnpaid
+// @Param   vacation_id   path      string  true  "vacations_unpaid_id"
+// @Success 200 {object} domain.GetVacationUnpaidResponse
+// @Failure 403 {object} httperror.ErrorResponse
+// @Failure 404 {object} httperror.ErrorResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/vacations_unpaid/{vacations_unpaid_id} [get]
+func (t *Transport) GetVacationUnpaid(w http.ResponseWriter, r *http.Request) {
+	handlers.GetVacationUnpaid(&t.core, w, r)
+}
+
+// CreateVacationUnpaid ...  Create vacation unpaid
+// @Summary Create vacation unpaid
+// @Description Create vacation unpaid
+// @Tags VacationUnpaid
+// @Param request body domain.CreateVacationUnpaidRequest true "body params"
+// @Success 201 {object} domain.CreateVacationUnpaidResponse
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/vacations_unpaid [post]
+func (t *Transport) CreateVacationUnpaid(w http.ResponseWriter, r *http.Request) {
+	handlers.CreateVacationUnpaid(&t.core, w, r)
+}
+
+// DeleteVacationUnpaid ...  Delete vacation unpaid
+// @Summary Delete vacation unpaid
+// @Description Delete vacation unpaid
+// @Tags VacationUnpaid
+// @Param   id   path      string  true  "vacation_unpaid_id"
+// @Success 204
+// @Failure 500 {object} httperror.ErrorResponse
+// @Router /api/v1/vacations_unpaid/{vacation_unpaid_id} [delete]
+func (t *Transport) DeleteVacationUnpaid(w http.ResponseWriter, r *http.Request) {
+	handlers.DeleteVacationUnpaid(&t.core, w, r)
 }
 
 // ExportReportsToCsv ... Get all reports

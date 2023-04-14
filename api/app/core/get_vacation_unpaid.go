@@ -8,13 +8,13 @@ import (
 	"github.com/Ovsienko023/reporter/app/repository"
 )
 
-func (c *Core) GetVacation(ctx context.Context, msg *domain.GetVacationRequest) (*domain.GetVacationResponse, error) {
+func (c *Core) GetVacationUnpaid(ctx context.Context, msg *domain.GetVacationUnpaidRequest) (*domain.GetVacationUnpaidResponse, error) {
 	invokerId, err := c.authorize(msg.Token)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := c.db.GetVacation(ctx, msg.ToDbGetVacation(invokerId))
+	result, err := c.db.GetVacationUnpaid(ctx, msg.ToDbGetVacationUnpaid(invokerId))
 
 	if err != nil {
 		switch {
@@ -27,5 +27,5 @@ func (c *Core) GetVacation(ctx context.Context, msg *domain.GetVacationRequest) 
 		}
 	}
 
-	return domain.FromGetVacationResponse(result), nil
+	return domain.FromGetVacationUnpaidResponse(result), nil
 }

@@ -6,47 +6,44 @@ import (
 	"time"
 )
 
-type CreateVacationRequest struct {
+type CreateVacationUnpaidRequest struct {
 	Token       string `json:"token,omitempty" swaggerignore:"true"`
 	DateFrom    int64  `json:"date_from,omitempty"`
 	DateTo      int64  `json:"date_to,omitempty"`
-	IsPaid      bool   `json:"is_paid,omitempty"`
 	Description string `json:"description,omitempty"` // todo *
 }
 
-func (r CreateVacationRequest) Validate() error {
+func (r CreateVacationUnpaidRequest) Validate() error {
 	errs := validation.ValidateStruct(&r,
 		validation.Field(&r.DateFrom, validation.Required),
 		validation.Field(&r.DateTo, validation.Required),
-		validation.Field(&r.IsPaid, validation.Required),
 	)
 	return errs
 }
 
-func (r *CreateVacationRequest) ToDbCreateVacation(invokerId string) *repository.CreateVacation {
+func (r *CreateVacationUnpaidRequest) ToDbCreateVacationUnpaid(invokerId string) *repository.CreateVacationUnpaid {
 	dateFrom := time.Unix(r.DateFrom, 0)
 	dateTo := time.Unix(r.DateTo, 0)
 
-	return &repository.CreateVacation{
+	return &repository.CreateVacationUnpaid{
 		InvokerId:   invokerId,
 		DateFrom:    time.Date(dateFrom.Year(), dateFrom.Month(), dateFrom.Day(), 0, 0, 0, 0, time.UTC),
 		DateTo:      time.Date(dateTo.Year(), dateTo.Month(), dateTo.Day(), 0, 0, 0, 0, time.UTC),
-		IsPaid:      r.IsPaid,
 		Status:      "approved", // todo move to const
 		Description: r.Description,
 	}
 }
 
-type CreateVacationResponse struct {
+type CreateVacationUnpaidResponse struct {
 	Id string `json:"id,omitempty"`
 }
 
-func FromCreateVacationResponse(resp *repository.CreatedVacation) *CreateVacationResponse {
+func FromCreateVacationUnpaidResponse(resp *repository.CreatedVacationUnpaid) *CreateVacationUnpaidResponse {
 	if resp == nil {
 		return nil
 	}
 
-	return &CreateVacationResponse{
+	return &CreateVacationUnpaidResponse{
 		Id: resp.Id,
 	}
 }

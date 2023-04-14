@@ -19,9 +19,14 @@ const sqlFindSickLeave = `
     from main.sick_leave
 	where id = $1 and creator_id = $2`
 
-const sqlFindVacation = `
+const sqlFindVacationPaid = `
 	select 1
-    from main.vacations
+    from main.vacations_paid
+	where id = $1 and creator_id = $2`
+
+const sqlFindVacationUnpaid = `
+	select 1
+    from main.vacations_unpaid
 	where id = $1 and creator_id = $2`
 
 func (c *Client) isFindReport(ctx context.Context, invokerId, reportId string) error {
@@ -90,8 +95,30 @@ func (c *Client) isFindSickLeave(ctx context.Context, invokerId, sickLeaveId str
 	return nil
 }
 
-func (c *Client) isFindVacation(ctx context.Context, invokerId, vacationId string) error {
-	row, err := c.driver.Query(ctx, sqlFindVacation, vacationId, invokerId)
+func (c *Client) isFindVacationPaid(ctx context.Context, invokerId, vacationPaidId string) error {
+	row, err := c.driver.Query(ctx, sqlFindVacationPaid, vacationPaidId, invokerId)
+	if err != nil {
+		return NewInternalError(err)
+	}
+
+	var report *int
+
+	for row.Next() {
+		err = row.Scan(&report)
+		if err != nil {
+			return NewInternalError(err)
+		}
+	}
+
+	if report == nil {
+		return ErrVacationIdNotFound
+	}
+
+	return nil
+}
+
+func (c *Client) isFindVacationUnpaid(ctx context.Context, invokerId, vacationUnpaidId string) error {
+	row, err := c.driver.Query(ctx, sqlFindVacationUnpaid, vacationUnpaidId, invokerId)
 	if err != nil {
 		return NewInternalError(err)
 	}

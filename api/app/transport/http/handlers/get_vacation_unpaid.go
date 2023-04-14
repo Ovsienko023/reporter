@@ -9,16 +9,16 @@ import (
 	"net/http"
 )
 
-func GetVacation(c *core.Core, w http.ResponseWriter, r *http.Request) {
+func GetVacationUnpaid(c *core.Core, w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	errorContainer := httperror.ErrorResponse{}
 
-	message := &domain.GetVacationRequest{
-		Token:      r.Header.Get("Authorization"),
-		VacationId: chi.URLParam(r, "vacation_id"),
+	message := &domain.GetVacationUnpaidRequest{
+		Token:            r.Header.Get("Authorization"),
+		VacationUnpaidId: chi.URLParam(r, "vacation_unpaid_id"),
 	}
 
-	result, err := c.GetVacation(r.Context(), message)
+	result, err := c.GetVacationUnpaid(r.Context(), message)
 
 	if err != nil {
 		switch {

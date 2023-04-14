@@ -7,24 +7,23 @@ import (
 	"time"
 )
 
-const sqlCreateVacation = `
-    INSERT INTO main.vacations
-        (date_from, date_to, is_paid, status, description, creator_id)
+const sqlCreateVacationUnpaid = `
+    INSERT INTO main.vacations_unpaid
+        (date_from, date_to, status, description, creator_id)
     VALUES
-    ($1, $2, $3, $4, $5, $6)
+    ($1, $2, $3, $4, $5)
     RETURNING id
 `
 
-func (c *Client) CreateVacation(ctx context.Context, msg *CreateVacation) (*CreatedVacation, error) {
+func (c *Client) CreateVacationUnpaid(ctx context.Context, msg *CreateVacationUnpaid) (*CreatedVacationUnpaid, error) {
 	transaction, err := c.driver.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", ErrInternal, err)
 	}
 
-	row, err := transaction.Query(ctx, sqlCreateVacation,
+	row, err := transaction.Query(ctx, sqlCreateVacationUnpaid,
 		msg.DateFrom,
 		msg.DateTo,
-		msg.IsPaid,
 		msg.Status,
 		msg.Description,
 		msg.InvokerId,
@@ -33,7 +32,7 @@ func (c *Client) CreateVacation(ctx context.Context, msg *CreateVacation) (*Crea
 		return nil, NewInternalError(err)
 	}
 
-	vacation := &CreatedVacation{}
+	vacation := &CreatedVacationUnpaid{}
 
 	for row.Next() {
 		err = row.Scan(
@@ -48,15 +47,14 @@ func (c *Client) CreateVacation(ctx context.Context, msg *CreateVacation) (*Crea
 	return vacation, nil
 }
 
-type CreateVacation struct {
+type CreateVacationUnpaid struct {
 	InvokerId   string    `json:"invoker_id,omitempty"`
 	DateFrom    time.Time `json:"date_from,omitempty"`
 	DateTo      time.Time `json:"date_to,omitempty"`
-	IsPaid      bool      `json:"is_paid,omitempty"`
 	Status      string    `json:"status,omitempty"`
 	Description string    `json:"description,omitempty"`
 }
 
-type CreatedVacation struct {
+type CreatedVacationUnpaid struct {
 	Id string `json:"id,omitempty"`
 }
