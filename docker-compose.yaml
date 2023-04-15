@@ -2,6 +2,7 @@ version: "3.3"
 
 services:
   database:
+    container_name: reported_db
     platform: linux/amd64
     build:
       context: ./database
@@ -11,7 +12,8 @@ services:
       - "5442:5432"
     volumes:
       - database:/var/lib/postgresql/data
-  server:
+  api:
+    container_name: reported_api
     platform: linux/amd64
     build:
       context: ./api
