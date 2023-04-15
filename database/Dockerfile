@@ -1,4 +1,6 @@
 FROM postgres:14
+LABEL authors="Ovsienko V."
+
 COPY init.sql /docker-entrypoint-initdb.d/
 ENV POSTGRES_PASSWORD=1234
 ENV POSTGRES_USER=postgres

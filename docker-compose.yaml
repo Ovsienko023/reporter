@@ -16,6 +16,8 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
+    env_file:
+      - .env
     restart: unless-stopped
     command: ./reporter
     depends_on:
