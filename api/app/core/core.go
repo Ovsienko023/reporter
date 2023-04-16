@@ -2,19 +2,34 @@ package core
 
 import (
 	"github.com/Ovsienko023/reporter/app/repository"
+	"github.com/Ovsienko023/reporter/infrastructure"
 	"github.com/golang-jwt/jwt"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"strings"
 )
 
 type Core struct {
-	db repository.InterfaceDatabase
+	*infrastructure.Infrastructure
+	db repository.Repository
 }
 
-func NewCore(db repository.InterfaceDatabase) *Core {
-	return &Core{
+type Config struct {
+	Logger *zap.Logger
+}
+
+func New(db repository.Repository, cnf *Config) *Core {
+
+	inf, _ := infrastructure.New(&infrastructure.Config{
+		Logger: cnf.Logger,
+	})
+
+	core := &Core{
 		db: db,
 	}
+	core.Infrastructure = inf
+
+	return core
 }
 
 // authorize возвращает InvokerId или ошибку:

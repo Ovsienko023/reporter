@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
+	"fmt"
 	"github.com/Ovsienko023/reporter/app/domain"
 	"gopkg.in/gomail.v2"
 )
@@ -12,13 +13,17 @@ import (
 // ErrUnauthorized
 // ErrInternal
 func (c *Core) SendEmail(_ context.Context, msg *domain.SendEmailRequest) error {
-	_, err := c.authorize(msg.Token)
-	if err != nil {
-		return err
-	}
+	//_, err := c.authorize(msg.Token)
+	//if err != nil {
+	//	return err
+	//}
+	logger := c.GetLogger()
 
-	err = Send(
-		&Config{
+	logger.Debug(fmt.Sprintf("Attempting send message: %#v", msg))
+	//c.infrastructure.GetLogger()
+
+	err := Send(
+		&SendEmailConfig{
 			Host:     "mail.trueconf.com",
 			Port:     465,
 			Username: msg.Email,
@@ -32,13 +37,16 @@ func (c *Core) SendEmail(_ context.Context, msg *domain.SendEmailRequest) error 
 		},
 	)
 	if err != nil {
+		logger.Debug(fmt.Sprintf("Error send message: %s", err.Error()))
 		return ErrInternal
 	}
+
+	logger.Debug("Send message: ok")
 
 	return nil
 }
 
-type Config struct {
+type SendEmailConfig struct {
 	Host     string `json:"host,omitempty"`
 	Port     int    `json:"port,omitempty"`
 	Username string `json:"username,omitempty"`
@@ -52,7 +60,7 @@ type Letter struct {
 	Body    string   `json:"body,omitempty"`
 }
 
-func Send(cfg *Config, msg *Letter) error {
+func Send(cfg *SendEmailConfig, msg *Letter) error {
 	d := gomail.NewDialer(cfg.Host, cfg.Port, cfg.Username, cfg.Password)
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
@@ -71,7 +79,7 @@ func Send(cfg *Config, msg *Letter) error {
 
 	// Send the email to Bob, Cora and Dan.
 	if err := d.DialAndSend(m); err != nil {
-		return ErrInternal // todo
+		return err // todo
 	}
 
 	return nil

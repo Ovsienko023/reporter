@@ -1209,6 +1209,9 @@ const docTemplate = `{
         "domain.GetReportsRequest": {
             "type": "object",
             "properties": {
+                "allowed_to": {
+                    "type": "string"
+                },
                 "date_from": {
                     "type": "string"
                 },

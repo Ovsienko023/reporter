@@ -6,6 +6,8 @@ import (
 	"github.com/Ovsienko023/reporter/app/repository"
 	transportHttp "github.com/Ovsienko023/reporter/app/transport/http"
 	"github.com/Ovsienko023/reporter/infrastructure/configuration"
+	"github.com/Ovsienko023/reporter/infrastructure/logger"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -19,26 +21,31 @@ import (
 type App struct {
 	httpServer *http.Server
 
-	recordCore *core.Core
+	Core *core.Core
 }
 
 func NewApp(cnf *configuration.Config) *App {
 	client, _ := repository.New(&cnf.Db)
-	recordCore := core.NewCore(client)
+
+	lgr, _ := logger.New(nil)
 
 	return &App{
-		recordCore: recordCore,
+		Core: core.New(
+			client,
+			&core.Config{Logger: lgr},
+		),
 	}
 }
 
 func (a *App) Run(apiConfig *configuration.Api) error {
 	router := chi.NewRouter()
+	//lgr := a.Core.GetLogger()
 
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 
-	r := transportHttp.RegisterHTTPEndpoints(router, *a.recordCore, apiConfig)
+	r := transportHttp.RegisterHTTPEndpoints(router, *a.Core, apiConfig)
 
 	a.httpServer = &http.Server{
 		Addr:           apiConfig.Host + ":" + apiConfig.Port,
@@ -46,6 +53,8 @@ func (a *App) Run(apiConfig *configuration.Api) error {
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
+		//ErrorLog:       logger.New(&fwdToZapWriter{logger}, "", 0),
+		//ErrorLog: logger.New(serverJsonWriter{}, "", 0),
 	}
 
 	go func() {
@@ -64,3 +73,30 @@ func (a *App) Run(apiConfig *configuration.Api) error {
 
 	return a.httpServer.Shutdown(ctx)
 }
+
+type serverJsonWriter struct {
+	io.Writer
+}
+
+//// ListenAndServeTLS - with custom log Writer
+//func ListenAndServeTLS(addr, certFile, keyFile string, handler http.Handler) error {
+//	server := &http.Server{
+//		Addr: addr,
+//		Handler: handler,
+//
+//	}
+//}
+//
+//func (w serverJsonWriter) Write(p []byte) (n int, err error) {
+//	//fw.logger.Errorw(string(p))
+//	return len(p), nil
+//}
+
+//type fwdToZapWriter struct {
+//	logger *zap.SugaredLogger
+//}
+
+//func (fw *fwdToZapWriter) Write(p []byte) (n int, err error) {
+//	fw.logger.Errorw(string(p))
+//	return len(p), nil
+//}

@@ -160,6 +160,8 @@ definitions:
     type: object
   domain.GetReportsRequest:
     properties:
+      allowed_to:
+        type: string
       date_from:
         type: string
       date_to:

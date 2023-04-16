@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   database:
-    container_name: reported_db
+#    container_name: reporter_db
     platform: linux/amd64
     build:
       context: ./database
@@ -12,14 +12,14 @@ services:
       - "5442:5432"
     volumes:
       - database:/var/lib/postgresql/data
-  api:
-    container_name: reported_api
+  server:
+#    container_name: reporter_api
     platform: linux/amd64
     build:
       context: ./api
       dockerfile: Dockerfile
-    env_file:
-      - .env
+#    env_file:
+#      - .env
     restart: unless-stopped
     command: ./reporter
     depends_on:

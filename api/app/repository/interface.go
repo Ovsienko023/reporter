@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-type InterfaceDatabase interface {
+type Repository interface {
 	SignUp(ctx context.Context, msg *SignUp) error
 	SignIn(ctx context.Context, msg *SignIn) (*Auth, error)
 

@@ -7,40 +7,28 @@ import (
 
 const (
 	sqlGetReports = `
-	with tab as (
-		select id,
-			   display_name,
-			   date,
-			   start_time,
-			   end_time,
-			   break_time,
-			   work_time,
-			   body,
-			   creator_id,
-			   created_at,
-			   updated_at,
-			   deleted_at
-		from main.reports
-		where creator_id = $1 and 
-			($2::timestamp is null and $3::timestamp is null or 
-				date >= $2::timestamp and 
-				date <= $3::timestamp)
-	)
-	select (select count(*) from tab) as count,
-			r.id                      as report_id,
-       		r.display_name            as display_name,
-       		r.date                    as date,
-       		r.start_time              as start_time,
-			r.end_time                as end_time,
-			r.break_time              as break_time,
-			r.work_time               as work_time,
-			r.body                    as body,
-			r.creator_id              as creator_id,
-			r.created_at              as created_at,
-			r.updated_at              as updated_at,
-			r.deleted_at              as deleted_at
-	from tab as r
-	limit $4 offset $4 * ($5 - 1)`
+	select error,
+           count,
+           id,
+           display_name,
+           date,
+           start_time,
+           end_time,
+           break_time,
+           work_time,
+           body,
+           creator_id,
+           created_at,
+           updated_at,
+           deleted_at
+	from main.get_reports(
+	    _invoker_id := $1, 
+	    _date_from := $2, 
+	    _date_to := $3, 
+	    _page := $4, 
+	    _page_size := $5,
+	    _allowed_to := $6
+	)`
 )
 
 func (c *Client) GetReports(ctx context.Context, msg *GetReports) ([]ReportItem, *int, error) {
@@ -48,19 +36,25 @@ func (c *Client) GetReports(ctx context.Context, msg *GetReports) ([]ReportItem,
 		msg.InvokerId,
 		msg.DateFrom,
 		msg.DateTo,
-		msg.PageSize,
 		msg.Page,
+		msg.PageSize,
+		msg.AllowedTo,
 	)
 	if err != nil {
 		return nil, nil, NewInternalError(err)
 	}
 
-	var count int
+	var (
+		count    *int
+		queryErr []byte
+	)
+
 	reports := make([]ReportItem, 0, 0)
 
 	for row.Next() {
 		report := ReportItem{}
 		err := row.Scan(
+			&queryErr,
 			&count,
 			&report.Id,
 			&report.DisplayName,
@@ -78,10 +72,15 @@ func (c *Client) GetReports(ctx context.Context, msg *GetReports) ([]ReportItem,
 		if err != nil {
 			return nil, nil, NewInternalError(err)
 		}
+		if queryErr != nil {
+			if err = AnalyzeError(queryErr); err != nil {
+				return nil, count, err
+			}
+		}
 		reports = append(reports, report)
 	}
 
-	return reports, &count, nil
+	return reports, count, nil
 }
 
 type GetReports struct {
@@ -90,6 +89,7 @@ type GetReports struct {
 	DateTo    *time.Time `json:"date_to,omitempty"`
 	Page      *int       `json:"page,omitempty"`
 	PageSize  *int       `json:"page_size,omitempty"`
+	AllowedTo *string    `json:"allowed_to,omitempty"`
 }
 
 type ReportItem struct {
