@@ -745,13 +745,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/vacations": {
+        "/api/v1/vacations_paid": {
             "post": {
-                "description": "Create vacation",
+                "description": "Create vacation paid",
                 "tags": [
-                    "Vacation"
+                    "VacationPaid"
                 ],
-                "summary": "Create vacation",
+                "summary": "Create vacation paid",
                 "parameters": [
                     {
                         "description": "body params",
@@ -759,7 +759,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.CreateVacationRequest"
+                            "$ref": "#/definitions/domain.CreateVacationPaidRequest"
                         }
                     }
                 ],
@@ -767,7 +767,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/domain.CreateVacationResponse"
+                            "$ref": "#/definitions/domain.CreateVacationPaidResponse"
                         }
                     },
                     "500": {
@@ -779,18 +779,47 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/vacations/{vacation_id}": {
-            "get": {
-                "description": "get vacation",
+        "/api/v1/vacations_paid/{vacation_paid_id}": {
+            "delete": {
+                "description": "Delete vacation paid",
                 "tags": [
-                    "Vacation"
+                    "VacationPaid"
                 ],
-                "summary": "Get vacation",
+                "summary": "Delete vacation paid",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "vacation_id",
-                        "name": "vacation_id",
+                        "description": "vacation_paid_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/vacations_paid/{vacations_paid_id}": {
+            "get": {
+                "description": "get vacation paid",
+                "tags": [
+                    "VacationPaid"
+                ],
+                "summary": "Get vacation paid",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "vacation_paid_id",
+                        "name": "vacation_paid_id",
                         "in": "path",
                         "required": true
                     }
@@ -799,7 +828,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.GetVacationResponse"
+                            "$ref": "#/definitions/domain.GetVacationPaidResponse"
                         }
                     },
                     "403": {
@@ -821,17 +850,53 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "delete": {
-                "description": "Delete vacation",
+            }
+        },
+        "/api/v1/vacations_unpaid": {
+            "post": {
+                "description": "Create vacation unpaid",
                 "tags": [
-                    "Vacation"
+                    "VacationUnpaid"
                 ],
-                "summary": "Delete vacation",
+                "summary": "Create vacation unpaid",
+                "parameters": [
+                    {
+                        "description": "body params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateVacationUnpaidRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateVacationUnpaidResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/vacations_unpaid/{vacation_unpaid_id}": {
+            "delete": {
+                "description": "Delete vacation unpaid",
+                "tags": [
+                    "VacationUnpaid"
+                ],
+                "summary": "Delete vacation unpaid",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "vacation_id",
+                        "description": "vacation_unpaid_id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -840,6 +905,50 @@ const docTemplate = `{
                 "responses": {
                     "204": {
                         "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/vacations_unpaid/{vacations_unpaid_id}": {
+            "get": {
+                "description": "get vacation unpaid",
+                "tags": [
+                    "VacationUnpaid"
+                ],
+                "summary": "Get vacation unpaid",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "vacations_unpaid_id",
+                        "name": "vacation_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetVacationUnpaidResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httperror.ErrorResponse"
+                        }
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -958,7 +1067,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.CreateVacationRequest": {
+        "domain.CreateVacationPaidRequest": {
             "type": "object",
             "properties": {
                 "date_from": {
@@ -970,13 +1079,33 @@ const docTemplate = `{
                 "description": {
                     "description": "todo *",
                     "type": "string"
-                },
-                "is_paid": {
-                    "type": "boolean"
                 }
             }
         },
-        "domain.CreateVacationResponse": {
+        "domain.CreateVacationPaidResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateVacationUnpaidRequest": {
+            "type": "object",
+            "properties": {
+                "date_from": {
+                    "type": "integer"
+                },
+                "date_to": {
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "todo *",
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateVacationUnpaidResponse": {
             "type": "object",
             "properties": {
                 "id": {
@@ -1172,11 +1301,19 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.GetVacationResponse": {
+        "domain.GetVacationPaidResponse": {
             "type": "object",
             "properties": {
-                "vacation": {
-                    "$ref": "#/definitions/domain.Vacation"
+                "vacation_paid": {
+                    "$ref": "#/definitions/domain.VacationPaid"
+                }
+            }
+        },
+        "domain.GetVacationUnpaidResponse": {
+            "type": "object",
+            "properties": {
+                "vacation_unpaid": {
+                    "$ref": "#/definitions/domain.VacationUnpaid"
                 }
             }
         },
@@ -1383,7 +1520,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.Vacation": {
+        "domain.VacationPaid": {
             "type": "object",
             "properties": {
                 "creator_id": {
@@ -1401,8 +1538,28 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "is_paid": {
-                    "type": "boolean"
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.VacationUnpaid": {
+            "type": "object",
+            "properties": {
+                "creator_id": {
+                    "type": "string"
+                },
+                "date_from": {
+                    "type": "integer"
+                },
+                "date_to": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
                 },
                 "status": {
                     "type": "string"

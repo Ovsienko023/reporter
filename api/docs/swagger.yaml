@@ -68,7 +68,7 @@ definitions:
       id:
         type: string
     type: object
-  domain.CreateVacationRequest:
+  domain.CreateVacationPaidRequest:
     properties:
       date_from:
         type: integer
@@ -77,10 +77,23 @@ definitions:
       description:
         description: todo *
         type: string
-      is_paid:
-        type: boolean
     type: object
-  domain.CreateVacationResponse:
+  domain.CreateVacationPaidResponse:
+    properties:
+      id:
+        type: string
+    type: object
+  domain.CreateVacationUnpaidRequest:
+    properties:
+      date_from:
+        type: integer
+      date_to:
+        type: integer
+      description:
+        description: todo *
+        type: string
+    type: object
+  domain.CreateVacationUnpaidResponse:
     properties:
       id:
         type: string
@@ -206,10 +219,15 @@ definitions:
           $ref: '#/definitions/domain.UsersItem'
         type: array
     type: object
-  domain.GetVacationResponse:
+  domain.GetVacationPaidResponse:
     properties:
-      vacation:
-        $ref: '#/definitions/domain.Vacation'
+      vacation_paid:
+        $ref: '#/definitions/domain.VacationPaid'
+    type: object
+  domain.GetVacationUnpaidResponse:
+    properties:
+      vacation_unpaid:
+        $ref: '#/definitions/domain.VacationUnpaid'
     type: object
   domain.Report:
     properties:
@@ -343,7 +361,7 @@ definitions:
       role:
         type: string
     type: object
-  domain.Vacation:
+  domain.VacationPaid:
     properties:
       creator_id:
         type: string
@@ -355,8 +373,21 @@ definitions:
         type: string
       id:
         type: string
-      is_paid:
-        type: boolean
+      status:
+        type: string
+    type: object
+  domain.VacationUnpaid:
+    properties:
+      creator_id:
+        type: string
+      date_from:
+        type: integer
+      date_to:
+        type: integer
+      description:
+        type: string
+      id:
+        type: string
       status:
         type: string
     type: object
@@ -867,33 +898,33 @@ paths:
       summary: Add object to user permission
       tags:
       - Permission
-  /api/v1/vacations:
+  /api/v1/vacations_paid:
     post:
-      description: Create vacation
+      description: Create vacation paid
       parameters:
       - description: body params
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/domain.CreateVacationRequest'
+          $ref: '#/definitions/domain.CreateVacationPaidRequest'
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/domain.CreateVacationResponse'
+            $ref: '#/definitions/domain.CreateVacationPaidResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/httperror.ErrorResponse'
-      summary: Create vacation
+      summary: Create vacation paid
       tags:
-      - Vacation
-  /api/v1/vacations/{vacation_id}:
+      - VacationPaid
+  /api/v1/vacations_paid/{vacation_paid_id}:
     delete:
-      description: Delete vacation
+      description: Delete vacation paid
       parameters:
-      - description: vacation_id
+      - description: vacation_paid_id
         in: path
         name: id
         required: true
@@ -905,22 +936,23 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/httperror.ErrorResponse'
-      summary: Delete vacation
+      summary: Delete vacation paid
       tags:
-      - Vacation
+      - VacationPaid
+  /api/v1/vacations_paid/{vacations_paid_id}:
     get:
-      description: get vacation
+      description: get vacation paid
       parameters:
-      - description: vacation_id
+      - description: vacation_paid_id
         in: path
-        name: vacation_id
+        name: vacation_paid_id
         required: true
         type: string
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.GetVacationResponse'
+            $ref: '#/definitions/domain.GetVacationPaidResponse'
         "403":
           description: Forbidden
           schema:
@@ -933,7 +965,77 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/httperror.ErrorResponse'
-      summary: Get vacation
+      summary: Get vacation paid
       tags:
-      - Vacation
+      - VacationPaid
+  /api/v1/vacations_unpaid:
+    post:
+      description: Create vacation unpaid
+      parameters:
+      - description: body params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateVacationUnpaidRequest'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.CreateVacationUnpaidResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Create vacation unpaid
+      tags:
+      - VacationUnpaid
+  /api/v1/vacations_unpaid/{vacation_unpaid_id}:
+    delete:
+      description: Delete vacation unpaid
+      parameters:
+      - description: vacation_unpaid_id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Delete vacation unpaid
+      tags:
+      - VacationUnpaid
+  /api/v1/vacations_unpaid/{vacations_unpaid_id}:
+    get:
+      description: get vacation unpaid
+      parameters:
+      - description: vacations_unpaid_id
+        in: path
+        name: vacation_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetVacationUnpaidResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperror.ErrorResponse'
+      summary: Get vacation unpaid
+      tags:
+      - VacationUnpaid
 swagger: "2.0"
