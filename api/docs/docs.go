@@ -1251,6 +1251,9 @@ const docTemplate = `{
         "domain.GetStatisticsRequest": {
             "type": "object",
             "properties": {
+                "allowed_to": {
+                    "type": "string"
+                },
                 "from_date": {
                     "type": "integer"
                 },

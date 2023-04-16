@@ -18,6 +18,7 @@ func GetStatistics(c *core.Core, w http.ResponseWriter, r *http.Request) {
 		r.Header.Get("Authorization"),
 		query.Get("from_date"),
 		query.Get("to_date"),
+		query.Get("allowed_to"),
 	)
 
 	result, err := c.GetStatistics(r.Context(), message)

@@ -7,9 +7,10 @@ import (
 )
 
 type GetStatisticsRequest struct {
-	Token    string `json:"token,omitempty" swaggerignore:"true"`
-	FromDate int64  `json:"from_date,omitempty"`
-	ToDate   int64  `json:"to_date,omitempty"`
+	Token     string  `json:"token,omitempty" swaggerignore:"true"`
+	FromDate  int64   `json:"from_date,omitempty"`
+	ToDate    int64   `json:"to_date,omitempty"`
+	AllowedTo *string `json:"allowed_to,omitempty"`
 }
 
 func (r *GetStatisticsRequest) ToDbGetStatistics(invokerId string) *repository.GetStatistics {
@@ -17,20 +18,27 @@ func (r *GetStatisticsRequest) ToDbGetStatistics(invokerId string) *repository.G
 		InvokerId: invokerId,
 		FromDate:  time.Unix(r.FromDate, 0).UTC(),
 		ToDate:    time.Unix(r.ToDate, 0).UTC(),
+		AllowedTo: r.AllowedTo,
 	}
 }
 
-func ToGetStatisticsRequest(token, fromDate, toData string) *GetStatisticsRequest {
+func ToGetStatisticsRequest(token, fromDate, toData, allowedTo string) *GetStatisticsRequest {
+	// todo Подумать над добавлением уровня сообщений для transport.http и добавлением валидации
+
 	from, _ := strconv.ParseInt(fromDate, 10, 64)
 	to, _ := strconv.ParseInt(toData, 10, 64)
 
-	// todo Подумать над добавлением уровня сообщений для transport.http и добавлением валидации
-
-	return &GetStatisticsRequest{
+	res := &GetStatisticsRequest{
 		Token:    token,
 		FromDate: from,
 		ToDate:   to,
 	}
+
+	if allowedTo != "" {
+		res.AllowedTo = &allowedTo
+	}
+
+	return res
 }
 
 type GetStatisticsResponse struct {

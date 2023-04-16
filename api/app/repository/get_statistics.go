@@ -64,16 +64,41 @@ const (
            avg(start_time)::bigint as avg_start_time     -- среднее время начала дня
 	from main.reports
 	where creator_id = $1 and 
+	      (
+	          $4::uuid is null
+	      ) and 
 	      ($2::timestamp is null and $3::timestamp is null or 
 				date >= $2::timestamp and 
-				date <= $3::timestamp)`
+				date <= $3::timestamp
+	      )`
+	sqlGetStatisticsAllowedTo = `
+	select avg(work_time)::bigint as avg_hours_worked,   -- среднне количество отработанных часов
+       	   sum(work_time)::bigint as hours_worked,       -- отработаннно часов
+       	   avg(break_time)::bigint as avg_hours_break,   -- среднне количество часов перерыва
+           avg(start_time)::bigint as avg_start_time     -- среднее время начала дня
+	from main.reports
+	where (creator_id = $4::uuid) and $1 != ''
+	  and(
+	      $2::timestamp is null and $3::timestamp is null or 
+				date >= $2::timestamp and 
+				date <= $3::timestamp
+	      )`
 )
 
 func (c *Client) GetStatistics(ctx context.Context, msg *GetStatistics) (*Statistics, error) {
-	row, err := c.driver.Query(ctx, sqlGetStatistics,
+	var sql string
+
+	if msg.AllowedTo == nil {
+		sql = sqlGetStatistics
+	} else {
+		sql = sqlGetStatisticsAllowedTo
+	}
+
+	row, err := c.driver.Query(ctx, sql,
 		msg.InvokerId,
 		msg.FromDate,
 		msg.ToDate,
+		msg.AllowedTo,
 	)
 	if err != nil {
 		return nil, NewInternalError(err)
@@ -100,6 +125,7 @@ type GetStatistics struct {
 	InvokerId string    `json:"invoker_id,omitempty"`
 	FromDate  time.Time `json:"from_date,omitempty"`
 	ToDate    time.Time `json:"to_date,omitempty"`
+	AllowedTo *string   `json:"allowed_to,omitempty"`
 }
 
 type Statistics struct {

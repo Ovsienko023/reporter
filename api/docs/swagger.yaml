@@ -187,6 +187,8 @@ definitions:
     type: object
   domain.GetStatisticsRequest:
     properties:
+      allowed_to:
+        type: string
       from_date:
         type: integer
       to_date:
