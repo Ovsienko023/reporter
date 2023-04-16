@@ -550,3 +550,201 @@ end;
 $$
     language plpgsql volatile
                      security definer;
+
+
+drop function if exists main.get_reports;
+
+create or replace function main.get_reports(
+    _invoker_id uuid,
+    _date_from timestamp = null,
+    _date_to timestamp = null,
+    _page int = 1,
+    _page_size int = 60,
+    _allowed_to uuid = null,
+    --
+    out error jsonb,
+    out count bigint,
+    out id uuid,
+    out display_name varchar,
+    out date timestamptz,
+    out start_time integer,
+    out end_time integer,
+    out break_time integer,
+    out work_time integer,
+    out body varchar,
+    out creator_id uuid,
+    out created_at timestamptz,
+    out updated_at timestamptz,
+    out deleted_at timestamptz
+) returns setof record as
+$$
+declare
+    _exception text;
+begin
+    if not exists(select 1
+                  from main.users as u
+                  where u.id = _invoker_id
+                    and u.deleted_at is null) then
+        error := '{
+          "code": 1,
+          "message": "unauthorized",
+          "details": []
+        }'::jsonb;
+
+        return query (values (error::jsonb,
+                              null ::bigint,
+                              null::uuid,
+                              null::varchar,
+                              null::timestamptz,
+                              null::integer,
+                              null::integer,
+                              null::integer,
+                              null::integer,
+                              null::varchar,
+                              null::uuid,
+                              null::timestamptz,
+                              null::timestamptz,
+                              null::timestamptz));
+        return;
+    end if;
+
+    if _allowed_to is not null and
+       not exists(select 1
+                  from main.users u
+                  where u.id = _allowed_to
+                    and u.deleted_at is null) then
+
+        error := '{
+          "code": 3,
+          "message": "",
+          "details": [
+            {
+              "name": "_user_id",
+              "reason": "not_found"
+            }
+          ]
+        }'::jsonb;
+
+        return query (values (error::jsonb,
+                              null::bigint,
+                              null::uuid,
+                              null::varchar,
+                              null::timestamptz,
+                              null::integer,
+                              null::integer,
+                              null::integer,
+                              null::integer,
+                              null::varchar,
+                              null::uuid,
+                              null::timestamptz,
+                              null::timestamptz,
+                              null::timestamptz));
+        return;
+    end if;
+
+    if _allowed_to is not null then
+        return query (with tab as (select r.id,
+                                          r.display_name,
+                                          r.date,
+                                          r.start_time,
+                                          r.end_time,
+                                          r.break_time,
+                                          r.work_time,
+                                          r.body,
+                                          r.creator_id,
+                                          r.created_at,
+                                          r.updated_at,
+                                          r.deleted_at
+                                   from main.reports r
+                                   where exists(select 1
+                                                from main.permissions_users_to_objects ptu
+                                                where ptu.user_id = _invoker_id
+                                                  and ptu.object_id = r.creator_id
+                                                  and ptu.object_id = _allowed_to
+                                                  and ptu.object_id != ptu.user_id)
+                                     and (_date_from::timestamp is null and _date_to::timestamp is null or
+                                          r.date >= _date_from::timestamp and
+                                          r.date <= _date_to::timestamp))
+                      select null::jsonb                as error,
+                             (select count(*) from tab) as count,
+                             t.id                       as id,
+                             t.display_name             as display_name,
+                             t.date                     as date,
+                             t.start_time               as start_time,
+                             t.end_time                 as end_time,
+                             t.break_time               as break_time,
+                             t.work_time                as work_time,
+                             t.body                     as body,
+                             t.creator_id               as creator_id,
+                             t.created_at               as created_at,
+                             t.updated_at               as updated_at,
+                             t.deleted_at               as deleted_at
+                      from tab as t
+                      limit _page_size offset _page_size * (_page - 1));
+        return;
+
+    else
+
+
+        return query (with tab as (select r.id,
+                                          r.display_name,
+                                          r.date,
+                                          r.start_time,
+                                          r.end_time,
+                                          r.break_time,
+                                          r.work_time,
+                                          r.body,
+                                          r.creator_id,
+                                          r.created_at,
+                                          r.updated_at,
+                                          r.deleted_at
+                                   from main.reports r
+                                   where r.creator_id = _invoker_id
+                                     and (_date_from::timestamp is null and _date_to::timestamp is null or
+                                          r.date >= _date_from::timestamp and
+                                          r.date <= _date_to::timestamp))
+                      select null::jsonb                as error,
+                             (select count(*) from tab) as count,
+                             r.id                       as id,
+                             r.display_name             as display_name,
+                             r.date                     as date,
+                             r.start_time               as start_time,
+                             r.end_time                 as end_time,
+                             r.break_time               as break_time,
+                             r.work_time                as work_time,
+                             r.body                     as body,
+                             r.creator_id               as creator_id,
+                             r.created_at               as created_at,
+                             r.updated_at               as updated_at,
+                             r.deleted_at               as deleted_at
+                      from tab as r
+                      limit _page_size offset _page_size * (_page - 1));
+        return;
+    end if;
+exception
+    when others then
+        get stacked diagnostics _exception = PG_EXCEPTION_CONTEXT;
+        _exception := _exception || ' | ' || SQLERRM || ' | ' || SQLSTATE;
+        raise notice 'ERROR: % ', _exception;
+
+        return query
+            values (format('{"code": -1, "reason": "unknown", "description": "%s"}', _exception)::jsonb,
+                    null::bigint,
+                    null::uuid,
+                    null::varchar,
+                    null::timestamptz,
+                    null::integer,
+                    null::integer,
+                    null::integer,
+                    null::integer,
+                    null::varchar,
+                    null::uuid,
+                    null::timestamptz,
+                    null::timestamptz,
+                    null::timestamptz);
+        return;
+
+end;
+$$
+    language plpgsql volatile
+                     security definer;
