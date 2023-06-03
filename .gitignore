@@ -1,3 +1,5 @@
 api/bin/
 
 api/*.exe
+api/.env
+/.env

@@ -22,7 +22,7 @@ Rest api for working reports
 
 1) ```go get github.com/swaggo/swag/cmd/swag``` или `go install github.com/swaggo/swag/cmd/swag@latest`
 2) ```swag init``` (если команда не срабатывает: ```export GOBIN=$(go env GOPATH)/bin```)
-3) http://0.0.0.0:8888/docs/index.html
+3) http://127.0.0.1:8888/docs/index.html
 
 
 # Init db

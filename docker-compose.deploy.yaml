@@ -2,14 +2,18 @@ version: "3.3"
 
 services:
   database:
+    container_name: database
     image: ovsienko023/reporter-database:v1.1.12
     restart: unless-stopped
     ports:
       - "5442:5432"
     volumes:
       - database:/var/lib/postgresql/data
-  server:
-    image: ovsienko023/reporter-api:v1.1.19
+  web_api:
+    container_name: web_api
+    image: ovsienko023/reporter-api:v1.1.21
+    env_file:
+      - .env
     restart: unless-stopped
     command: ./reporter
     depends_on:
