@@ -3,7 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"github.com/Ovsienko023/reporter/app/transport/http/httperror"
+	"io"
 	"net/http"
+	"os"
 )
 
 func JsonResponse(w http.ResponseWriter, code int, resp any) {
@@ -29,6 +31,25 @@ func FileResponse(w http.ResponseWriter, file []byte, filename string) error {
 
 	_, err := w.Write(file)
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func FileResponseWithReader(w http.ResponseWriter, file io.Reader, filename string) error {
+	w.Header().Set("Content-Disposition", "attachment;filename="+filename)
+
+	_, err := io.Copy(w, file)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func RemoveFile(fullPath string) error {
+	if err := os.Remove(fullPath); err != nil {
 		return err
 	}
 

@@ -4,33 +4,29 @@ import (
 	"fmt"
 	"github.com/Ovsienko023/reporter/app/repository"
 	"github.com/Ovsienko023/reporter/infrastructure/utils/safe"
+	"os"
 	"strconv"
 	"time"
 )
 
-type ExportReportsRequest struct {
+type ExportReportsToJsonRequest struct {
 	Token    string     `json:"token,omitempty" swaggerignore:"true"`
 	DateFrom *time.Time `json:"date_from,omitempty"`
 	DateTo   *time.Time `json:"date_to,omitempty"`
 }
 
-func (r *ExportReportsRequest) ToDbGetReports(invokerId string) *repository.GetReports {
-	page := 1
-	pageSize := 10000
-	return &repository.GetReports{
+func (r *ExportReportsToJsonRequest) ToDb(invokerId string) *repository.ExportReports {
+	return &repository.ExportReports{
 		InvokerId: invokerId,
-		DateFrom:  r.DateFrom,
-		DateTo:    r.DateTo,
-		Page:      &page,
-		PageSize:  &pageSize,
 	}
 }
 
-type ExportReportsResponse struct {
+type ExportReportsToJsonResponse struct {
 	Reports []byte
+	File    *os.File
 }
 
-func (r *ExportReportsResponse) From(reports []repository.ReportItem) *ExportReportsResponse {
+func (r *ExportReportsToJsonResponse) From(reports []repository.ReportItem) *ExportReportsToJsonResponse {
 	r.Reports = ToCsvByte(reports)
 	return r
 }

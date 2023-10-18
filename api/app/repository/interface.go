@@ -20,5 +20,7 @@ type InterfaceDatabase interface {
 	DeleteReport(ctx context.Context, msg *DeleteReport) error
 	GetSystemUser() *SystemUser
 
+	ExportReports(ctx context.Context, msg *ExportReports) ([]ExportedReport, error)
+
 	GetStatistics(ctx context.Context, msg *GetStatistics) (*Statistics, error)
 }
