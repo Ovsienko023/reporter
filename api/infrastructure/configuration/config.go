@@ -20,9 +20,10 @@ type Doc struct {
 }
 
 type Api struct {
-	Host string `yaml:"host"`
-	Port string `yaml:"port"`
-	Doc  Doc    `yaml:"doc"`
+	Host           string `yaml:"host"`
+	Port           string `yaml:"port"`
+	Doc            Doc    `yaml:"doc"`
+	StaticFilePath string `yaml:"static_file_path"`
 }
 
 type Db struct {
@@ -43,6 +44,9 @@ const (
 	DefaultDocHost = "127.0.0.1"
 	DefaultDocPort = "8888"
 
+	DefStaticFilePath = "static"
+	//DefStaticFilePath = "/Users/ovsienko/Documents/trueconf/group/api/web"
+
 	DefaultDbConnStr = "postgresql://postgres:1234@localhost:5442/postgres"
 )
 
@@ -55,6 +59,7 @@ func NewConfig() (*Config, error) {
 				Host: DefaultDocHost,
 				Port: DefaultDocPort,
 			},
+			StaticFilePath: DefStaticFilePath,
 		},
 		Db{
 			ConnStr: DefaultDbConnStr,
@@ -71,6 +76,10 @@ func NewConfig() (*Config, error) {
 
 	if docPort, ok := os.LookupEnv("RP_DOC_PORT"); ok {
 		cfg.Api.Doc.Port = docPort
+	}
+
+	if val, ok := os.LookupEnv("RP_STATIC_FILE_PATH"); ok {
+		cfg.Api.StaticFilePath = val
 	}
 
 	var err error

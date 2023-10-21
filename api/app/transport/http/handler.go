@@ -3,16 +3,19 @@ package http
 import (
 	"github.com/Ovsienko023/reporter/app/core"
 	"github.com/Ovsienko023/reporter/app/transport/http/handlers"
+	"github.com/Ovsienko023/reporter/infrastructure/configuration"
 	"net/http"
 )
 
 type Transport struct {
-	core core.Core
+	core   core.Core
+	config *configuration.Api
 }
 
-func NewTransport(c core.Core) *Transport {
+func NewTransport(c core.Core, config *configuration.Api) *Transport {
 	return &Transport{
-		core: c,
+		core:   c,
+		config: config,
 	}
 }
 

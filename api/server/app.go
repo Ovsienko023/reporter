@@ -32,13 +32,16 @@ func NewApp(cnf *configuration.Config) *App {
 }
 
 func (a *App) Run(apiConfig *configuration.Api) error {
+	transport := transportHttp.NewTransport(*a.recordCore, apiConfig)
+
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
+	router.Use(transport.StaticHandler)
 
-	r := transportHttp.RegisterHTTPEndpoints(router, *a.recordCore, apiConfig)
+	r := transportHttp.RegisterHTTPEndpoints(router, transport, apiConfig)
 
 	a.httpServer = &http.Server{
 		Addr:           apiConfig.Host + ":" + apiConfig.Port,

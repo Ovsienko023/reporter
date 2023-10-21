@@ -2,7 +2,6 @@ package http
 
 import (
 	"fmt"
-	"github.com/Ovsienko023/reporter/app/core"
 	_ "github.com/Ovsienko023/reporter/docs"
 	"github.com/Ovsienko023/reporter/infrastructure/configuration"
 	"github.com/go-chi/chi/v5"
@@ -10,11 +9,10 @@ import (
 	"net/http"
 )
 
-func RegisterHTTPEndpoints(router chi.Router, c core.Core, apiConfig *configuration.Api) http.Handler {
+func RegisterHTTPEndpoints(router chi.Router, h *Transport, apiConfig *configuration.Api) http.Handler {
 	swaggerUrl := fmt.Sprintf("http://%s:%s/docs/doc.json", apiConfig.Doc.Host, apiConfig.Doc.Port)
-	h := NewTransport(c)
 
-	router.Get("/echo", func(writer http.ResponseWriter, request *http.Request) {
+	router.Get("/api/v1/echo", func(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Add("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
 		_, _ = writer.Write([]byte("{'status': 'ok', 'version: '1.1.21'}"))
