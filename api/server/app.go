@@ -48,11 +48,19 @@ func (a *App) Run(apiConfig *configuration.Api) error {
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	go func() {
-		if err := a.httpServer.ListenAndServe(); err != nil {
-			log.Fatalf("Failed to listen and serve: %+v", err)
-		}
-	}()
+	if apiConfig.Tls != nil {
+		go func() {
+			if err := a.httpServer.ListenAndServeTLS(apiConfig.Tls.CertFile, apiConfig.Tls.KeyFile); err != nil {
+				log.Fatalf("Failed to listen and serve: %+v", err)
+			}
+		}()
+	} else {
+		go func() {
+			if err := a.httpServer.ListenAndServe(); err != nil {
+				log.Fatalf("Failed to listen and serve: %+v", err)
+			}
+		}()
+	}
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, os.Interrupt)

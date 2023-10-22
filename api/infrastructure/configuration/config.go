@@ -20,10 +20,16 @@ type Doc struct {
 }
 
 type Api struct {
-	Host           string `yaml:"host"`
-	Port           string `yaml:"port"`
-	Doc            Doc    `yaml:"doc"`
-	StaticFilePath string `yaml:"static_file_path"`
+	Host           string  `yaml:"host"`
+	Port           string  `yaml:"port"`
+	Doc            Doc     `yaml:"doc"`
+	StaticFilePath string  `yaml:"static_file_path"`
+	Tls            *ApiTls `yaml:"tls"`
+}
+
+type ApiTls struct {
+	CertFile string `yaml:"cert_file"`
+	KeyFile  string `yaml:"key_file"`
 }
 
 type Db struct {
@@ -45,7 +51,6 @@ const (
 	DefaultDocPort = "8888"
 
 	DefStaticFilePath = "static"
-	//DefStaticFilePath = "/Users/ovsienko/Documents/trueconf/group/api/web"
 
 	DefaultDbConnStr = "postgresql://postgres:1234@localhost:5442/postgres"
 )
