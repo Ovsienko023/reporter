@@ -3,8 +3,8 @@ package server
 import (
 	"context"
 	"github.com/Ovsienko023/reporter/app/core"
-	"github.com/Ovsienko023/reporter/app/repository"
 	transportHttp "github.com/Ovsienko023/reporter/app/transport/http"
+	"github.com/Ovsienko023/reporter/infrastructure"
 	"github.com/Ovsienko023/reporter/infrastructure/configuration"
 	"log"
 	"net/http"
@@ -22,12 +22,9 @@ type App struct {
 	recordCore *core.Core
 }
 
-func NewApp(cnf *configuration.Config) *App {
-	client, _ := repository.New(&cnf.Db)
-	recordCore := core.NewCore(client)
-
+func New(container *infrastructure.Infrastructure) *App {
 	return &App{
-		recordCore: recordCore,
+		recordCore: core.New(container),
 	}
 }
 
