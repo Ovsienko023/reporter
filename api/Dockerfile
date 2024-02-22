@@ -3,7 +3,7 @@ RUN mkdir /app
 ADD . /app
 WORKDIR /app
 RUN go get
-RUN go build -o reporter main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o reporter main.go
 
 FROM alpine
 LABEL authors="Ovsienko V."

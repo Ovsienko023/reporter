@@ -34,6 +34,7 @@ type GetReportsResponse struct {
 type ReportItem struct {
 	Id          *string `json:"id,omitempty"`
 	DisplayName *string `json:"display_name,omitempty"`
+	State       *string `json:"state,omitempty"`
 	Date        *int64  `json:"date,omitempty"`
 	CreatorId   *string `json:"creator_id,omitempty"`
 	CreatedAt   *int64  `json:"created_at,omitempty"`
@@ -56,6 +57,7 @@ func FromGetReportsResponse(resp []repository.ReportItem, cnt *int) *GetReportsR
 		item := ReportItem{
 			Id:          obj.Id,
 			DisplayName: obj.DisplayName,
+			State:       obj.State,
 			Date:        ptr.Int64(obj.Date.Unix()),
 			CreatorId:   obj.CreatorId,
 			CreatedAt:   ptr.Int64(obj.CreatedAt.Unix()),

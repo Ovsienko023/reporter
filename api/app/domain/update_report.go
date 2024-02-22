@@ -10,6 +10,7 @@ type UpdateReportRequest struct {
 	Token       string  `json:"token,omitempty" swaggerignore:"true"`
 	ReportId    string  `json:"id,omitempty" swaggerignore:"true"`
 	DisplayName *string `json:"display_name,omitempty"`
+	State       *string `json:"state,omitempty"`
 	Date        *int64  `json:"date,omitempty"`
 	StartTime   *int64  `json:"start_time,omitempty"`
 	EndTime     *int64  `json:"end_time,omitempty"`
@@ -23,6 +24,7 @@ func (r *UpdateReportRequest) ToDbUpdateReport(invokerId string) *repository.Upd
 		InvokerId:   invokerId,
 		ReportId:    r.ReportId,
 		DisplayName: r.DisplayName,
+		State:       r.State,
 		StartTime:   r.StartTime,
 		EndTime:     r.EndTime,
 		BreakTime:   r.BreakTime,

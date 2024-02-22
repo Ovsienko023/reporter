@@ -3,7 +3,7 @@ version: "3.3"
 services:
   database:
     container_name: database
-    image: ovsienko023/reporter-database:v1.1.12
+    image: ovsienko023/reporter-database:v1.1.13
     restart: unless-stopped
     ports:
       - "5442:5432"
@@ -11,7 +11,7 @@ services:
       - database:/var/lib/postgresql/data
   web_api:
     container_name: web_api
-    image: ovsienko023/reporter-api:v1.1.21
+    image: ovsienko023/reporter-api:v1.1.22
     env_file:
       - .env
     restart: unless-stopped

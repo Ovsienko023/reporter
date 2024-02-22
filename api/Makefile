@@ -1,5 +1,9 @@
 .PHONY: build
 build:
-	gox -osarch="windows/amd64 linux/amd64" \
-	-output="bin/{{.Dir}}_{{.OS}}_{{.Arch}}"
+	gox -osarch="linux/amd64" \
+	-output="./reporter"
 
+#.PHONY: build
+#build:
+#	gox -osarch="windows/amd64 linux/amd64" \
+#	-output="bin/{{.Dir}}_{{.OS}}_{{.Arch}}"

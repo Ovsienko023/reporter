@@ -11,6 +11,7 @@ const (
            count,
            id,
            display_name,
+           state,
            date,
            start_time,
            end_time,
@@ -58,6 +59,7 @@ func (c *Client) GetReports(ctx context.Context, msg *GetReports) ([]ReportItem,
 			&count,
 			&report.Id,
 			&report.DisplayName,
+			&report.State,
 			&report.Date,
 			&report.StartTime,
 			&report.EndTime,
@@ -95,6 +97,7 @@ type GetReports struct {
 type ReportItem struct {
 	Id          *string    `json:"id,omitempty"`
 	DisplayName *string    `json:"display_name,omitempty"`
+	State       *string    `json:"state,omitempty"`
 	Date        *time.Time `json:"date,omitempty"`
 	StartTime   *int64     `json:"start_time,omitempty"`
 	EndTime     *int64     `json:"end_time,omitempty"`

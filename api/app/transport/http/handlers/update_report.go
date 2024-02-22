@@ -7,6 +7,7 @@ import (
 	"github.com/Ovsienko023/reporter/app/domain"
 	"github.com/Ovsienko023/reporter/app/transport/http/httperror"
 	"github.com/go-chi/chi/v5"
+	"golang.org/x/exp/slices"
 	"net/http"
 )
 
@@ -24,6 +25,11 @@ func UpdateReport(c *core.Core, w http.ResponseWriter, r *http.Request) {
 
 	message.ReportId = chi.URLParam(r, "report_id")
 	message.Token = r.Header.Get("Authorization")
+
+	if message.State != nil && !slices.Contains([]string{"draft", "ready"}, *message.State) {
+		errorContainer.Done(w, http.StatusBadRequest, "State field values can be 'draft' 'ready'")
+		return
+	}
 
 	err = c.UpdateReport(r.Context(), &message)
 	if err != nil {

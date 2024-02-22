@@ -9,15 +9,16 @@ import (
 
 const sqlUpdateReport = `
 	update main.reports
-    set display_name = coalesce($2, display_name), 
-        date = coalesce($3, date), 
-        start_time = coalesce($4, start_time), 
-        end_time = coalesce($5, end_time), 
-        break_time = coalesce($6, break_time), 
-        work_time = coalesce($7, work_time), 
-        body = coalesce($8, body), 
+    set display_name = coalesce($2, display_name),
+        state = coalesce($3, state),
+        date = coalesce($4, date), 
+        start_time = coalesce($5, start_time), 
+        end_time = coalesce($6, end_time), 
+        break_time = coalesce($7, break_time), 
+        work_time = coalesce($8, work_time), 
+        body = coalesce($9, body), 
         updated_at = now()
-    where id = $1 and creator_id = $9`
+    where id = $1 and creator_id = $10`
 
 func (c *Client) UpdateReport(ctx context.Context, msg *UpdateReport) error {
 	err := c.isFindReport(ctx, msg.InvokerId, msg.ReportId)
@@ -30,6 +31,7 @@ func (c *Client) UpdateReport(ctx context.Context, msg *UpdateReport) error {
 	row, err := transaction.Query(ctx, sqlUpdateReport,
 		msg.ReportId,
 		msg.DisplayName,
+		msg.State,
 		msg.Date,
 		msg.StartTime,
 		msg.EndTime,
@@ -61,6 +63,7 @@ type UpdateReport struct {
 	InvokerId   string     `json:"invoker_id,omitempty"`
 	ReportId    string     `json:"id,omitempty"`
 	DisplayName *string    `json:"display_name,omitempty"`
+	State       *string    `json:"state,omitempty"`
 	Date        *time.Time `json:"date,omitempty"`
 	StartTime   *int64     `json:"start_time,omitempty"`
 	EndTime     *int64     `json:"end_time,omitempty"`
